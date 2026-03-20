@@ -7,7 +7,7 @@ module Forem
 
       module ClassMethods
         def request(method, path, params = {}, opts = {})
-          requestor = opts.delete(:requestor) || APIRequestor.new
+          requestor = opts.delete(:requestor) || Forem.default_requestor
           requestor.request(method, path, params, opts)
         end
       end

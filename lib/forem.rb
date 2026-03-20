@@ -87,5 +87,13 @@ module Forem
     def api_base=(base)
       configuration.api_base = base
     end
+
+    def default_requestor
+      @default_requestor ||= APIRequestor.new
+    end
+
+    def reset_default_requestor!
+      @default_requestor = nil
+    end
   end
 end

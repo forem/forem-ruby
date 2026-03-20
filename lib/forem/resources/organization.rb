@@ -1,5 +1,3 @@
-require "cgi"
-
 module Forem
   class Organization < APIResource
     extend APIOperations::Create
