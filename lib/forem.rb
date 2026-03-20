@@ -15,6 +15,11 @@ require "forem/api_operations/save"
 require "forem/list_object"
 require "forem/api_resource"
 require "forem/api_requestor"
+require "forem/resources/article"
+require "forem/resources/user"
+require "forem/resources/comment"
+require "forem/resources/organization"
+require "forem/resources/tag"
 
 module Forem
   class << self
