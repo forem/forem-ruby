@@ -5,6 +5,9 @@ require "forem/forem_response"
 require "forem/connection_manager"
 require "forem/util"
 require "forem/forem_object"
+require "forem/api_operations/request"
+require "forem/api_operations/retrieve"
+require "forem/api_resource"
 require "forem/api_requestor"
 
 module Forem
