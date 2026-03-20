@@ -1,6 +1,8 @@
 require "forem/version"
 require "forem/configuration"
 require "forem/errors"
+require "forem/forem_response"
+require "forem/connection_manager"
 
 module Forem
   class << self
