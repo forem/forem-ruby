@@ -3,6 +3,7 @@ require "forem/configuration"
 require "forem/errors"
 require "forem/forem_response"
 require "forem/connection_manager"
+require "forem/api_requestor"
 
 module Forem
   class << self
