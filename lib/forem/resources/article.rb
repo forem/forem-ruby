@@ -1,6 +1,33 @@
 require "cgi"
 
 module Forem
+  # Represents a Forem article (blog post).
+  #
+  # Articles are the core content type on Forem. They support full CRUD
+  # operations plus several custom endpoints for filtering by auth state,
+  # latest publication order, and full-text search.
+  #
+  # Available operations (via mixins):
+  #   - +List+   — GET /api/articles
+  #   - +Create+ — POST /api/articles
+  #   - +Retrieve+ — GET /api/articles/:id
+  #   - +Update+ — PUT /api/articles/:id
+  #   - +Save+   — instance-level save (create or update)
+  #
+  # @example List published articles
+  #   articles = Forem::Article.list(per_page: 10, tag: "ruby")
+  #   articles.data.each { |a| puts a.title }
+  #
+  # @example Create a new article
+  #   article = Forem::Article.create(
+  #     article: { title: "Hello World", body_markdown: "# Hello", published: false }
+  #   )
+  #
+  # @example Retrieve a single article by ID
+  #   article = Forem::Article.retrieve(12345)
+  #   puts article.title
+  #
+  # @see https://developers.forem.com/api/v1
   class Article < APIResource
     extend APIOperations::Create
     extend APIOperations::List
@@ -11,40 +38,141 @@ module Forem
     OBJECT_NAME = "article"
     RESOURCE_PATH = "/api/articles"
 
+    # Unpublish this article, reverting it to draft status.
+    #
+    # Sends a PUT request to +/api/articles/:id/unpublish+.
+    #
+    # @param opts [Hash] per-request options (e.g., +:api_key+)
+    # @return [ForemResponse] the raw API response
+    # @example
+    #   article = Forem::Article.retrieve(42)
+    #   article.unpublish
+    # @see https://developers.forem.com/api/v1
     def unpublish(opts = {})
       request(:put, "#{resource_url}/unpublish", {}, opts)
     end
 
+    # Return articles authored by the authenticated user (all statuses).
+    #
+    # Sends a GET request to +/api/articles/me+.
+    #
+    # @param params [Hash] query parameters
+    # @option params [Integer] :page page number (default: 1)
+    # @option params [Integer] :per_page number of results per page (default: 30)
+    # @param opts [Hash] per-request options (e.g., +:api_key+)
+    # @return [Array<Forem::Article>] list of the authenticated user's articles
+    # @example
+    #   my_articles = Forem::Article.me(per_page: 5)
+    #   my_articles.each { |a| puts "#{a.id}: #{a.title}" }
+    # @see https://developers.forem.com/api/v1
     def self.me(params = {}, opts = {})
       resp = request(:get, "/api/articles/me", params, opts)
       (resp.parsed_body || []).map { |item| construct_from(item) }
     end
 
+    # Return published articles authored by the authenticated user.
+    #
+    # Sends a GET request to +/api/articles/me/published+.
+    #
+    # @param params [Hash] query parameters
+    # @option params [Integer] :page page number (default: 1)
+    # @option params [Integer] :per_page number of results per page (default: 30)
+    # @param opts [Hash] per-request options (e.g., +:api_key+)
+    # @return [Array<Forem::Article>] list of the authenticated user's published articles
+    # @example
+    #   published = Forem::Article.me_published(per_page: 20)
+    #   published.each { |a| puts a.title }
+    # @see https://developers.forem.com/api/v1
     def self.me_published(params = {}, opts = {})
       resp = request(:get, "/api/articles/me/published", params, opts)
       (resp.parsed_body || []).map { |item| construct_from(item) }
     end
 
+    # Return unpublished (draft) articles authored by the authenticated user.
+    #
+    # Sends a GET request to +/api/articles/me/unpublished+.
+    #
+    # @param params [Hash] query parameters
+    # @option params [Integer] :page page number (default: 1)
+    # @option params [Integer] :per_page number of results per page (default: 30)
+    # @param opts [Hash] per-request options (e.g., +:api_key+)
+    # @return [Array<Forem::Article>] list of the authenticated user's unpublished articles
+    # @example
+    #   drafts = Forem::Article.me_unpublished
+    #   drafts.each { |a| puts "Draft: #{a.title}" }
+    # @see https://developers.forem.com/api/v1
     def self.me_unpublished(params = {}, opts = {})
       resp = request(:get, "/api/articles/me/unpublished", params, opts)
       (resp.parsed_body || []).map { |item| construct_from(item) }
     end
 
+    # Return all articles authored by the authenticated user regardless of status.
+    #
+    # Sends a GET request to +/api/articles/me/all+.
+    #
+    # @param params [Hash] query parameters
+    # @option params [Integer] :page page number (default: 1)
+    # @option params [Integer] :per_page number of results per page (default: 30)
+    # @param opts [Hash] per-request options (e.g., +:api_key+)
+    # @return [Array<Forem::Article>] all articles (published + drafts) for the authenticated user
+    # @example
+    #   all = Forem::Article.me_all
+    #   puts "Total articles: #{all.length}"
+    # @see https://developers.forem.com/api/v1
     def self.me_all(params = {}, opts = {})
       resp = request(:get, "/api/articles/me/all", params, opts)
       (resp.parsed_body || []).map { |item| construct_from(item) }
     end
 
+    # Return the most recently published articles ordered by publication date.
+    #
+    # Sends a GET request to +/api/articles/latest+.
+    #
+    # @param params [Hash] query parameters
+    # @option params [Integer] :page page number (default: 1)
+    # @option params [Integer] :per_page number of results per page (default: 30)
+    # @param opts [Hash] per-request options (e.g., +:api_key+)
+    # @return [Array<Forem::Article>] latest published articles
+    # @example
+    #   latest = Forem::Article.latest(per_page: 5)
+    #   latest.each { |a| puts "#{a.published_at}: #{a.title}" }
+    # @see https://developers.forem.com/api/v1
     def self.latest(params = {}, opts = {})
       resp = request(:get, "/api/articles/latest", params, opts)
       (resp.parsed_body || []).map { |item| construct_from(item) }
     end
 
+    # Search published articles by keyword.
+    #
+    # Sends a GET request to +/api/articles/search+.
+    #
+    # @param params [Hash] query parameters
+    # @option params [String] :q search query string
+    # @option params [Integer] :page page number (default: 1)
+    # @option params [Integer] :per_page number of results per page (default: 30)
+    # @param opts [Hash] per-request options (e.g., +:api_key+)
+    # @return [Array<Forem::Article>] articles matching the search query
+    # @example
+    #   results = Forem::Article.search(q: "ruby on rails")
+    #   results.each { |a| puts a.title }
+    # @see https://developers.forem.com/api/v1
     def self.search(params = {}, opts = {})
       resp = request(:get, "/api/articles/search", params, opts)
       (resp.parsed_body || []).map { |item| construct_from(item) }
     end
 
+    # Retrieve a single article by the author's username and the article's slug.
+    #
+    # Sends a GET request to +/api/articles/:username/:slug+.
+    #
+    # @param username [String] the author's Forem username
+    # @param slug [String] the article slug (the URL-friendly title segment)
+    # @param opts [Hash] per-request options (e.g., +:api_key+)
+    # @return [Forem::Article] the matching article
+    # @example
+    #   article = Forem::Article.retrieve_by_path("ben", "my-first-post")
+    #   puts article.title
+    # @see https://developers.forem.com/api/v1
     def self.retrieve_by_path(username, slug, opts = {})
       resp = request(:get, "/api/articles/#{CGI.escape(username)}/#{CGI.escape(slug)}", {}, opts)
       construct_from(resp.parsed_body)

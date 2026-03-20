@@ -1,4 +1,36 @@
 module Forem
+  # Represents a curated list of recommended articles on a Forem instance.
+  #
+  # RecommendedArticlesLists are editorial curation objects that group
+  # articles for display in recommendation widgets or featured sections.
+  # Full CRUD operations are supported. Managing these lists typically
+  # requires an admin API key.
+  #
+  # Available operations (via mixins):
+  #   - +List+     — GET /api/recommended_articles_lists
+  #   - +Create+   — POST /api/recommended_articles_lists
+  #   - +Retrieve+ — GET /api/recommended_articles_lists/:id
+  #   - +Update+   — PUT /api/recommended_articles_lists/:id
+  #   - +Save+     — instance-level save (create or update)
+  #
+  # @example List all recommended article lists
+  #   lists = Forem::RecommendedArticlesList.list
+  #   lists.data.each { |l| puts l.name }
+  #
+  # @example Create a recommended articles list
+  #   list = Forem::RecommendedArticlesList.create(
+  #     recommended_articles_list: {
+  #       name: "Top Ruby Articles",
+  #       article_ids: [101, 202, 303]
+  #     }
+  #   )
+  #
+  # @example Retrieve a list by ID and update it
+  #   list = Forem::RecommendedArticlesList.retrieve(1)
+  #   list.name = "Updated Name"
+  #   list.save
+  #
+  # @see https://developers.forem.com/api/v1
   class RecommendedArticlesList < APIResource
     extend APIOperations::Create
     extend APIOperations::List
