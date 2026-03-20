@@ -1,6 +1,8 @@
 module Forem
   # Provides access to the health-check endpoints of a Forem instance.
   #
+  # Health check endpoints are public and do not require authentication.
+  #
   # Health checks let you verify that the various subsystems of a Forem
   # deployment are operational. There are three separate checks: the
   # application server, the database, and the cache layer. These endpoints
@@ -25,6 +27,8 @@ module Forem
 
     # Check the health of the Forem application server.
     #
+    # Returns a simple status object indicating whether the subsystem is healthy.
+    #
     # Sends a GET request to +/api/health_checks/app+. Returns a 200 status
     # with a +{"status": "OK"}+ body when the application is running normally,
     # or a 503 when it is unhealthy.
@@ -42,6 +46,8 @@ module Forem
 
     # Check the health of the Forem database connection.
     #
+    # Returns a simple status object indicating whether the subsystem is healthy.
+    #
     # Sends a GET request to +/api/health_checks/database+. Returns a 200
     # status when the database is reachable and responsive, or a 503 otherwise.
     #
@@ -57,6 +63,8 @@ module Forem
     end
 
     # Check the health of the Forem cache layer (e.g., Redis).
+    #
+    # Returns a simple status object indicating whether the subsystem is healthy.
     #
     # Sends a GET request to +/api/health_checks/cache+. Returns a 200 status
     # when the cache store is reachable and responsive, or a 503 otherwise.

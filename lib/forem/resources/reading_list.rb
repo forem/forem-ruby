@@ -5,6 +5,9 @@ module Forem
   # list. This resource supports listing those saved articles with optional
   # filtering by status.
   #
+  # Requires authentication. Returns articles saved to the user's reading
+  # list. Default: 30 per page.
+  #
   # Available operations (via mixins):
   #   - +List+ — GET /api/readinglist
   #
@@ -16,7 +19,7 @@ module Forem
   #   items = Forem::ReadingList.list(status: "confirmed")
   #   items.data.each { |item| puts item.article.title }
   #
-  # @see https://developers.forem.com/api/v1
+  # @see https://developers.forem.com/api/v1#/operations/getReadinglist
   class ReadingList < APIResource
     extend APIOperations::List
 

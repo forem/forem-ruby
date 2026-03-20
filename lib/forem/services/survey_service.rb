@@ -12,7 +12,7 @@ module Forem
     #   survey  = client.surveys.retrieve(8)
     #
     # @see Survey
-    # @see https://developers.forem.com/api/v1
+    # @see https://developers.forem.com/api/v1#/operations/getSurveyByIdOrSlug
     class SurveyService < BaseService
       # List all surveys.
       #
@@ -39,7 +39,7 @@ module Forem
       # @example
       #   client.surveys.retrieve(8)
       #
-      # @see https://developers.forem.com/api/v1
+      # @see https://developers.forem.com/api/v1#/operations/getSurveyByIdOrSlug
       def retrieve(id, opts = {})
         Survey.retrieve(id, opts_with_requestor(opts))
       end

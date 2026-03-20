@@ -1,15 +1,27 @@
 module Forem
   # Represents an agent session used for AI-assisted content workflows on Forem.
   #
-  # Agent sessions track the state of an automated (AI) agent interacting
-  # with Forem content. A presign step generates upload credentials before
-  # session data is submitted. After creation, the raw asset URL for the
-  # session can be retrieved via the +raw_url+ instance method.
+  # Agent sessions are coding conversation transcripts from CLI tools like
+  # Claude Code and other AI coding assistants.
+  #
+  # A presign step generates upload credentials before session data is
+  # submitted. After creation, the raw asset URL for the session can be
+  # retrieved via the +raw_url+ instance method.
   #
   # Available operations (via mixins):
-  #   - +List+     — GET /api/agent_sessions
-  #   - +Create+   — POST /api/agent_sessions
-  #   - +Retrieve+ — GET /api/agent_sessions/:id
+  #   - +List+     — GET /api/agent_sessions     (getAgentSessions)
+  #   - +Create+   — POST /api/agent_sessions    (createAgentSession)
+  #   - +Retrieve+ — GET /api/agent_sessions/:id (getAgentSessionById)
+  #
+  # == AgentSession Fields
+  #
+  # - +id+ (Integer)
+  # - +slug+ (String) — URL-friendly identifier
+  # - +title+ (String)
+  # - +tool_name+ (String) — Tool that produced the session
+  # - +total_messages+ (Integer)
+  # - +published+ (Boolean)
+  # - +url+ (String) — Public URL for the session
   #
   # @example Get presigned upload credentials before creating a session
   #   presign = Forem::AgentSession.presign(filename: "session.json", mime_type: "application/json")
@@ -32,6 +44,31 @@ module Forem
 
     OBJECT_NAME = "agent_session"
     RESOURCE_PATH = "/api/agent_sessions"
+
+    # @!method self.create(params = {}, opts = {})
+    #   Create a new agent session (createAgentSession).
+    #
+    #   Sends a POST request to +/api/agent_sessions+.
+    #
+    #   @param params [Hash] request body
+    #   @option params [String] :title Title for the session (auto-generated if omitted)
+    #   @option params [String] :curated_data JSON string of curated session data with messages array and metadata
+    #   @option params [String] :s3_key S3 key for raw file (from presign endpoint)
+    #   @option params [String] :tool_name One of: +"claude_code"+, +"codex"+, +"gemini_cli"+, +"github_copilot"+, +"pi"+
+    #   @param opts [Hash] per-request options (e.g., +:api_key+)
+    #   @return [Forem::AgentSession] the newly-created session
+
+    # @!method self.retrieve(id, opts = {})
+    #   Retrieve an agent session by ID or slug (getAgentSessionById).
+    #
+    #   The +id+ parameter can be a numeric ID or a slug string
+    #   (e.g., +'my-session-abc123'+).
+    #
+    #   Sends a GET request to +/api/agent_sessions/:id+.
+    #
+    #   @param id [Integer, String] numeric ID or slug of the session
+    #   @param opts [Hash] per-request options (e.g., +:api_key+)
+    #   @return [Forem::AgentSession] the matching session
 
     # Obtain presigned upload credentials for a new agent session asset.
     #

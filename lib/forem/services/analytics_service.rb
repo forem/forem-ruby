@@ -12,7 +12,7 @@ module Forem
     #   daily  = client.analytics.historical(username: "jsmith", start: "2024-01-01")
     #
     # @see Analytics
-    # @see https://developers.forem.com/api/v1#tag/analytics
+    # @see https://developers.forem.com/api/v1
     class AnalyticsService < BaseService
       # Retrieve total engagement metrics for a user or organization.
       #
@@ -29,7 +29,7 @@ module Forem
       # @example
       #   client.analytics.totals(username: "jsmith")
       #
-      # @see https://developers.forem.com/api/v1#tag/analytics/operation/getAnalyticsTotals
+      # @see https://developers.forem.com/api/v1
       def totals(params = {}, opts = {})
         Analytics.totals(params, opts_with_requestor(opts))
       end
@@ -52,7 +52,7 @@ module Forem
       #     end: "2024-03-31"
       #   )
       #
-      # @see https://developers.forem.com/api/v1#tag/analytics/operation/getAnalyticsHistorical
+      # @see https://developers.forem.com/api/v1
       def historical(params = {}, opts = {})
         Analytics.historical(params, opts_with_requestor(opts))
       end
@@ -68,7 +68,7 @@ module Forem
       # @example
       #   client.analytics.past_day(username: "jsmith")
       #
-      # @see https://developers.forem.com/api/v1#tag/analytics/operation/getAnalyticsPastDay
+      # @see https://developers.forem.com/api/v1
       def past_day(params = {}, opts = {})
         Analytics.past_day(params, opts_with_requestor(opts))
       end
@@ -84,7 +84,7 @@ module Forem
       # @example
       #   client.analytics.referrers(username: "jsmith")
       #
-      # @see https://developers.forem.com/api/v1#tag/analytics/operation/getAnalyticsReferrers
+      # @see https://developers.forem.com/api/v1
       def referrers(params = {}, opts = {})
         Analytics.referrers(params, opts_with_requestor(opts))
       end

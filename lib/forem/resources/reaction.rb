@@ -1,6 +1,9 @@
 module Forem
   # Represents a reaction (like, unicorn, exploding head, etc.) on a Forem article or comment.
   #
+  # Toggle user's reaction to a reactable (Article, Comment, or User). First
+  # call creates the reaction; second call removes it.
+  #
   # Reactions are emoji-style responses that authenticated users can add to
   # articles or comments. The create endpoint adds a reaction, and the toggle
   # endpoint adds it if it does not exist or removes it if it already does.
@@ -37,10 +40,9 @@ module Forem
     # Sends a POST request to +/api/reactions/toggle+.
     #
     # @param params [Hash] request body
-    # @option params [Integer] :reactable_id ID of the article or comment to react to
-    # @option params [String] :reactable_type the type of the target; one of +"Article"+ or +"Comment"+
-    # @option params [String] :category the reaction emoji; one of +"like"+, +"unicorn"+,
-    #   +"exploding_head"+, +"raised_hands"+, or +"fire"+
+    # @option params [String] :category the reaction type (e.g., +"like"+, +"readinglist"+)
+    # @option params [Integer] :reactable_id the ID of the object to react to
+    # @option params [String] :reactable_type One of: +"Article"+, +"Comment"+, +"User"+
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [Forem::Reaction] reaction object with a +result+ field (++"create"++ or ++"destroy"++)
     # @example

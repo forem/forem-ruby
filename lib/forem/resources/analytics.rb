@@ -1,6 +1,9 @@
 module Forem
   # Provides access to analytics data for the authenticated user's content.
   #
+  # All analytics endpoints require authentication. Returns analytics for
+  # articles owned by the authenticated user.
+  #
   # The Analytics resource exposes four read-only reporting endpoints:
   # cumulative totals, day-by-day historical data, yesterday's aggregates,
   # and traffic referrer breakdowns. All endpoints require authentication.
@@ -29,6 +32,8 @@ module Forem
     # Sends a GET request to +/api/analytics/totals+.
     #
     # @param params [Hash] query parameters
+    # @option params [String] :article_id filter analytics to a specific article
+    # @option params [String] :organization_id filter analytics to a specific organization
     # @option params [Integer] :org_id ID of the organization to fetch analytics for
     #   (omit for the authenticated user's personal analytics)
     # @param opts [Hash] per-request options (e.g., +:api_key+)
@@ -48,8 +53,10 @@ module Forem
     # Sends a GET request to +/api/analytics/historical+.
     #
     # @param params [Hash] query parameters
-    # @option params [String] :start start date in +YYYY-MM-DD+ format
-    # @option params [String] :end end date in +YYYY-MM-DD+ format
+    # @option params [String] :article_id filter analytics to a specific article
+    # @option params [String] :organization_id filter analytics to a specific organization
+    # @option params [String] :start start date (ISO 8601)
+    # @option params [String] :end end date (ISO 8601)
     # @option params [Integer] :org_id ID of the organization (omit for personal analytics)
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [Array<Forem::ForemObject>] per-day stat objects covering the requested range
@@ -67,6 +74,8 @@ module Forem
     # Sends a GET request to +/api/analytics/past_day+.
     #
     # @param params [Hash] query parameters
+    # @option params [String] :article_id filter analytics to a specific article
+    # @option params [String] :organization_id filter analytics to a specific organization
     # @option params [Integer] :org_id ID of the organization (omit for personal analytics)
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [Forem::ForemObject] stat object for yesterday (page views, reactions, etc.)
@@ -84,6 +93,8 @@ module Forem
     # Sends a GET request to +/api/analytics/referrers+.
     #
     # @param params [Hash] query parameters
+    # @option params [String] :article_id filter analytics to a specific article
+    # @option params [String] :organization_id filter analytics to a specific organization
     # @option params [Integer] :org_id ID of the organization (omit for personal analytics)
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [Array<Forem::ForemObject>] referrer objects each with a +domain+ and +count+ field

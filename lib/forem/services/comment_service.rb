@@ -11,7 +11,7 @@ module Forem
     #   comment  = client.comments.retrieve("abc123")
     #
     # @see Comment
-    # @see https://developers.forem.com/api/v1#tag/comments
+    # @see https://developers.forem.com/api/v1#/operations/getCommentsByArticleId
     class CommentService < BaseService
       # List comments for an article or podcast episode.
       #
@@ -27,7 +27,7 @@ module Forem
       # @example Fetch comments for a podcast episode
       #   client.comments.list(p_id: 67)
       #
-      # @see https://developers.forem.com/api/v1#tag/comments/operation/getCommentsByArticleId
+      # @see https://developers.forem.com/api/v1#/operations/getCommentsByArticleId
       def list(params = {}, opts = {})
         Comment.list(params, opts_with_requestor(opts))
       end
@@ -42,7 +42,7 @@ module Forem
       # @example
       #   client.comments.retrieve("abc123")
       #
-      # @see https://developers.forem.com/api/v1#tag/comments/operation/getCommentById
+      # @see https://developers.forem.com/api/v1#/operations/getCommentById
       def retrieve(id, opts = {})
         Comment.retrieve(id, opts_with_requestor(opts))
       end

@@ -1,16 +1,25 @@
 module Forem
   # Represents a user segment used for targeted content delivery on Forem.
   #
+  # Audience segments for billboard targeting. The API only permits managing
+  # segments you create yourself.
+  #
   # Segments are named groups of users that can be targeted with specific
   # billboards or other content. Admins can create and delete segments, list
   # their members, and add or remove users from them. Managing segments
   # requires an admin API key.
   #
   # Available operations (via mixins):
-  #   - +List+     — GET /api/segments
-  #   - +Create+   — POST /api/segments
+  #   - +List+     — GET /api/segments          (getSegments)
+  #   - +Create+   — POST /api/segments         (createSegment)
   #   - +Retrieve+ — GET /api/segments/:id
   #   - +Delete+   — instance-level delete (DELETE /api/segments/:id)
+  #
+  # == Segment Fields
+  #
+  # - +id+ (Integer) — The segment ID
+  # - +type_of+ (String) — Marks segment as manually managed
+  # - +user_count+ (Integer) — Current number of users in the segment
   #
   # @example List all segments
   #   segments = Forem::Segment.list
@@ -35,11 +44,13 @@ module Forem
 
     # Return the users who belong to this segment.
     #
-    # Sends a GET request to +/api/segments/:id/users+.
+    # Returns users in this segment. Default: 30 per page, max: 1000.
+    #
+    # Sends a GET request to +/api/segments/:id/users+ (getUsersInSegment).
     #
     # @param params [Hash] query parameters
     # @option params [Integer] :page page number (default: 1)
-    # @option params [Integer] :per_page number of results per page (default: 30)
+    # @option params [Integer] :per_page number of results per page (default: 30, max: 1000)
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [Array<Forem::ForemObject>] users belonging to this segment
     # @example
@@ -53,10 +64,13 @@ module Forem
 
     # Add one or more users to this segment.
     #
-    # Sends a PUT request to +/api/segments/:id/add_users+.
+    # Add users in bulk. The response distinguishes successes (added) from
+    # failures (couldn't add).
+    #
+    # Sends a PUT request to +/api/segments/:id/add_users+ (addUsersToSegment).
     #
     # @param params [Hash] request body
-    # @option params [Array<Integer>] :user_ids array of user IDs to add to the segment
+    # @option params [Array<Integer>] :user_ids list of user IDs to add
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [ForemResponse] the raw API response
     # @example
@@ -72,7 +86,7 @@ module Forem
     # Sends a PUT request to +/api/segments/:id/remove_users+.
     #
     # @param params [Hash] request body
-    # @option params [Array<Integer>] :user_ids array of user IDs to remove from the segment
+    # @option params [Array<Integer>] :user_ids list of user IDs to remove
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [ForemResponse] the raw API response
     # @example

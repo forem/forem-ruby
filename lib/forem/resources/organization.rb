@@ -3,10 +3,11 @@ module Forem
   #
   # Organizations are team or company accounts on a Forem instance. They
   # support full CRUD operations and expose sub-collection endpoints for
-  # listing their members and articles.
+  # listing their members and articles. Organizations can be retrieved by
+  # either numeric ID or username slug.
   #
   # Available operations (via mixins):
-  #   - +List+     — GET /api/organizations
+  #   - +List+     — GET /api/organizations  (default: 10 per page)
   #   - +Create+   — POST /api/organizations
   #   - +Retrieve+ — GET /api/organizations/:id_or_username
   #   - +Update+   — PUT /api/organizations/:id
@@ -26,7 +27,8 @@ module Forem
   #   org = Forem::Organization.retrieve("acme-corp")
   #   puts org.name
   #
-  # @see https://developers.forem.com/api/v1
+  # @see https://developers.forem.com/api/v1#/operations/getOrganizations
+  # @see https://developers.forem.com/api/v1#/operations/createOrganization
   class Organization < APIResource
     extend APIOperations::Create
     extend APIOperations::List
@@ -50,7 +52,7 @@ module Forem
     # @example
     #   org = Forem::Organization.retrieve("acme-corp")
     #   org.users.each { |u| puts u.username }
-    # @see https://developers.forem.com/api/v1
+    # @see https://developers.forem.com/api/v1#/operations/getOrgUsers
     def users(params = {}, opts = {})
       resp = request(:get, "#{resource_url}/users", params, opts)
       (resp.parsed_body || []).map { |item| Forem::User.construct_from(item) }

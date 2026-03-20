@@ -11,7 +11,7 @@ module Forem
     #   bookmarks = client.reading_list.list(page: 1, per_page: 20)
     #
     # @see ReadingList
-    # @see https://developers.forem.com/api/v1#tag/readinglist
+    # @see https://developers.forem.com/api/v1#/operations/getReadinglist
     class ReadingListService < BaseService
       # List articles in the authenticated user's reading list.
       #
@@ -26,7 +26,7 @@ module Forem
       # @example
       #   client.reading_list.list(per_page: 50)
       #
-      # @see https://developers.forem.com/api/v1#tag/readinglist/operation/getReadinglist
+      # @see https://developers.forem.com/api/v1#/operations/getReadinglist
       def list(params = {}, opts = {})
         ReadingList.list(params, opts_with_requestor(opts))
       end

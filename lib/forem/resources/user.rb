@@ -8,6 +8,9 @@ module Forem
   # Available operations (via mixins):
   #   - +Retrieve+ — GET /api/users/:id
   #
+  # Note: the +id+ parameter passed to +retrieve+ can be a numeric ID or a
+  # username string.
+  #
   # @example Retrieve the authenticated user
   #   me = Forem::User.me
   #   puts "Hello, #{me.name}!"
@@ -20,7 +23,7 @@ module Forem
   #   results = Forem::User.search(q: "alice")
   #   results.each { |u| puts u.username }
   #
-  # @see https://developers.forem.com/api/v1
+  # @see https://developers.forem.com/api/v1#/operations/getUser
   class User < APIResource
     extend APIOperations::Retrieve
 
@@ -29,6 +32,9 @@ module Forem
 
     # Return the currently authenticated user's profile.
     #
+    # Returns extended user info including +email+ (if the user allows it
+    # on their profile).
+    #
     # Sends a GET request to +/api/users/me+.
     #
     # @param opts [Hash] per-request options (e.g., +:api_key+)
@@ -36,7 +42,7 @@ module Forem
     # @example
     #   me = Forem::User.me
     #   puts "Logged in as #{me.username}"
-    # @see https://developers.forem.com/api/v1
+    # @see https://developers.forem.com/api/v1#/operations/getUserMe
     def self.me(opts = {})
       resp = request(:get, "/api/users/me", {}, opts)
       construct_from(resp.parsed_body)
@@ -63,6 +69,8 @@ module Forem
 
     # Unpublish all articles and comments authored by this user.
     #
+    # Unpublishes all articles by this user.
+    #
     # Sends a PUT request to +/api/users/:id/unpublish+. Requires admin privileges.
     #
     # @param opts [Hash] per-request options (e.g., +:api_key+)
@@ -70,12 +78,15 @@ module Forem
     # @example
     #   user = Forem::User.retrieve(42)
     #   user.unpublish
-    # @see https://developers.forem.com/api/v1
+    # @see https://developers.forem.com/api/v1#/operations/unpublishUser
     def unpublish(opts = {})
       request(:put, "#{resource_url}/unpublish", {}, opts)
     end
 
     # Suspend this user, preventing them from logging in or posting.
+    #
+    # Prevents new posts and comments but does not delete existing content.
+    # The user is not notified in the UI.
     #
     # Sends a PUT request to +/api/users/:id/suspend+. Requires admin privileges.
     #
@@ -84,7 +95,7 @@ module Forem
     # @example
     #   user = Forem::User.retrieve(42)
     #   user.suspend
-    # @see https://developers.forem.com/api/v1
+    # @see https://developers.forem.com/api/v1#/operations/suspendUser
     def suspend(opts = {})
       request(:put, "#{resource_url}/suspend", {}, opts)
     end
@@ -98,7 +109,7 @@ module Forem
     # @example
     #   user = Forem::User.retrieve(42)
     #   user.unsuspend
-    # @see https://developers.forem.com/api/v1
+    # @see https://developers.forem.com/api/v1#/operations/suspendUser
     def unsuspend(opts = {})
       request(:delete, "#{resource_url}/suspend", {}, opts)
     end
@@ -133,6 +144,9 @@ module Forem
 
     # Flag this user as a spam account.
     #
+    # Prevents new posts and comments but does not delete existing content.
+    # The user is not notified in the UI.
+    #
     # Sends a PUT request to +/api/users/:id/spam+. Requires admin privileges.
     #
     # @param opts [Hash] per-request options (e.g., +:api_key+)
@@ -140,7 +154,7 @@ module Forem
     # @example
     #   user = Forem::User.retrieve(42)
     #   user.add_spam
-    # @see https://developers.forem.com/api/v1
+    # @see https://developers.forem.com/api/v1#/operations/spamUser
     def add_spam(opts = {})
       request(:put, "#{resource_url}/spam", {}, opts)
     end
@@ -154,7 +168,7 @@ module Forem
     # @example
     #   user = Forem::User.retrieve(42)
     #   user.remove_spam
-    # @see https://developers.forem.com/api/v1
+    # @see https://developers.forem.com/api/v1#/operations/spamUser
     def remove_spam(opts = {})
       request(:delete, "#{resource_url}/spam", {}, opts)
     end

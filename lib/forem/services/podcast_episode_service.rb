@@ -10,7 +10,7 @@ module Forem
     #   episodes = client.podcast_episodes.list(username: "codenewbies")
     #
     # @see PodcastEpisode
-    # @see https://developers.forem.com/api/v1#tag/podcast-episodes
+    # @see https://developers.forem.com/api/v1#/operations/getPodcastEpisodes
     class PodcastEpisodeService < BaseService
       # List podcast episodes.
       #
@@ -25,7 +25,7 @@ module Forem
       # @example
       #   client.podcast_episodes.list(username: "codenewbies", per_page: 20)
       #
-      # @see https://developers.forem.com/api/v1#tag/podcast-episodes/operation/getPodcastEpisodes
+      # @see https://developers.forem.com/api/v1#/operations/getPodcastEpisodes
       def list(params = {}, opts = {})
         PodcastEpisode.list(params, opts_with_requestor(opts))
       end

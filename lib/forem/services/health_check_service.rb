@@ -15,7 +15,7 @@ module Forem
     #   client.health_checks.cache
     #
     # @see HealthCheck
-    # @see https://developers.forem.com/api/v1#tag/health-checks
+    # @see https://developers.forem.com/api/v1
     class HealthCheckService < BaseService
       # Check the overall application health.
       #
@@ -27,7 +27,7 @@ module Forem
       # @example
       #   status = client.health_checks.app
       #
-      # @see https://developers.forem.com/api/v1#tag/health-checks/operation/getHealthCheck
+      # @see https://developers.forem.com/api/v1
       def app(opts = {})
         HealthCheck.app(opts_with_requestor(opts))
       end
@@ -42,7 +42,7 @@ module Forem
       # @example
       #   status = client.health_checks.database
       #
-      # @see https://developers.forem.com/api/v1#tag/health-checks/operation/getHealthCheckDatabase
+      # @see https://developers.forem.com/api/v1
       def database(opts = {})
         HealthCheck.database(opts_with_requestor(opts))
       end
@@ -57,7 +57,7 @@ module Forem
       # @example
       #   status = client.health_checks.cache
       #
-      # @see https://developers.forem.com/api/v1#tag/health-checks/operation/getHealthCheckCache
+      # @see https://developers.forem.com/api/v1
       def cache(opts = {})
         HealthCheck.cache(opts_with_requestor(opts))
       end

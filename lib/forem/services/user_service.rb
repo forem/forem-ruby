@@ -11,7 +11,7 @@ module Forem
     #   user = client.users.retrieve(42)
     #
     # @see User
-    # @see https://developers.forem.com/api/v1#tag/users
+    # @see https://developers.forem.com/api/v1#/operations/getUser
     class UserService < BaseService
       # Retrieve a single user by their numeric ID.
       #
@@ -23,7 +23,7 @@ module Forem
       # @example
       #   client.users.retrieve(42)
       #
-      # @see https://developers.forem.com/api/v1#tag/users/operation/getUser
+      # @see https://developers.forem.com/api/v1#/operations/getUser
       def retrieve(id, opts = {})
         User.retrieve(id, opts_with_requestor(opts))
       end
@@ -37,7 +37,7 @@ module Forem
       #   me = client.users.me
       #   puts me.username
       #
-      # @see https://developers.forem.com/api/v1#tag/users/operation/getSelf
+      # @see https://developers.forem.com/api/v1#/operations/getUserMe
       def me(opts = {})
         User.me(opts_with_requestor(opts))
       end
@@ -52,7 +52,7 @@ module Forem
       # @example
       #   client.users.search(term: "jane")
       #
-      # @see https://developers.forem.com/api/v1#tag/users/operation/searchUser
+      # @see https://developers.forem.com/api/v1#/operations/searchUser
       def search(params = {}, opts = {})
         User.search(params, opts_with_requestor(opts))
       end

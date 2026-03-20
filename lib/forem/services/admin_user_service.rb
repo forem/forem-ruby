@@ -15,7 +15,7 @@ module Forem
     #   )
     #
     # @see AdminUser
-    # @see https://developers.forem.com/api/v1#tag/users
+    # @see https://developers.forem.com/api/v1#/operations/postAdminUsersCreate
     class AdminUserService < BaseService
       # Invite a new user to the Forem instance.
       #
@@ -35,7 +35,7 @@ module Forem
       #     name: "Jane Doe"
       #   )
       #
-      # @see https://developers.forem.com/api/v1#tag/users/operation/inviteUser
+      # @see https://developers.forem.com/api/v1#/operations/postAdminUsersCreate
       def create(params = {}, opts = {})
         AdminUser.create(params, opts_with_requestor(opts))
       end

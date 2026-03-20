@@ -1,6 +1,9 @@
 module Forem
   # Represents a curated list of recommended articles on a Forem instance.
   #
+  # Curated lists of recommended articles. Used by admins to manage content
+  # recommendations.
+  #
   # RecommendedArticlesLists are editorial curation objects that group
   # articles for display in recommendation widgets or featured sections.
   # Full CRUD operations are supported. Managing these lists typically

@@ -13,7 +13,7 @@ module Forem
     #   segment  = client.segments.retrieve(5)
     #
     # @see Segment
-    # @see https://developers.forem.com/api/v1#tag/segments
+    # @see https://developers.forem.com/api/v1#/operations/getSegments
     class SegmentService < BaseService
       # List all audience segments.
       #
@@ -26,7 +26,7 @@ module Forem
       # @example
       #   client.segments.list
       #
-      # @see https://developers.forem.com/api/v1#tag/segments/operation/getSegments
+      # @see https://developers.forem.com/api/v1#/operations/getSegments
       def list(params = {}, opts = {})
         Segment.list(params, opts_with_requestor(opts))
       end
@@ -41,7 +41,7 @@ module Forem
       # @example
       #   client.segments.create(name: "Ruby Enthusiasts")
       #
-      # @see https://developers.forem.com/api/v1#tag/segments/operation/createSegment
+      # @see https://developers.forem.com/api/v1#/operations/createSegment
       def create(params = {}, opts = {})
         Segment.create(params, opts_with_requestor(opts))
       end
@@ -55,7 +55,7 @@ module Forem
       # @example
       #   client.segments.retrieve(5)
       #
-      # @see https://developers.forem.com/api/v1#tag/segments/operation/getSegmentById
+      # @see https://developers.forem.com/api/v1
       def retrieve(id, opts = {})
         Segment.retrieve(id, opts_with_requestor(opts))
       end
@@ -69,7 +69,7 @@ module Forem
       # @example
       #   client.segments.delete(5)
       #
-      # @see https://developers.forem.com/api/v1#tag/segments/operation/deleteSegment
+      # @see https://developers.forem.com/api/v1
       def delete(id, opts = {})
         Segment.delete(id, opts_with_requestor(opts))
       end

@@ -13,6 +13,22 @@ module Forem
   #   - +Update+   — PUT /api/billboards/:id
   #   - +Save+     — instance-level save (create or update)
   #
+  # == Billboard Fields
+  #
+  # - +name+ (String) — Internal name to distinguish ads
+  # - +body_markdown+ (String, required) — The ad content in markdown
+  # - +approved+ (Boolean) — Must be both published AND approved to appear in rotation
+  # - +published+ (Boolean) — Must be both published AND approved to appear in rotation
+  # - +expires_at+ (String) — ISO 8601 timestamp; automatically unapproved after this time
+  # - +placement_area+ (String) — Which area of the site layout the ad appears in
+  # - +tag_list+ (String) — Tags on which the ad can display (blank = all tags)
+  # - +exclude_article_ids+ (String) — Comma-separated Article IDs where ad should NOT appear
+  # - +audience_segment_id+ (Integer) — Target a specific audience segment
+  # - +audience_segment_type+ (String) — Must match +audience_segment_id+ if both provided
+  # - +target_geolocations+ (Array) — ISO 3166-2 country/region codes (blank = all locations)
+  # - +display_to+ (String) — Limits which visitors see the ad
+  # - +type_of+ (String) — One of: +"in_house"+ (admin-created), +"community"+ (entity content), +"external"+ (everywhere)
+  #
   # @example List all billboards
   #   billboards = Forem::Billboard.list
   #   billboards.data.each { |b| puts "#{b.id}: #{b.name}" }
@@ -42,6 +58,9 @@ module Forem
     RESOURCE_PATH = "/api/billboards"
 
     # Unpublish this billboard, reverting it to draft/inactive status.
+    #
+    # Marks the billboard as unpublished. A billboard must be both published
+    # AND approved to appear in rotation.
     #
     # Sends a PUT request to +/api/billboards/:id/unpublish+.
     # Requires admin privileges.

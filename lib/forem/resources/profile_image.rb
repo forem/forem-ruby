@@ -3,6 +3,8 @@ require "cgi"
 module Forem
   # Represents the profile image associated with a Forem user or organization.
   #
+  # Retrieve a user's profile image URL by their username.
+  #
   # Profile images are avatar graphics that appear alongside user and
   # organization names across the Forem UI. This resource exposes a single
   # retrieve operation that looks up the image by username (or organization

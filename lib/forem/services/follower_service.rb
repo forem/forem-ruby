@@ -11,7 +11,7 @@ module Forem
     #   followers = client.followers.list(per_page: 50)
     #
     # @see Follower
-    # @see https://developers.forem.com/api/v1#tag/followers
+    # @see https://developers.forem.com/api/v1#/operations/getFollowers
     class FollowerService < BaseService
       # List users who follow the authenticated user.
       #
@@ -25,7 +25,7 @@ module Forem
       # @example
       #   client.followers.list(per_page: 100, sort: "created_at")
       #
-      # @see https://developers.forem.com/api/v1#tag/followers/operation/getFollowers
+      # @see https://developers.forem.com/api/v1#/operations/getFollowers
       def list(params = {}, opts = {})
         Follower.list(params, opts_with_requestor(opts))
       end

@@ -1,6 +1,9 @@
 module Forem
   # Represents a custom static page on a Forem instance.
   #
+  # Pages are CMS-style content pages on a Forem instance (e.g., about
+  # pages, code of conduct).
+  #
   # Pages are standalone content items (not articles) used for things like
   # an "About" page, a "Code of Conduct", or any other informational page
   # that lives at a dedicated URL on the community site. Full CRUD operations

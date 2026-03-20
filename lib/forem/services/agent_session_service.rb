@@ -14,7 +14,7 @@ module Forem
     #   session  = client.agent_sessions.create(name: "My Agent")
     #
     # @see AgentSession
-    # @see https://developers.forem.com/api/v1
+    # @see https://developers.forem.com/api/v1#/operations/getAgentSessions
     class AgentSessionService < BaseService
       # List all agent sessions.
       #
@@ -27,7 +27,7 @@ module Forem
       # @example
       #   client.agent_sessions.list
       #
-      # @see https://developers.forem.com/api/v1
+      # @see https://developers.forem.com/api/v1#/operations/getAgentSessions
       def list(params = {}, opts = {})
         AgentSession.list(params, opts_with_requestor(opts))
       end
@@ -42,7 +42,7 @@ module Forem
       # @example
       #   session = client.agent_sessions.create(name: "Content Generation Bot")
       #
-      # @see https://developers.forem.com/api/v1
+      # @see https://developers.forem.com/api/v1#/operations/createAgentSession
       def create(params = {}, opts = {})
         AgentSession.create(params, opts_with_requestor(opts))
       end
@@ -56,7 +56,7 @@ module Forem
       # @example
       #   client.agent_sessions.retrieve(14)
       #
-      # @see https://developers.forem.com/api/v1
+      # @see https://developers.forem.com/api/v1#/operations/getAgentSessionById
       def retrieve(id, opts = {})
         AgentSession.retrieve(id, opts_with_requestor(opts))
       end

@@ -13,7 +13,7 @@ module Forem
     #   client.reactions.toggle(reactable_type: "Article", reactable_id: 1, category: "unicorn")
     #
     # @see Reaction
-    # @see https://developers.forem.com/api/v1#tag/reactions
+    # @see https://developers.forem.com/api/v1
     class ReactionService < BaseService
       # Create a reaction on a reactable resource.
       #
@@ -34,7 +34,7 @@ module Forem
       #     category: "unicorn"
       #   )
       #
-      # @see https://developers.forem.com/api/v1#tag/reactions/operation/createReaction
+      # @see https://developers.forem.com/api/v1
       def create(params = {}, opts = {})
         Reaction.create(params, opts_with_requestor(opts))
       end
@@ -63,7 +63,7 @@ module Forem
       #   )
       #   puts result.result  # => "create" or "destroy"
       #
-      # @see https://developers.forem.com/api/v1#tag/reactions/operation/toggleReaction
+      # @see https://developers.forem.com/api/v1
       def toggle(params = {}, opts = {})
         Reaction.toggle(params, opts_with_requestor(opts))
       end

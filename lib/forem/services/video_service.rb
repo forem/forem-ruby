@@ -11,7 +11,7 @@ module Forem
     #   videos = client.videos.list(page: 1)
     #
     # @see Video
-    # @see https://developers.forem.com/api/v1#tag/videos
+    # @see https://developers.forem.com/api/v1#/operations/videos
     class VideoService < BaseService
       # List articles that contain videos.
       #
@@ -24,7 +24,7 @@ module Forem
       # @example
       #   client.videos.list(page: 2)
       #
-      # @see https://developers.forem.com/api/v1#tag/videos/operation/getArticlesWithVideo
+      # @see https://developers.forem.com/api/v1#/operations/videos
       def list(params = {}, opts = {})
         Video.list(params, opts_with_requestor(opts))
       end

@@ -12,7 +12,7 @@ module Forem
     #   client.follows.create(followable_type: "Tag", followable_id: 5)
     #
     # @see Follow
-    # @see https://developers.forem.com/api/v1#tag/follows
+    # @see https://developers.forem.com/api/v1#/operations/getFollowedTags
     class FollowService < BaseService
       # List tags followed by the authenticated user.
       #
@@ -25,7 +25,7 @@ module Forem
       # @example
       #   client.follows.list
       #
-      # @see https://developers.forem.com/api/v1#tag/follows/operation/getFollowedTags
+      # @see https://developers.forem.com/api/v1#/operations/getFollowedTags
       def list(params = {}, opts = {})
         Follow.list(params, opts_with_requestor(opts))
       end
@@ -45,7 +45,7 @@ module Forem
       # @example Follow a user
       #   client.follows.create(followable_type: "User", followable_id: 99)
       #
-      # @see https://developers.forem.com/api/v1#tag/follows/operation/followUser
+      # @see https://developers.forem.com/api/v1#/operations/followUser
       def create(params = {}, opts = {})
         Follow.create(params, opts_with_requestor(opts))
       end

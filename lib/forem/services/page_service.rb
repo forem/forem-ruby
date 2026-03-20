@@ -12,7 +12,7 @@ module Forem
     #   page  = client.pages.retrieve(10)
     #
     # @see Page
-    # @see https://developers.forem.com/api/v1#tag/pages
+    # @see https://developers.forem.com/api/v1
     class PageService < BaseService
       # List all static pages.
       #
@@ -25,7 +25,7 @@ module Forem
       # @example
       #   client.pages.list
       #
-      # @see https://developers.forem.com/api/v1#tag/pages/operation/getPages
+      # @see https://developers.forem.com/api/v1
       def list(params = {}, opts = {})
         Page.list(params, opts_with_requestor(opts))
       end
@@ -52,7 +52,7 @@ module Forem
       #     body_markdown: "## About\nWe are a community of developers."
       #   )
       #
-      # @see https://developers.forem.com/api/v1#tag/pages/operation/createPage
+      # @see https://developers.forem.com/api/v1
       def create(params = {}, opts = {})
         Page.create(params, opts_with_requestor(opts))
       end
@@ -66,7 +66,7 @@ module Forem
       # @example
       #   client.pages.retrieve(10)
       #
-      # @see https://developers.forem.com/api/v1#tag/pages/operation/getPageById
+      # @see https://developers.forem.com/api/v1
       def retrieve(id, opts = {})
         Page.retrieve(id, opts_with_requestor(opts))
       end
@@ -84,7 +84,7 @@ module Forem
       # @example
       #   client.pages.update(10, title: "About Our Community")
       #
-      # @see https://developers.forem.com/api/v1#tag/pages/operation/updatePage
+      # @see https://developers.forem.com/api/v1
       def update(id, params = {}, opts = {})
         Page.update(id, params, opts_with_requestor(opts))
       end
@@ -98,7 +98,7 @@ module Forem
       # @example
       #   client.pages.delete(10)
       #
-      # @see https://developers.forem.com/api/v1#tag/pages/operation/deletePage
+      # @see https://developers.forem.com/api/v1
       def delete(id, opts = {})
         Page.delete(id, opts_with_requestor(opts))
       end

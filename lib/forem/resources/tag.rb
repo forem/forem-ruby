@@ -5,6 +5,8 @@ module Forem
   # content. Only listing is supported through the public API; tags are created
   # implicitly when articles are published with new tag names.
   #
+  # Tags are ordered by popularity. Default: 10 per page.
+  #
   # Available operations (via mixins):
   #   - +List+ — GET /api/tags
   #
@@ -15,7 +17,7 @@ module Forem
   # @example Iterate over every tag using auto-pagination
   #   Forem::Tag.list.auto_paging_each { |t| puts t.name }
   #
-  # @see https://developers.forem.com/api/v1
+  # @see https://developers.forem.com/api/v1#/operations/getTags
   class Tag < APIResource
     extend APIOperations::List
 

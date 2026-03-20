@@ -5,6 +5,8 @@ module Forem
   # The list endpoint returns all tags the current user follows. The create
   # endpoint lets the user follow one or more tags in a single request.
   #
+  # Requires authentication. Returns tags the authenticated user follows.
+  #
   # Note: unlike most resources, the list endpoint hits +/api/follows/tags+
   # rather than +/api/follows+.
   #
@@ -17,12 +19,14 @@ module Forem
   #     follows: [{ id: 1 }, { id: 2 }]
   #   )
   #
-  # @see https://developers.forem.com/api/v1
+  # @see https://developers.forem.com/api/v1#/operations/getFollowedTags
   class Follow < APIResource
     OBJECT_NAME = "follow"
     RESOURCE_PATH = "/api/follows"
 
     # Return a paginated list of tags followed by the authenticated user.
+    #
+    # Requires authentication. Returns tags the authenticated user follows.
     #
     # Sends a GET request to +/api/follows/tags+.
     #
@@ -34,7 +38,7 @@ module Forem
     # @example
     #   follows = Forem::Follow.list(per_page: 10)
     #   follows.data.each { |f| puts f.name }
-    # @see https://developers.forem.com/api/v1
+    # @see https://developers.forem.com/api/v1#/operations/getFollowedTags
     def self.list(params = {}, opts = {})
       requestor = opts[:requestor]
       resp = request(:get, "/api/follows/tags", params, opts)

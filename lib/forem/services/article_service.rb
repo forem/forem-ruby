@@ -11,14 +11,16 @@ module Forem
     #   service.list(per_page: 5, tag: "ruby")
     #
     # @see Article
-    # @see https://developers.forem.com/api/v1#tag/articles
+    # @see https://developers.forem.com/api/v1#/operations/getArticles
     class ArticleService < BaseService
       # List published articles.
       #
       # @param params [Hash] query parameters
       # @option params [Integer] :page page number (default: 1)
       # @option params [Integer] :per_page number of results per page (max: 1000)
-      # @option params [String] :tag filter by tag name
+      # @option params [String] :tag filter by a single tag name
+      # @option params [String] :tags comma-separated list of tags to include
+      # @option params [String] :tags_exclude comma-separated list of tags to exclude
       # @option params [String] :username filter by author username
       # @option params [String] :state article state ("fresh", "rising", "all")
       # @option params [Integer] :top number of days back to look for top articles
@@ -29,7 +31,7 @@ module Forem
       # @example
       #   client.articles.list(tag: "ruby", per_page: 10)
       #
-      # @see https://developers.forem.com/api/v1#tag/articles/operation/getArticles
+      # @see https://developers.forem.com/api/v1#/operations/getArticles
       def list(params = {}, opts = {})
         Article.list(params, opts_with_requestor(opts))
       end
@@ -55,7 +57,7 @@ module Forem
       #     tags: ["ruby", "beginners"]
       #   )
       #
-      # @see https://developers.forem.com/api/v1#tag/articles/operation/createArticle
+      # @see https://developers.forem.com/api/v1#/operations/createArticle
       def create(params = {}, opts = {})
         Article.create(params, opts_with_requestor(opts))
       end
@@ -69,7 +71,7 @@ module Forem
       # @example
       #   client.articles.retrieve(12345)
       #
-      # @see https://developers.forem.com/api/v1#tag/articles/operation/getArticleById
+      # @see https://developers.forem.com/api/v1#/operations/getArticleById
       def retrieve(id, opts = {})
         Article.retrieve(id, opts_with_requestor(opts))
       end
@@ -88,7 +90,7 @@ module Forem
       # @example
       #   client.articles.update(12345, title: "Updated Title", published: true)
       #
-      # @see https://developers.forem.com/api/v1#tag/articles/operation/updateArticle
+      # @see https://developers.forem.com/api/v1#/operations/updateArticle
       def update(id, params = {}, opts = {})
         Article.update(id, params, opts_with_requestor(opts))
       end
@@ -104,7 +106,7 @@ module Forem
       # @example
       #   client.articles.me(per_page: 30)
       #
-      # @see https://developers.forem.com/api/v1#tag/articles/operation/getUserAllArticles
+      # @see https://developers.forem.com/api/v1#/operations/getUserArticles
       def me(params = {}, opts = {})
         Article.me(params, opts_with_requestor(opts))
       end
@@ -120,7 +122,7 @@ module Forem
       # @example
       #   client.articles.me_published
       #
-      # @see https://developers.forem.com/api/v1#tag/articles/operation/getUserPublishedArticles
+      # @see https://developers.forem.com/api/v1#/operations/getUserArticles
       def me_published(params = {}, opts = {})
         Article.me_published(params, opts_with_requestor(opts))
       end
@@ -136,7 +138,7 @@ module Forem
       # @example
       #   client.articles.me_unpublished
       #
-      # @see https://developers.forem.com/api/v1#tag/articles/operation/getUserUnpublishedArticles
+      # @see https://developers.forem.com/api/v1#/operations/getUserArticles
       def me_unpublished(params = {}, opts = {})
         Article.me_unpublished(params, opts_with_requestor(opts))
       end
@@ -152,7 +154,7 @@ module Forem
       # @example
       #   client.articles.me_all
       #
-      # @see https://developers.forem.com/api/v1#tag/articles/operation/getUserAllArticles
+      # @see https://developers.forem.com/api/v1#/operations/getUserArticles
       def me_all(params = {}, opts = {})
         Article.me_all(params, opts_with_requestor(opts))
       end
@@ -168,7 +170,7 @@ module Forem
       # @example
       #   client.articles.latest(per_page: 20)
       #
-      # @see https://developers.forem.com/api/v1#tag/articles/operation/getLatestArticles
+      # @see https://developers.forem.com/api/v1#/operations/getLatestArticles
       def latest(params = {}, opts = {})
         Article.latest(params, opts_with_requestor(opts))
       end
@@ -185,7 +187,7 @@ module Forem
       # @example
       #   client.articles.search(q: "ruby on rails")
       #
-      # @see https://developers.forem.com/api/v1#tag/articles/operation/searchArticles
+      # @see https://developers.forem.com/api/v1#/operations/searchArticles
       def search(params = {}, opts = {})
         Article.search(params, opts_with_requestor(opts))
       end
@@ -200,7 +202,7 @@ module Forem
       # @example
       #   client.articles.retrieve_by_path("jsmith", "my-great-post")
       #
-      # @see https://developers.forem.com/api/v1#tag/articles/operation/getArticleByPath
+      # @see https://developers.forem.com/api/v1#/operations/getArticleByPath
       def retrieve_by_path(username, slug, opts = {})
         Article.retrieve_by_path(username, slug, opts_with_requestor(opts))
       end

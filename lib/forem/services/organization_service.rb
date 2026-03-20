@@ -11,7 +11,7 @@ module Forem
     #   org  = client.organizations.retrieve(7)
     #
     # @see Organization
-    # @see https://developers.forem.com/api/v1#tag/organizations
+    # @see https://developers.forem.com/api/v1#/operations/getOrganizations
     class OrganizationService < BaseService
       # List all organizations.
       #
@@ -24,7 +24,7 @@ module Forem
       # @example
       #   client.organizations.list(per_page: 25)
       #
-      # @see https://developers.forem.com/api/v1#tag/organizations/operation/getOrganizations
+      # @see https://developers.forem.com/api/v1#/operations/getOrganizations
       def list(params = {}, opts = {})
         Organization.list(params, opts_with_requestor(opts))
       end
@@ -48,7 +48,7 @@ module Forem
       #     summary: "We make everything."
       #   )
       #
-      # @see https://developers.forem.com/api/v1#tag/organizations/operation/createOrganization
+      # @see https://developers.forem.com/api/v1#/operations/createOrganization
       def create(params = {}, opts = {})
         Organization.create(params, opts_with_requestor(opts))
       end
@@ -62,7 +62,7 @@ module Forem
       # @example
       #   client.organizations.retrieve(7)
       #
-      # @see https://developers.forem.com/api/v1#tag/organizations/operation/getOrganizationById
+      # @see https://developers.forem.com/api/v1#/operations/getOrganizationById
       def retrieve(id, opts = {})
         Organization.retrieve(id, opts_with_requestor(opts))
       end
@@ -80,7 +80,7 @@ module Forem
       # @example
       #   client.organizations.update(7, summary: "Updated description.")
       #
-      # @see https://developers.forem.com/api/v1#tag/organizations/operation/updateOrganization
+      # @see https://developers.forem.com/api/v1#/operations/updateOrganization
       def update(id, params = {}, opts = {})
         Organization.update(id, params, opts_with_requestor(opts))
       end
@@ -94,7 +94,7 @@ module Forem
       # @example
       #   client.organizations.delete(7)
       #
-      # @see https://developers.forem.com/api/v1#tag/organizations/operation/deleteOrganization
+      # @see https://developers.forem.com/api/v1#/operations/deleteOrganization
       def delete(id, opts = {})
         Organization.delete(id, opts_with_requestor(opts))
       end

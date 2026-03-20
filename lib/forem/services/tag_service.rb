@@ -10,7 +10,7 @@ module Forem
     #   tags = client.tags.list(per_page: 50)
     #
     # @see Tag
-    # @see https://developers.forem.com/api/v1#tag/tags
+    # @see https://developers.forem.com/api/v1#/operations/getTags
     class TagService < BaseService
       # List tags used on the Forem instance, ordered by popularity.
       #
@@ -23,7 +23,7 @@ module Forem
       # @example
       #   client.tags.list(per_page: 100)
       #
-      # @see https://developers.forem.com/api/v1#tag/tags/operation/getFollowedTags
+      # @see https://developers.forem.com/api/v1#/operations/getTags
       def list(params = {}, opts = {})
         Tag.list(params, opts_with_requestor(opts))
       end

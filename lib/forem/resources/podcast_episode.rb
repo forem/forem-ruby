@@ -5,6 +5,9 @@ module Forem
   # The public API supports listing episodes, optionally filtered by username
   # (the podcast owner) or a specific podcast slug.
   #
+  # Returns active episodes from published podcasts, ordered by descending
+  # publication date. Default: 30 per page.
+  #
   # Available operations (via mixins):
   #   - +List+ — GET /api/podcast_episodes
   #
@@ -13,10 +16,17 @@ module Forem
   #   episodes.data.each { |ep| puts ep.title }
   #
   # @example List episodes for a specific podcast
-  #   episodes = Forem::PodcastEpisode.list(username: "devpodcast")
+  #   episodes = Forem::PodcastEpisode.list(username: "codenewbie")
   #   episodes.data.each { |ep| puts ep.title }
   #
-  # @see https://developers.forem.com/api/v1
+  # == List Parameters
+  #
+  # - +username+ (String) — Retrieve episodes from a specific podcast
+  #   (e.g., +'codenewbie'+)
+  # - +page+ (Integer) — Page number (default: 1)
+  # - +per_page+ (Integer) — Items per page (default: 30)
+  #
+  # @see https://developers.forem.com/api/v1#/operations/getPodcastEpisodes
   class PodcastEpisode < APIResource
     extend APIOperations::List
 

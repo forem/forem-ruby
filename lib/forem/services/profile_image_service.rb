@@ -11,7 +11,7 @@ module Forem
     #   image_info = client.profile_images.retrieve("jsmith")
     #
     # @see ProfileImage
-    # @see https://developers.forem.com/api/v1#tag/profile-images
+    # @see https://developers.forem.com/api/v1#/operations/getProfileImage
     class ProfileImageService < BaseService
       # Retrieve profile image details for a user or organization by username.
       #
@@ -23,7 +23,7 @@ module Forem
       #   image = client.profile_images.retrieve("jsmith")
       #   puts image.profile_image
       #
-      # @see https://developers.forem.com/api/v1#tag/profile-images/operation/getProfileImage
+      # @see https://developers.forem.com/api/v1#/operations/getProfileImage
       def retrieve(username, opts = {})
         ProfileImage.retrieve(username, opts_with_requestor(opts))
       end

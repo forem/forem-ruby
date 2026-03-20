@@ -5,6 +5,9 @@ module Forem
   # video rather than text. The public API supports listing video articles,
   # returned ordered by publication date.
   #
+  # Returns published articles with video, ordered by descending popularity.
+  # Default: 24 per page.
+  #
   # Available operations (via mixins):
   #   - +List+ — GET /api/videos
   #
@@ -15,7 +18,7 @@ module Forem
   # @example Iterate over all video articles using auto-pagination
   #   Forem::Video.list.auto_paging_each { |v| puts "#{v.title}: #{v.video_source_url}" }
   #
-  # @see https://developers.forem.com/api/v1
+  # @see https://developers.forem.com/api/v1#/operations/videos
   class Video < APIResource
     extend APIOperations::List
 

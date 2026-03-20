@@ -12,7 +12,7 @@ module Forem
     #   billboard  = client.billboards.retrieve(3)
     #
     # @see Billboard
-    # @see https://developers.forem.com/api/v1#tag/billboards
+    # @see https://developers.forem.com/api/v1
     class BillboardService < BaseService
       # List all billboards (display ads).
       #
@@ -25,7 +25,7 @@ module Forem
       # @example
       #   client.billboards.list
       #
-      # @see https://developers.forem.com/api/v1#tag/billboards/operation/getBillboards
+      # @see https://developers.forem.com/api/v1
       def list(params = {}, opts = {})
         Billboard.list(params, opts_with_requestor(opts))
       end
@@ -50,7 +50,7 @@ module Forem
       #     published: true
       #   )
       #
-      # @see https://developers.forem.com/api/v1#tag/billboards/operation/createBillboard
+      # @see https://developers.forem.com/api/v1
       def create(params = {}, opts = {})
         Billboard.create(params, opts_with_requestor(opts))
       end
@@ -64,7 +64,7 @@ module Forem
       # @example
       #   client.billboards.retrieve(3)
       #
-      # @see https://developers.forem.com/api/v1#tag/billboards/operation/getBillboardById
+      # @see https://developers.forem.com/api/v1
       def retrieve(id, opts = {})
         Billboard.retrieve(id, opts_with_requestor(opts))
       end
@@ -82,7 +82,7 @@ module Forem
       # @example
       #   client.billboards.update(3, published: false)
       #
-      # @see https://developers.forem.com/api/v1#tag/billboards/operation/updateBillboard
+      # @see https://developers.forem.com/api/v1
       def update(id, params = {}, opts = {})
         Billboard.update(id, params, opts_with_requestor(opts))
       end
