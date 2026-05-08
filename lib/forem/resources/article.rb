@@ -45,16 +45,16 @@ module Forem
   # @option params [Integer] 'article.organization_id' (nullable)
   #
   # @example List published articles
-  #   articles = Forem::Article.list(per_page: 10, tag: "ruby")
+  #   articles = client.articles.list(per_page: 10, tag: "ruby")
   #   articles.data.each { |a| puts a.title }
   #
   # @example Create a new article
-  #   article = Forem::Article.create(
+  #   article = client.articles.create(
   #     article: { title: "Hello World", body_markdown: "# Hello", published: false }
   #   )
   #
   # @example Retrieve a single article by ID
-  #   article = Forem::Article.retrieve(12345)
+  #   article = client.articles.retrieve(12345)
   #   puts article.title
   #
   # @see https://developers.forem.com/api/v1#/operations/getArticles
@@ -80,7 +80,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [ForemResponse] the raw API response
     # @example
-    #   article = Forem::Article.retrieve(42)
+    #   article = client.articles.retrieve(42)
     #   article.unpublish
     # @see https://developers.forem.com/api/v1#/operations/unpublishArticle
     def unpublish(opts = {})
@@ -98,14 +98,14 @@ module Forem
     # @option params [Integer] :page page number (default: 1)
     # @option params [Integer] :per_page number of results per page (default: 30)
     # @param opts [Hash] per-request options (e.g., +:api_key+)
-    # @return [Array<Forem::Article>] list of the authenticated user's articles
+    # @return [Forem::ListObject<Forem::Article>] paginated list of the
+    #   authenticated user's articles
     # @example
-    #   my_articles = Forem::Article.me(per_page: 5)
+    #   my_articles = client.articles.me(per_page: 5)
     #   my_articles.each { |a| puts "#{a.id}: #{a.title}" }
     # @see https://developers.forem.com/api/v1#/operations/getUserArticles
     def self.me(params = {}, opts = {})
-      resp = request(:get, "/api/articles/me", params, opts)
-      (resp.parsed_body || []).map { |item| construct_from(item) }
+      paginated_list("/api/articles/me", params, opts)
     end
 
     # Return published articles authored by the authenticated user.
@@ -119,14 +119,14 @@ module Forem
     # @option params [Integer] :page page number (default: 1)
     # @option params [Integer] :per_page number of results per page (default: 30)
     # @param opts [Hash] per-request options (e.g., +:api_key+)
-    # @return [Array<Forem::Article>] list of the authenticated user's published articles
+    # @return [Forem::ListObject<Forem::Article>] paginated list of the
+    #   authenticated user's published articles
     # @example
-    #   published = Forem::Article.me_published(per_page: 20)
+    #   published = client.articles.me_published(per_page: 20)
     #   published.each { |a| puts a.title }
     # @see https://developers.forem.com/api/v1#/operations/getUserArticles
     def self.me_published(params = {}, opts = {})
-      resp = request(:get, "/api/articles/me/published", params, opts)
-      (resp.parsed_body || []).map { |item| construct_from(item) }
+      paginated_list("/api/articles/me/published", params, opts)
     end
 
     # Return unpublished (draft) articles authored by the authenticated user.
@@ -140,14 +140,14 @@ module Forem
     # @option params [Integer] :page page number (default: 1)
     # @option params [Integer] :per_page number of results per page (default: 30)
     # @param opts [Hash] per-request options (e.g., +:api_key+)
-    # @return [Array<Forem::Article>] list of the authenticated user's unpublished articles
+    # @return [Forem::ListObject<Forem::Article>] paginated list of the
+    #   authenticated user's unpublished articles
     # @example
-    #   drafts = Forem::Article.me_unpublished
+    #   drafts = client.articles.me_unpublished
     #   drafts.each { |a| puts "Draft: #{a.title}" }
     # @see https://developers.forem.com/api/v1#/operations/getUserArticles
     def self.me_unpublished(params = {}, opts = {})
-      resp = request(:get, "/api/articles/me/unpublished", params, opts)
-      (resp.parsed_body || []).map { |item| construct_from(item) }
+      paginated_list("/api/articles/me/unpublished", params, opts)
     end
 
     # Return all articles authored by the authenticated user regardless of status.
@@ -161,14 +161,14 @@ module Forem
     # @option params [Integer] :page page number (default: 1)
     # @option params [Integer] :per_page number of results per page (default: 30)
     # @param opts [Hash] per-request options (e.g., +:api_key+)
-    # @return [Array<Forem::Article>] all articles (published + drafts) for the authenticated user
+    # @return [Forem::ListObject<Forem::Article>] paginated list of all
+    #   articles (published + drafts) for the authenticated user
     # @example
-    #   all = Forem::Article.me_all
-    #   puts "Total articles: #{all.length}"
+    #   all = client.articles.me_all
+    #   all.auto_paging_each { |a| puts a.title }
     # @see https://developers.forem.com/api/v1#/operations/getUserArticles
     def self.me_all(params = {}, opts = {})
-      resp = request(:get, "/api/articles/me/all", params, opts)
-      (resp.parsed_body || []).map { |item| construct_from(item) }
+      paginated_list("/api/articles/me/all", params, opts)
     end
 
     # Return the most recently published articles ordered by publication date.
@@ -179,14 +179,14 @@ module Forem
     # @option params [Integer] :page page number (default: 1)
     # @option params [Integer] :per_page number of results per page (default: 30)
     # @param opts [Hash] per-request options (e.g., +:api_key+)
-    # @return [Array<Forem::Article>] latest published articles
+    # @return [Forem::ListObject<Forem::Article>] paginated list of latest
+    #   published articles
     # @example
-    #   latest = Forem::Article.latest(per_page: 5)
+    #   latest = client.articles.latest(per_page: 5)
     #   latest.each { |a| puts "#{a.published_at}: #{a.title}" }
     # @see https://developers.forem.com/api/v1#/operations/getLatestArticles
     def self.latest(params = {}, opts = {})
-      resp = request(:get, "/api/articles/latest", params, opts)
-      (resp.parsed_body || []).map { |item| construct_from(item) }
+      paginated_list("/api/articles/latest", params, opts)
     end
 
     # Search published articles by keyword.
@@ -198,14 +198,14 @@ module Forem
     # @option params [Integer] :page page number (default: 1)
     # @option params [Integer] :per_page number of results per page (default: 30)
     # @param opts [Hash] per-request options (e.g., +:api_key+)
-    # @return [Array<Forem::Article>] articles matching the search query
+    # @return [Forem::ListObject<Forem::Article>] paginated list of articles
+    #   matching the search query
     # @example
-    #   results = Forem::Article.search(q: "ruby on rails")
+    #   results = client.articles.search(q: "ruby on rails")
     #   results.each { |a| puts a.title }
     # @see https://developers.forem.com/api/v1
     def self.search(params = {}, opts = {})
-      resp = request(:get, "/api/articles/search", params, opts)
-      (resp.parsed_body || []).map { |item| construct_from(item) }
+      paginated_list("/api/articles/search", params, opts)
     end
 
     # Retrieve a single article by the author's username and the article's slug.
@@ -217,12 +217,13 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [Forem::Article] the matching article
     # @example
-    #   article = Forem::Article.retrieve_by_path("ben", "my-first-post")
+    #   article = client.articles.retrieve_by_path("ben", "my-first-post")
     #   puts article.title
     # @see https://developers.forem.com/api/v1#/operations/getArticleByPath
     def self.retrieve_by_path(username, slug, opts = {})
+      requestor = opts[:requestor]
       resp = request(:get, "/api/articles/#{CGI.escape(username)}/#{CGI.escape(slug)}", {}, opts)
-      construct_from(resp.parsed_body)
+      construct_from(resp.parsed_body, requestor: requestor)
     end
   end
 end

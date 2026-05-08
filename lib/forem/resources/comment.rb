@@ -20,15 +20,15 @@ module Forem
   # Returns threaded conversations with nested replies.
   #
   # @example List all comments for an article
-  #   comments = Forem::Comment.list(a_id: "some-article-id")
+  #   comments = client.comments.list(a_id: "some-article-id")
   #   comments.data.each { |c| puts c.body_html }
   #
   # @example List comments for a podcast episode
-  #   comments = Forem::Comment.list(p_id: "some-podcast-id")
+  #   comments = client.comments.list(p_id: "some-podcast-id")
   #   comments.data.each { |c| puts c.body_html }
   #
   # @example Retrieve a comment tree by root comment ID
-  #   comment = Forem::Comment.retrieve("abc123")
+  #   comment = client.comments.retrieve("abc123")
   #   puts comment.body_html
   #
   # @see https://developers.forem.com/api/v1#/operations/getCommentsByArticleId

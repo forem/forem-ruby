@@ -52,16 +52,14 @@ class IntegrationTest < Minitest::Test
     assert_equal "not found", err.message
   end
 
-  def test_global_config_workflow
+  def test_explicit_requestor_workflow
+    # Class-level resource calls require an explicit :requestor opt — there
+    # is no global default. In normal use this is injected by Forem::Client
+    # via its services; the same path is exercised here directly.
     mock_http, captured = stub_http_request(method: :get, path: "/api/tags", status: 200, body: '[{"id":1,"name":"ruby"}]')
 
-    original_key = Forem.api_key
-    Forem.api_key = "global-test-key"
-
-    # We need to inject the mock into the requestor that will be created
-    # Use a custom requestor approach
     config = Forem::Configuration.new
-    config.api_key = "global-test-key"
+    config.api_key = "explicit-test-key"
     config.max_network_retries = 0
     requestor = Forem::APIRequestor.new(config: config)
     requestor.instance_variable_set(:@connection_manager, mock_conn(mock_http))
@@ -69,9 +67,16 @@ class IntegrationTest < Minitest::Test
     tags = Forem::Tag.list({}, requestor: requestor)
     assert_instance_of Forem::ListObject, tags
     assert_equal "ruby", tags.data[0].name
-    assert_equal "global-test-key", captured[:headers]["api-key"]
+    assert_equal "explicit-test-key", captured[:headers]["api-key"]
+  end
 
-    Forem.api_key = original_key
+  def test_class_level_call_without_requestor_raises
+    # No global default exists — calling a class-level resource method
+    # without a :requestor must fail loudly rather than silently
+    # falling through to an unauthenticated request.
+    err = assert_raises(ArgumentError) { Forem::Tag.list }
+    assert_match(/explicit requestor/, err.message)
+    assert_match(/Forem::Client/, err.message)
   end
 
   def test_to_hash_round_trip

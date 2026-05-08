@@ -47,9 +47,9 @@ class Forem::SegmentTest < Minitest::Test
     requestor = make_requestor(mock_http)
     segment = Forem::Segment.construct_from({"id" => 1})
     result = segment.users({}, requestor: requestor)
-    assert_instance_of Array, result
+    assert_instance_of Forem::ListObject, result
     assert_equal 1, result.length
-    assert_instance_of Forem::ForemObject, result[0]
+    assert_instance_of Forem::User, result[0]
     assert_equal "alice", result[0].username
     assert_equal "GET", captured[:method]
     assert_equal "/api/segments/1/users", captured[:path].split("?").first

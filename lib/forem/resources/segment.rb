@@ -22,15 +22,16 @@ module Forem
   # - +user_count+ (Integer) — Current number of users in the segment
   #
   # @example List all segments
-  #   segments = Forem::Segment.list
-  #   segments.data.each { |s| puts s.name }
+  #   segments = client.segments.list
+  #   segments.each { |s| puts s.id }
   #
-  # @example Create a segment
-  #   segment = Forem::Segment.create(segment: { name: "Premium Members" })
+  # @example Create a segment (no params accepted — the API ignores anything passed)
+  #   segment = client.segments.create
+  #   #=> #<Forem::Segment id=14 type_of="manual">
   #
   # @example List users in a segment
-  #   segment = Forem::Segment.retrieve(5)
-  #   segment.users.each { |u| puts u.username }
+  #   segment = client.segments.retrieve(5)
+  #   segment.users.auto_paging_each { |u| puts u.username }
   #
   # @see https://developers.forem.com/api/v1
   class Segment < APIResource
@@ -52,14 +53,16 @@ module Forem
     # @option params [Integer] :page page number (default: 1)
     # @option params [Integer] :per_page number of results per page (default: 30, max: 1000)
     # @param opts [Hash] per-request options (e.g., +:api_key+)
-    # @return [Array<Forem::ForemObject>] users belonging to this segment
+    # @return [Forem::ListObject<Forem::User>] paginated list of users
+    #   belonging to this segment.
     # @example
-    #   segment = Forem::Segment.retrieve(5)
-    #   segment.users.each { |u| puts u.username }
+    #   segment = client.segments.retrieve(5)
+    #   segment.users.auto_paging_each { |u| puts u.username }
     # @see https://developers.forem.com/api/v1
     def users(params = {}, opts = {})
-      resp = request(:get, "#{resource_url}/users", params, opts)
-      (resp.parsed_body || []).map { |item| Forem::ForemObject.construct_from(item) }
+      opts = opts.dup
+      opts[:requestor] ||= @requestor
+      Forem::User.paginated_list("#{resource_url}/users", params, opts)
     end
 
     # Add one or more users to this segment.
@@ -74,7 +77,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [ForemResponse] the raw API response
     # @example
-    #   segment = Forem::Segment.retrieve(5)
+    #   segment = client.segments.retrieve(5)
     #   segment.add_users(user_ids: [101, 102, 103])
     # @see https://developers.forem.com/api/v1
     def add_users(params = {}, opts = {})
@@ -90,7 +93,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [ForemResponse] the raw API response
     # @example
-    #   segment = Forem::Segment.retrieve(5)
+    #   segment = client.segments.retrieve(5)
     #   segment.remove_users(user_ids: [101, 102])
     # @see https://developers.forem.com/api/v1
     def remove_users(params = {}, opts = {})

@@ -2,6 +2,9 @@
 
 Ruby client for the [Forem API](https://developers.forem.com/api).
 
+> **Status: 0.1-alpha.** Pre-1.0 — expect breaking changes between minor
+> versions while we iterate against the live API.
+
 ## Installation
 
 Add to your Gemfile:
@@ -18,21 +21,21 @@ gem install forem-ruby
 
 ## Quick Start
 
-Configure globally, then call resources directly:
+All API access goes through `Forem::Client`. Each client owns its own API
+key and HTTP configuration; create one (or several) and call resources
+through it.
 
 ```ruby
 require "forem"
 
-Forem.configure do |c|
-  c.api_key = "your_api_key"
-end
+client = Forem::Client.new(ENV.fetch("FOREM_API_KEY"))
 
 # List published articles
-articles = Forem::Article.list(tag: "ruby", per_page: 10)
+articles = client.articles.list(tag: "ruby", per_page: 10)
 articles.each { |a| puts a.title }
 
-# Create an article
-article = Forem::Article.create(
+# Create an article (note: the Articles endpoint takes a wrapped article: hash)
+article = client.articles.create(
   article: {
     title: "Hello World",
     body_markdown: "## Hello\n\nThis is my article.",
@@ -42,42 +45,31 @@ article = Forem::Article.create(
 puts article.id
 
 # Retrieve a single article
-article = Forem::Article.retrieve(12345)
+article = client.articles.retrieve(12345)
 puts article.title
-```
-
-## Client Instance
-
-For multi-tenant usage or when you need separate configurations per request, use `Forem::Client`:
-
-```ruby
-client = Forem::Client.new("your_api_key")
-
-# All resources are available as methods on the client
-articles = client.articles.list(per_page: 5)
-article  = client.articles.retrieve(12345)
-user     = client.users.me
 ```
 
 You can create multiple clients pointing to different Forem instances:
 
 ```ruby
-devto  = Forem::Client.new("devto_key",  api_base: "https://dev.to")
+devto  = Forem::Client.new("devto_key")
 custom = Forem::Client.new("custom_key", api_base: "https://my.forem.instance")
 ```
 
+There is no global `Forem.api_key` or `Forem.configure` — every call must
+go through a client. This keeps multi-tenant code unambiguous and avoids
+silent fallbacks to an unauthenticated default.
+
 ## Resources
 
-The gem covers all 21 resources exposed by the Forem API. Each resource is available both as a class (global configuration) and as a service on `Forem::Client`.
-
-| Client accessor | Class | Available operations |
+| Client accessor | Resource class | Available operations |
 |---|---|---|
 | `client.articles` | `Forem::Article` | `list`, `create`, `retrieve`, `update`, `me`, `me_published`, `me_unpublished`, `me_all`, `latest`, `search`, `retrieve_by_path` |
-| `client.users` | `Forem::User` | `retrieve`, `me`, `search` |
+| `client.users` | `Forem::User` | `retrieve`, `me`, `search` (by `email:` exact-match) |
 | `client.comments` | `Forem::Comment` | `list`, `retrieve` |
 | `client.organizations` | `Forem::Organization` | `list`, `create`, `retrieve`, `update`, `delete` |
 | `client.tags` | `Forem::Tag` | `list` |
-| `client.follows` | `Forem::Follow` | `list`, `create` |
+| `client.follows` | `Forem::Follow` | `list` (followed tags), `create` (follow users/orgs) |
 | `client.followers` | `Forem::Follower` | `list` |
 | `client.reading_list` | `Forem::ReadingList` | `list` |
 | `client.podcast_episodes` | `Forem::PodcastEpisode` | `list` |
@@ -86,69 +78,107 @@ The gem covers all 21 resources exposed by the Forem API. Each resource is avail
 | `client.billboards` | `Forem::Billboard` | `list`, `create`, `retrieve`, `update` |
 | `client.pages` | `Forem::Page` | `list`, `create`, `retrieve`, `update`, `delete` |
 | `client.segments` | `Forem::Segment` | `list`, `create`, `retrieve`, `delete` |
-| `client.reactions` | `Forem::Reaction` | `create`, `toggle` |
+| `client.reactions` | `Forem::Reaction` | `create`, `toggle` (admin only) |
 | `client.recommended_articles_lists` | `Forem::RecommendedArticlesList` | `list`, `create`, `retrieve`, `update` |
 | `client.agent_sessions` | `Forem::AgentSession` | `list`, `create`, `retrieve`, `presign` |
-| `client.surveys` | `Forem::Survey` | `list`, `retrieve` |
+| `client.surveys` | `Forem::Survey` | `list`, `retrieve` (`#poll_votes`, `#poll_text_responses` on instance) |
 | `client.analytics` | `Forem::Analytics` | `totals`, `historical`, `past_day`, `referrers` |
-| `client.health_checks` | `Forem::HealthCheck` | `app`, `database`, `cache` |
+| `client.health_checks` | `Forem::HealthCheck` | `app`, `database`, `cache` (production requires `token:`) |
 | `client.admin_users` | `Forem::AdminUser` | `create` |
 
 ### Instance methods on retrieved objects
 
-Some resources expose additional actions on the retrieved object:
+Returned objects retain a reference to the client that produced them, so
+follow-up calls (e.g. `article.save`) work without re-passing credentials.
 
 ```ruby
 # Article
-article = Forem::Article.retrieve(12345)
+article = client.articles.retrieve(12345)
 article.unpublish
 
 # Article — retrieve by username + slug
-article = Forem::Article.retrieve_by_path("username", "article-slug")
+article = client.articles.retrieve_by_path("username", "article-slug")
 
 # User (admin actions)
-user = Forem::User.retrieve(99)
+user = client.users.retrieve(99)
 user.suspend
 user.unsuspend
-user.add_limited
-user.remove_limited
-user.add_trusted
-user.remove_trusted
-user.add_spam
-user.remove_spam
+user.add_limited;  user.remove_limited
+user.add_trusted;  user.remove_trusted
+user.add_spam;     user.remove_spam
 user.unpublish
 
 # AgentSession
-session = Forem::AgentSession.retrieve("session-id")
+session = client.agent_sessions.retrieve("session-id")
 session.raw_url
+
+# Survey poll responses (cursor-paginated)
+survey = client.surveys.retrieve(3)
+survey.poll_votes.auto_paging_each { |v| puts v.poll_option_id }
+survey.poll_text_responses.each    { |r| puts r.text_content }
 ```
 
 ## Pagination
 
-`list` calls return a `Forem::ListObject`, which is `Enumerable` and carries pagination state.
+List-style endpoints return a `Forem::ListObject`, which is `Enumerable`
+and carries pagination state.
 
 ```ruby
-page = Forem::Article.list(per_page: 30)
+page = client.articles.list(per_page: 30)
 
-# Iterate the current page
 page.each { |a| puts a.title }
+page.has_more?              # => true / false
+page.length                 # => 30
+page[0]                     # => first item
 
-# Check whether more pages exist
-page.has_more?  # => true / false
-
-# Fetch adjacent pages manually
 next_page = page.next_page
 prev_page = next_page.previous_page
 
-# Iterate all pages automatically
-Forem::Article.list(tag: "ruby", per_page: 30).auto_paging_each do |article|
-  puts article.title
-end
+# Iterate every item across pages, fetching as needed
+client.articles.list(tag: "ruby").auto_paging_each { |a| puts a.title }
+```
+
+Cursor-paginated endpoints (e.g. `survey.poll_votes`) use the same
+`ListObject` surface — `next_page` advances by cursor automatically;
+`previous_page` returns `nil` (cursor pagination is forward-only).
+
+## Analytics response shapes
+
+The four analytics endpoints don't share a uniform shape — `forem-ruby`
+preserves the natural shape rather than forcing them into a list:
+
+```ruby
+totals = client.analytics.totals                              # => Forem::ForemObject
+totals.reactions.total                                        # => 7
+totals.page_views.total                                       # => 7
+
+history = client.analytics.historical(start: "2026-04-01", end: "2026-04-30")
+history.class                                                 # => Hash (keys: "YYYY-MM-DD")
+history.each { |date, stats| puts "#{date}: #{stats.page_views.total}" }
+
+day = client.analytics.past_day                               # => Hash<date, stats>
+client.analytics.referrers.each { |r| puts "#{r.domain}: #{r.count}" }
+```
+
+## Health checks
+
+In production the `/api/health_checks/*` endpoints require an
+`health-check-token` header (separate from the `api-key` used everywhere
+else). On localhost the Forem controller bypasses the token check, so a
+local-development Forem accepts unauthenticated calls.
+
+```ruby
+# Production
+client.health_checks.app(token: ENV.fetch("FOREM_HEALTH_CHECK_TOKEN"))
+
+# Local development (token bypassed for localhost)
+client.health_checks.app
 ```
 
 ## Error Handling
 
-All errors inherit from `Forem::ForemError`, which exposes `http_status`, `http_body`, `http_headers`, and `code`.
+All errors inherit from `Forem::ForemError`, which exposes `http_status`,
+`http_body`, `http_headers`, and `code`.
 
 ```
 Forem::ForemError
@@ -164,7 +194,7 @@ Forem::ForemError
 
 ```ruby
 begin
-  article = Forem::Article.retrieve(99999)
+  article = client.articles.retrieve(99999)
 rescue Forem::NotFoundError => e
   puts "Not found: #{e.message} (HTTP #{e.http_status})"
 rescue Forem::AuthenticationError
@@ -176,28 +206,28 @@ rescue Forem::ForemError => e
 end
 ```
 
-The client retries automatically on connection errors and 5xx responses. See `max_network_retries` in the configuration table below.
+The client retries automatically on connection errors and 5xx responses.
+See `max_network_retries` in the configuration table below.
 
 ## Configuration
 
-Configure global defaults via `Forem.configure`:
+All configuration goes through `Forem::Client.new`. There is no global
+configuration and no module-level state.
 
 ```ruby
-Forem.configure do |c|
-  c.api_key             = "your_api_key"
-  c.api_base            = "https://dev.to"
-  c.api_version         = "v1"
-  c.open_timeout        = 30
-  c.read_timeout        = 80
-  c.max_network_retries = 2
-  c.log_level           = :info
-  c.logger              = Logger.new($stdout)
-end
+client = Forem::Client.new(
+  ENV.fetch("FOREM_API_KEY"),
+  api_base:            "https://my.forem.instance",
+  api_version:         "v1",
+  open_timeout:        10,
+  read_timeout:        60,
+  max_network_retries: 3
+)
 ```
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `api_key` | String | `nil` | API key sent as the `api-key` request header |
+| `api_key` (positional) | String | — | API key sent as the `api-key` request header |
 | `api_base` | String | `"https://dev.to"` | Base URL of the Forem instance |
 | `api_version` | String | `"v1"` | API version string (informational) |
 | `open_timeout` | Integer | `30` | Seconds to wait for a TCP connection |
@@ -206,27 +236,13 @@ end
 | `log_level` | Symbol | `nil` | Log level (`:debug`, `:info`, etc.) |
 | `logger` | Logger | `nil` | Custom logger instance |
 
-The same options are accepted as keyword arguments to `Forem::Client.new`:
-
-```ruby
-client = Forem::Client.new(
-  "your_api_key",
-  api_base:            "https://my.forem.instance",
-  open_timeout:        10,
-  max_network_retries: 3
-)
-```
-
 ## Per-Request Options
 
-Override the API key for a single call by passing `api_key:` in the options hash:
+Override the API key (or base URL) for a single call by passing it in
+the options hash on any service method:
 
 ```ruby
-# Global key is configured, but override for this one call
-article = Forem::Article.retrieve(12345, api_key: "other_key")
-
-# Same via the client
-article = client.articles.retrieve(12345, api_key: "other_key")
+client.articles.retrieve(12345, api_key: "other_key")
 ```
 
 ## Requirements

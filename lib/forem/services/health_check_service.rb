@@ -2,64 +2,44 @@ module Forem
   module Services
     # Service for interacting with the Forem Health Check API.
     #
-    # Health check endpoints allow you to verify that the various subsystems
-    # of a Forem instance (application server, database, cache) are operating
-    # correctly.
-    # Access via {Client#health_checks}. All methods inject the client's
-    # requestor automatically so no additional configuration is required.
+    # In production these endpoints require the +health-check-token+
+    # header — pass +token:+ to each call. On localhost the token is
+    # bypassed by Forem core, so a local development instance accepts
+    # unauthenticated calls.
     #
-    # @example
-    #   client = Forem::Client.new("your-api-key")
+    # @example Production
+    #   client.health_checks.app(token: ENV["FOREM_HEALTH_CHECK_TOKEN"])
+    #
+    # @example Local development (token not required for localhost)
     #   client.health_checks.app
-    #   client.health_checks.database
-    #   client.health_checks.cache
     #
     # @see HealthCheck
     # @see https://developers.forem.com/api/v1
     class HealthCheckService < BaseService
-      # Check the overall application health.
-      #
-      # Returns HTTP 200 when the application is healthy.
-      #
+      # Application-server health.
+      # @param token [String, nil] value for the +health-check-token+ header
+      #   (required in production; bypassed on localhost).
       # @param opts [Hash] per-request options
-      # @return [HealthCheck] health status of the application server
-      #
-      # @example
-      #   status = client.health_checks.app
-      #
-      # @see https://developers.forem.com/api/v1
-      def app(opts = {})
-        HealthCheck.app(opts_with_requestor(opts))
+      # @return [Forem::ForemObject] response body, e.g.
+      #   <tt>{"message" => "App is up!"}</tt>
+      def app(token: nil, **opts)
+        HealthCheck.app(token: token, **opts_with_requestor(opts))
       end
 
-      # Check the database connectivity and health.
-      #
-      # Returns HTTP 200 when the database is reachable and healthy.
-      #
+      # Database connectivity & responsiveness.
+      # @param token [String, nil] value for the +health-check-token+ header.
       # @param opts [Hash] per-request options
-      # @return [HealthCheck] health status of the database layer
-      #
-      # @example
-      #   status = client.health_checks.database
-      #
-      # @see https://developers.forem.com/api/v1
-      def database(opts = {})
-        HealthCheck.database(opts_with_requestor(opts))
+      # @return [Forem::ForemObject]
+      def database(token: nil, **opts)
+        HealthCheck.database(token: token, **opts_with_requestor(opts))
       end
 
-      # Check the cache connectivity and health.
-      #
-      # Returns HTTP 200 when the cache (Redis) is reachable and healthy.
-      #
+      # Cache (Redis) connectivity & responsiveness.
+      # @param token [String, nil] value for the +health-check-token+ header.
       # @param opts [Hash] per-request options
-      # @return [HealthCheck] health status of the cache layer
-      #
-      # @example
-      #   status = client.health_checks.cache
-      #
-      # @see https://developers.forem.com/api/v1
-      def cache(opts = {})
-        HealthCheck.cache(opts_with_requestor(opts))
+      # @return [Forem::ForemObject]
+      def cache(token: nil, **opts)
+        HealthCheck.cache(token: token, **opts_with_requestor(opts))
       end
     end
   end

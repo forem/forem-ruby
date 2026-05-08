@@ -11,12 +11,12 @@ module Forem
   # slug) and returns URLs to the image at various sizes.
   #
   # @example Retrieve a user's profile image
-  #   image = Forem::ProfileImage.retrieve("alice")
+  #   image = client.profile_images.retrieve("alice")
   #   puts image.profile_image
   #   puts image.profile_image_90
   #
   # @example Retrieve an organization's profile image
-  #   image = Forem::ProfileImage.retrieve("acme-corp")
+  #   image = client.profile_images.retrieve("acme-corp")
   #   puts image.profile_image
   #
   # @see https://developers.forem.com/api/v1
@@ -32,7 +32,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [Forem::ProfileImage] object containing +profile_image+ and +profile_image_90+ URL fields
     # @example
-    #   image = Forem::ProfileImage.retrieve("alice")
+    #   image = client.profile_images.retrieve("alice")
     #   puts image.profile_image        # full-size URL
     #   puts image.profile_image_90     # 90px thumbnail URL
     # @see https://developers.forem.com/api/v1

@@ -12,11 +12,11 @@ module Forem
   #   - +List+ — GET /api/videos
   #
   # @example List video articles
-  #   videos = Forem::Video.list(per_page: 10)
+  #   videos = client.videos.list(per_page: 10)
   #   videos.data.each { |v| puts v.title }
   #
   # @example Iterate over all video articles using auto-pagination
-  #   Forem::Video.list.auto_paging_each { |v| puts "#{v.title}: #{v.video_source_url}" }
+  #   client.videos.list.auto_paging_each { |v| puts "#{v.title}: #{v.video_source_url}" }
   #
   # @see https://developers.forem.com/api/v1#/operations/videos
   class Video < APIResource

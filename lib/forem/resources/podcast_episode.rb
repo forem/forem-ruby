@@ -12,11 +12,11 @@ module Forem
   #   - +List+ — GET /api/podcast_episodes
   #
   # @example List all podcast episodes
-  #   episodes = Forem::PodcastEpisode.list(per_page: 30)
+  #   episodes = client.podcast_episodes.list(per_page: 30)
   #   episodes.data.each { |ep| puts ep.title }
   #
   # @example List episodes for a specific podcast
-  #   episodes = Forem::PodcastEpisode.list(username: "codenewbie")
+  #   episodes = client.podcast_episodes.list(username: "codenewbie")
   #   episodes.data.each { |ep| puts ep.title }
   #
   # == List Parameters

@@ -2,14 +2,13 @@ module Forem
   module Services
     # Service for interacting with the Forem Follows API.
     #
-    # Manages the tags and users that the authenticated user follows.
-    # Access via {Client#follows}. All methods inject the client's requestor
-    # automatically so no additional configuration is required.
+    # Lists the tags the authenticated user follows, and follows users or
+    # organizations in bulk.
     #
     # @example
     #   client = Forem::Client.new("your-api-key")
     #   followed_tags = client.follows.list
-    #   client.follows.create(followable_type: "Tag", followable_id: 5)
+    #   client.follows.create(user_ids: [42, 99])
     #
     # @see Follow
     # @see https://developers.forem.com/api/v1#/operations/getFollowedTags
@@ -20,7 +19,8 @@ module Forem
       # @option params [Integer] :page page number (default: 1)
       # @option params [Integer] :per_page number of results per page
       # @param opts [Hash] per-request options
-      # @return [Array<Follow>] list of follow relationships for the current user
+      # @return [Forem::ListObject<Forem::Follow>] paginated list of
+      #   followed tags for the current user.
       #
       # @example
       #   client.follows.list
@@ -30,22 +30,29 @@ module Forem
         Follow.list(params, opts_with_requestor(opts))
       end
 
-      # Follow a tag or user.
+      # Follow one or more users and/or organizations.
+      #
+      # The Forem API takes flat +user_ids+ and/or +organization_ids+
+      # arrays — not a wrapped +follows:+ key, despite the resource name.
+      # Tags are not followed through this endpoint.
       #
       # @param params [Hash] follow attributes
-      # @option params [String] :followable_type the type to follow
-      #   ("Tag", "User", or "Organization")
-      # @option params [Integer] :followable_id the ID of the entity to follow
+      # @option params [Array<Integer>] :user_ids user IDs to follow
+      # @option params [Array<Integer>] :organization_ids org IDs to follow
       # @param opts [Hash] per-request options
-      # @return [Follow] the newly created follow relationship
+      # @return [Forem::Follow] outcome object (e.g.
+      #   <tt>#<Forem::Follow {"outcome" => "followed 2 users"}></tt>).
       #
-      # @example Follow a tag
-      #   client.follows.create(followable_type: "Tag", followable_id: 5)
+      # @example Follow users in bulk
+      #   client.follows.create(user_ids: [42, 99])
       #
-      # @example Follow a user
-      #   client.follows.create(followable_type: "User", followable_id: 99)
+      # @example Follow organizations
+      #   client.follows.create(organization_ids: [7])
       #
-      # @see https://developers.forem.com/api/v1#/operations/followUser
+      # @example Combined
+      #   client.follows.create(user_ids: [42], organization_ids: [7])
+      #
+      # @see https://developers.forem.com/api/v1
       def create(params = {}, opts = {})
         Follow.create(params, opts_with_requestor(opts))
       end

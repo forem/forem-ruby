@@ -28,14 +28,15 @@ module Forem
       # @raise [ForemError] on other API or network errors.
       #
       # @example Fetching an article by ID
-      #   article = Forem::Article.retrieve(12345)
+      #   article = client.articles.retrieve(12345)
       #   article.title   #=> "Hello, world!"
       #   article.id      #=> 12345
       #
       # @see https://developers.forem.com/api/v1#tag/articles/operation/getArticleById
       def retrieve(id, opts = {})
+        requestor = opts[:requestor]
         resp = request(:get, "#{resource_path}/#{id}", {}, opts)
-        construct_from(resp.parsed_body)
+        construct_from(resp.parsed_body, requestor: requestor)
       end
     end
   end

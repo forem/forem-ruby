@@ -11,11 +11,11 @@ module Forem
   # and the default page size is 80 (larger than most other resources).
   #
   # @example List users who follow the authenticated user
-  #   followers = Forem::Follower.list
+  #   followers = client.followers.list
   #   followers.data.each { |f| puts f.name }
   #
   # @example Iterate over all followers using auto-pagination
-  #   Forem::Follower.list.auto_paging_each { |f| puts f.username }
+  #   client.followers.list.auto_paging_each { |f| puts f.username }
   #
   # @see https://developers.forem.com/api/v1#/operations/getFollowers
   class Follower < APIResource
@@ -36,7 +36,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [Forem::ListObject<Forem::Follower>] paginated list of followers
     # @example
-    #   followers = Forem::Follower.list(per_page: 25, sort: "name")
+    #   followers = client.followers.list(per_page: 25, sort: "name")
     #   followers.data.each { |f| puts f.name }
     # @see https://developers.forem.com/api/v1#/operations/getFollowers
     def self.list(params = {}, opts = {})

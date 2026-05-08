@@ -30,7 +30,7 @@ module Forem
       # @raise [ForemError] on other API or network errors.
       #
       # @example Creating an article
-      #   article = Forem::Article.create(
+      #   article = client.articles.create(
       #     article: { title: "Hello, world!", body_markdown: "**hi**", published: true }
       #   )
       #   article.id     #=> 12345
@@ -38,8 +38,9 @@ module Forem
       #
       # @see https://developers.forem.com/api/v1#tag/articles/operation/createArticle
       def create(params = {}, opts = {})
+        requestor = opts[:requestor]
         resp = request(:post, resource_path, params, opts)
-        construct_from(resp.parsed_body)
+        construct_from(resp.parsed_body, requestor: requestor)
       end
     end
   end

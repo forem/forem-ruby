@@ -24,17 +24,19 @@ module Forem
   # - +url+ (String) — Public URL for the session
   #
   # @example Get presigned upload credentials before creating a session
-  #   presign = Forem::AgentSession.presign(filename: "session.json", mime_type: "application/json")
-  #   puts presign.upload_url
+  #   presign = client.agent_sessions.presign(filename: "session.json", mime_type: "application/json")
+  #   puts presign.presigned_url
   #
-  # @example Create a new agent session
-  #   session = Forem::AgentSession.create(
-  #     agent_session: { prompt: "Summarise the top 5 articles today." }
+  # @example Create a new agent session (flat params — no +agent_session:+ wrapper)
+  #   session = client.agent_sessions.create(
+  #     title: "My Session",
+  #     curated_data: curated_json,
+  #     tool_name: "claude_code"
   #   )
   #
   # @example Retrieve the raw asset URL for an existing session
-  #   session = Forem::AgentSession.retrieve(99)
-  #   puts session.raw_url.url
+  #   session = client.agent_sessions.retrieve(99)
+  #   puts session.raw_url.raw_url
   #
   # @see https://developers.forem.com/api/v1
   class AgentSession < APIResource
@@ -82,7 +84,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [Forem::ForemObject] presign response containing upload URL and credentials
     # @example
-    #   presign = Forem::AgentSession.presign(filename: "output.json", mime_type: "application/json")
+    #   presign = client.agent_sessions.presign(filename: "output.json", mime_type: "application/json")
     #   puts presign.upload_url
     # @see https://developers.forem.com/api/v1
     def self.presign(params = {}, opts = {})
@@ -97,7 +99,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [Forem::ForemObject] object containing the +url+ field with the raw asset URL
     # @example
-    #   session = Forem::AgentSession.retrieve(99)
+    #   session = client.agent_sessions.retrieve(99)
     #   puts session.raw_url.url
     # @see https://developers.forem.com/api/v1
     def raw_url(opts = {})

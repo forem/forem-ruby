@@ -12,14 +12,14 @@ module Forem
   #   - +Create+ — POST /api/reactions
   #
   # @example Create a reaction on an article
-  #   Forem::Reaction.create(
+  #   client.reactions.create(
   #     reactable_id: 12345,
   #     reactable_type: "Article",
   #     category: "like"
   #   )
   #
   # @example Toggle a reaction (add if absent, remove if present)
-  #   result = Forem::Reaction.toggle(
+  #   result = client.reactions.toggle(
   #     reactable_id: 12345,
   #     reactable_type: "Article",
   #     category: "unicorn"
@@ -46,7 +46,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [Forem::Reaction] reaction object with a +result+ field (++"create"++ or ++"destroy"++)
     # @example
-    #   result = Forem::Reaction.toggle(
+    #   result = client.reactions.toggle(
     #     reactable_id: 42,
     #     reactable_type: "Article",
     #     category: "fire"

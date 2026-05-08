@@ -33,13 +33,14 @@ module Forem
       # @raise [ForemError] on other API or network errors.
       #
       # @example Updating an article's title
-      #   article = Forem::Article.update(12345, article: { title: "Updated title" })
+      #   article = client.articles.update(12345, article: { title: "Updated title" })
       #   article.title  #=> "Updated title"
       #
       # @see https://developers.forem.com/api/v1#tag/articles/operation/updateArticle
       def update(id, params = {}, opts = {})
+        requestor = opts[:requestor]
         resp = request(:put, "#{resource_path}/#{id}", params, opts)
-        construct_from(resp.parsed_body)
+        construct_from(resp.parsed_body, requestor: requestor)
       end
     end
   end

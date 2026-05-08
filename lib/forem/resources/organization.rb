@@ -15,16 +15,16 @@ module Forem
   #   - +Save+     — instance-level save (create or update)
   #
   # @example List all organizations
-  #   orgs = Forem::Organization.list(per_page: 20)
+  #   orgs = client.organizations.list(per_page: 20)
   #   orgs.data.each { |o| puts o.name }
   #
   # @example Create an organization
-  #   org = Forem::Organization.create(
+  #   org = client.organizations.create(
   #     organization: { name: "Acme Corp", summary: "We make things." }
   #   )
   #
   # @example Retrieve an organization by username
-  #   org = Forem::Organization.retrieve("acme-corp")
+  #   org = client.organizations.retrieve("acme-corp")
   #   puts org.name
   #
   # @see https://developers.forem.com/api/v1#/operations/getOrganizations
@@ -50,7 +50,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [Array<Forem::User>] members of the organization
     # @example
-    #   org = Forem::Organization.retrieve("acme-corp")
+    #   org = client.organizations.retrieve("acme-corp")
     #   org.users.each { |u| puts u.username }
     # @see https://developers.forem.com/api/v1#/operations/getOrgUsers
     def users(params = {}, opts = {})
@@ -68,7 +68,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [Array<Forem::Article>] articles belonging to the organization
     # @example
-    #   org = Forem::Organization.retrieve("acme-corp")
+    #   org = client.organizations.retrieve("acme-corp")
     #   org.articles.each { |a| puts a.title }
     # @see https://developers.forem.com/api/v1
     def articles(params = {}, opts = {})

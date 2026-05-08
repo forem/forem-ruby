@@ -12,15 +12,15 @@ module Forem
   # username string.
   #
   # @example Retrieve the authenticated user
-  #   me = Forem::User.me
+  #   me = client.users.me
   #   puts "Hello, #{me.name}!"
   #
   # @example Retrieve a user by ID
-  #   user = Forem::User.retrieve(12345)
+  #   user = client.users.retrieve(12345)
   #   puts user.username
   #
-  # @example Search users by name
-  #   results = Forem::User.search(q: "alice")
+  # @example Look up a user by exact email
+  #   results = client.users.search(email: "alice@example.com")
   #   results.each { |u| puts u.username }
   #
   # @see https://developers.forem.com/api/v1#/operations/getUser
@@ -40,31 +40,56 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [Forem::User] the authenticated user
     # @example
-    #   me = Forem::User.me
+    #   me = client.users.me
     #   puts "Logged in as #{me.username}"
     # @see https://developers.forem.com/api/v1#/operations/getUserMe
     def self.me(opts = {})
+      requestor = opts[:requestor]
       resp = request(:get, "/api/users/me", {}, opts)
-      construct_from(resp.parsed_body)
+      construct_from(resp.parsed_body, requestor: requestor)
     end
 
-    # Search for users by name or username.
+    # Look up a single user by exact email address.
     #
-    # Sends a GET request to +/api/users/search+.
+    # Sends a GET request to +/api/users/search+. Despite the endpoint
+    # name, this is an exact-match email lookup — there is no name- or
+    # username-prefix search. The endpoint is V1-only, requires admin
+    # privileges, and is not currently documented in the public swagger.
     #
     # @param params [Hash] query parameters
-    # @option params [String] :q search term (name or username prefix)
-    # @option params [Integer] :page page number (default: 1)
-    # @option params [Integer] :per_page number of results per page (default: 30)
+    # @option params [String] :email (required) the email address to look up.
     # @param opts [Hash] per-request options (e.g., +:api_key+)
-    # @return [Array<Forem::User>] users matching the search query
+    # @return [Forem::ListObject<Forem::User>] a list containing the matched
+    #   user, or an empty list if none matches. The list is wrapped for
+    #   API consistency with other search-style methods even though the
+    #   endpoint returns at most one result.
     # @example
-    #   users = Forem::User.search(q: "alice")
-    #   users.each { |u| puts u.username }
+    #   results = client.users.search(email: "alice@example.com")
+    #   if (user = results.first)
+    #     puts user.username
+    #   end
     # @see https://developers.forem.com/api/v1
     def self.search(params = {}, opts = {})
-      resp = request(:get, "/api/users/search", params, opts)
-      (resp.parsed_body || []).map { |item| construct_from(item) }
+      requestor = opts[:requestor]
+      data = begin
+        resp = request(:get, "/api/users/search", params, opts)
+        body = resp.parsed_body
+        if body.is_a?(Hash) && !body.empty?
+          [construct_from(body, requestor: requestor)]
+        else
+          []
+        end
+      rescue NotFoundError
+        []
+      end
+      ListObject.new(
+        data: data,
+        per_page: [data.length, 1].max,
+        resource_class: self,
+        filters: params.reject { |k, _| [:per_page, "per_page"].include?(k) },
+        requestor: requestor,
+        fetcher: ->(*) { nil }
+      )
     end
 
     # Unpublish all articles and comments authored by this user.
@@ -76,7 +101,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [ForemResponse] the raw API response
     # @example
-    #   user = Forem::User.retrieve(42)
+    #   user = client.users.retrieve(42)
     #   user.unpublish
     # @see https://developers.forem.com/api/v1#/operations/unpublishUser
     def unpublish(opts = {})
@@ -93,7 +118,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [ForemResponse] the raw API response
     # @example
-    #   user = Forem::User.retrieve(42)
+    #   user = client.users.retrieve(42)
     #   user.suspend
     # @see https://developers.forem.com/api/v1#/operations/suspendUser
     def suspend(opts = {})
@@ -107,7 +132,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [ForemResponse] the raw API response
     # @example
-    #   user = Forem::User.retrieve(42)
+    #   user = client.users.retrieve(42)
     #   user.unsuspend
     # @see https://developers.forem.com/api/v1#/operations/suspendUser
     def unsuspend(opts = {})
@@ -121,7 +146,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [ForemResponse] the raw API response
     # @example
-    #   user = Forem::User.retrieve(42)
+    #   user = client.users.retrieve(42)
     #   user.add_limited
     # @see https://developers.forem.com/api/v1
     def add_limited(opts = {})
@@ -135,7 +160,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [ForemResponse] the raw API response
     # @example
-    #   user = Forem::User.retrieve(42)
+    #   user = client.users.retrieve(42)
     #   user.remove_limited
     # @see https://developers.forem.com/api/v1
     def remove_limited(opts = {})
@@ -152,7 +177,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [ForemResponse] the raw API response
     # @example
-    #   user = Forem::User.retrieve(42)
+    #   user = client.users.retrieve(42)
     #   user.add_spam
     # @see https://developers.forem.com/api/v1#/operations/spamUser
     def add_spam(opts = {})
@@ -166,7 +191,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [ForemResponse] the raw API response
     # @example
-    #   user = Forem::User.retrieve(42)
+    #   user = client.users.retrieve(42)
     #   user.remove_spam
     # @see https://developers.forem.com/api/v1#/operations/spamUser
     def remove_spam(opts = {})
@@ -180,7 +205,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [ForemResponse] the raw API response
     # @example
-    #   user = Forem::User.retrieve(42)
+    #   user = client.users.retrieve(42)
     #   user.add_trusted
     # @see https://developers.forem.com/api/v1
     def add_trusted(opts = {})
@@ -194,7 +219,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [ForemResponse] the raw API response
     # @example
-    #   user = Forem::User.retrieve(42)
+    #   user = client.users.retrieve(42)
     #   user.remove_trusted
     # @see https://developers.forem.com/api/v1
     def remove_trusted(opts = {})

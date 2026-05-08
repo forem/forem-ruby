@@ -48,12 +48,13 @@ module Forem
         # @raise [ForemError] on other API or network errors.
         #
         # @example Deleting an article by ID
-        #   Forem::Article.delete(12345)
+        #   client.articles.delete(12345)
         #
         # @see https://developers.forem.com/api/v1
         def delete(id, opts = {})
+          requestor = opts[:requestor]
           resp = request(:delete, "#{resource_path}/#{id}", {}, opts)
-          resp.parsed_body ? construct_from(resp.parsed_body) : nil
+          resp.parsed_body ? construct_from(resp.parsed_body, requestor: requestor) : nil
         end
       end
 
@@ -78,8 +79,9 @@ module Forem
       # @example Deleting the current instance
       #   article.delete
       def delete(opts = {})
+        requestor = opts[:requestor] || @requestor
         resp = request(:delete, resource_url, {}, opts)
-        resp.parsed_body ? self.class.construct_from(resp.parsed_body) : self
+        resp.parsed_body ? self.class.construct_from(resp.parsed_body, requestor: requestor) : self
       end
     end
   end

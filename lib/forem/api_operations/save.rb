@@ -38,14 +38,15 @@ module Forem
       # @raise [ForemError] on other API or network errors.
       #
       # @example Updating a fetched article
-      #   article = Forem::Article.retrieve(12345)
+      #   article = client.articles.retrieve(12345)
       #   updated = article.save(article: { title: "Brand new title" })
       #   updated.title  #=> "Brand new title"
       #
       # @see https://developers.forem.com/api/v1#tag/articles/operation/updateArticle
       def save(params = {}, **opts)
+        requestor = opts[:requestor] || @requestor
         resp = request(:put, resource_url, params, opts)
-        self.class.construct_from(resp.parsed_body)
+        self.class.construct_from(resp.parsed_body, requestor: requestor)
       end
     end
   end

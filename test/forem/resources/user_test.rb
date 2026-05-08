@@ -23,14 +23,27 @@ class Forem::UserTest < Minitest::Test
     assert_equal "me", result.username
   end
 
-  def test_search
-    mock_http, _ = stub_http_request(method: :get, path: "/api/users/search", status: 200, body: '[{"id":1,"username":"alice"},{"id":2,"username":"bob"}]')
+  def test_search_match
+    # The endpoint takes :email and returns a single user object (200) or 404.
+    mock_http, captured = stub_http_request(method: :get, path: "/api/users/search", status: 200, body: '{"id":1,"username":"alice"}')
     requestor = make_requestor(mock_http)
-    result = Forem::User.search({ term: "al" }, requestor: requestor)
-    assert_instance_of Array, result
-    assert_equal 2, result.length
+    result = Forem::User.search({ email: "alice@example.com" }, requestor: requestor)
+    assert_instance_of Forem::ListObject, result
+    assert_equal 1, result.length
     assert_instance_of Forem::User, result[0]
     assert_equal "alice", result[0].username
+    assert_includes captured[:path], "email=alice%40example.com"
+  end
+
+  def test_search_no_match
+    # 404 from the endpoint becomes an empty ListObject so callers can
+    # `.first` / iterate without rescuing.
+    mock_http, _ = stub_http_request(method: :get, path: "/api/users/search", status: 404, body: '{"error":"not found"}')
+    requestor = make_requestor(mock_http)
+    result = Forem::User.search({ email: "missing@example.com" }, requestor: requestor)
+    assert_instance_of Forem::ListObject, result
+    assert_equal 0, result.length
+    assert_nil result.first
   end
 
   def test_suspend

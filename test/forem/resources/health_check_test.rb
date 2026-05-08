@@ -36,4 +36,19 @@ class Forem::HealthCheckTest < Minitest::Test
     assert_equal "GET", captured[:method]
     assert_equal "/api/health_checks/cache", captured[:path]
   end
+
+  def test_token_is_sent_as_health_check_token_header
+    mock_http, captured = stub_http_request(method: :get, path: "/api/health_checks/app", status: 200, body: '{"status":"OK"}')
+    requestor = make_requestor(mock_http)
+    Forem::HealthCheck.app(token: "shh-secret", requestor: requestor)
+    assert_equal "shh-secret", captured[:headers]["health-check-token"]
+  end
+
+  def test_no_token_means_no_header_sent
+    mock_http, captured = stub_http_request(method: :get, path: "/api/health_checks/app", status: 200, body: '{"status":"OK"}')
+    requestor = make_requestor(mock_http)
+    Forem::HealthCheck.app(requestor: requestor)
+    refute captured[:headers].key?("health-check-token"),
+           "health-check-token header should not be sent when token: is omitted"
+  end
 end

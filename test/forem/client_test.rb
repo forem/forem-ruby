@@ -47,10 +47,14 @@ class Forem::ClientTest < Minitest::Test
     assert_equal "alice", result.username
   end
 
-  def test_client_uses_separate_config_from_global
-    Forem.api_key = "global-key"
-    client = Forem::Client.new("client-key")
-    assert_equal "client-key", client.config.api_key
-    assert_equal "global-key", Forem.api_key
+  def test_clients_have_independent_configs
+    client_a = Forem::Client.new("key-a", api_base: "https://a.example")
+    client_b = Forem::Client.new("key-b", api_base: "https://b.example")
+
+    assert_equal "key-a", client_a.config.api_key
+    assert_equal "key-b", client_b.config.api_key
+    assert_equal "https://a.example", client_a.config.api_base
+    assert_equal "https://b.example", client_b.config.api_base
+    refute_same client_a.requestor, client_b.requestor
   end
 end

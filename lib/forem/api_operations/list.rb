@@ -39,12 +39,12 @@ module Forem
       # @raise [ForemError] on other API or network errors.
       #
       # @example Fetching the first page of articles
-      #   articles = Forem::Article.list(per_page: 10)
+      #   articles = client.articles.list(per_page: 10)
       #   articles.map(&:title)
       #   #=> ["Article 1", "Article 2", ...]
       #
       # @example Filtering articles by tag
-      #   Forem::Article.list(tag: "ruby", per_page: 5).each do |a|
+      #   client.articles.list(tag: "ruby", per_page: 5).each do |a|
       #     puts a.title
       #   end
       #
@@ -52,7 +52,7 @@ module Forem
       def list(params = {}, opts = {})
         requestor = opts[:requestor]
         resp = request(:get, resource_path, params, opts)
-        data = (resp.parsed_body || []).map { |item| construct_from(item) }
+        data = (resp.parsed_body || []).map { |item| construct_from(item, requestor: requestor) }
         per_page = params[:per_page] || params["per_page"] || 30
         page = params[:page] || params["page"] || 1
 

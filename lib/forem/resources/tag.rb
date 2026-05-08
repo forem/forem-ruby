@@ -11,11 +11,11 @@ module Forem
   #   - +List+ — GET /api/tags
   #
   # @example List tags ordered by popularity
-  #   tags = Forem::Tag.list(per_page: 50)
+  #   tags = client.tags.list(per_page: 50)
   #   tags.data.each { |t| puts "#{t.name} (#{t.points} points)" }
   #
   # @example Iterate over every tag using auto-pagination
-  #   Forem::Tag.list.auto_paging_each { |t| puts t.name }
+  #   client.tags.list.auto_paging_each { |t| puts t.name }
   #
   # @see https://developers.forem.com/api/v1#/operations/getTags
   class Tag < APIResource

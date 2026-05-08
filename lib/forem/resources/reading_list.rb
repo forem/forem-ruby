@@ -12,11 +12,11 @@ module Forem
   #   - +List+ — GET /api/readinglist
   #
   # @example List all bookmarked articles
-  #   items = Forem::ReadingList.list
+  #   items = client.reading_list.list
   #   items.data.each { |item| puts item.article.title }
   #
   # @example List only confirmed (active) reading list items
-  #   items = Forem::ReadingList.list(status: "confirmed")
+  #   items = client.reading_list.list(status: "confirmed")
   #   items.data.each { |item| puts item.article.title }
   #
   # @see https://developers.forem.com/api/v1#/operations/getReadinglist

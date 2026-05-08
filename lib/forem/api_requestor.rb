@@ -11,25 +11,23 @@ module Forem
   # status codes to typed {ForemError} subclasses, and applies automatic
   # retry logic for transient failures.
   #
-  # A shared, lazily-initialised instance is available via
-  # {Forem.default_requestor}. Resource class methods use this instance
-  # unless a custom one is supplied via the +:requestor+ option.
+  # Each {Forem::Client} owns its own {APIRequestor}, built from the
+  # client's {Configuration}. There is no global default requestor — every
+  # call must originate from a specific client instance (or pass an
+  # explicit +:requestor+ option to a class-level resource method).
   #
-  # @example Using the default requestor
-  #   Forem.default_requestor.request(:get, "/api/articles", { per_page: 5 })
-  #
-  # @example Using a per-request custom configuration
+  # @example Constructing directly (uncommon — prefer {Forem::Client.new})
   #   config = Forem::Configuration.new
-  #   config.api_key = "my_other_key"
+  #   config.api_key = "my_key"
   #   requestor = Forem::APIRequestor.new(config: config)
   #   requestor.request(:get, "/api/articles")
   class APIRequestor
     # Create a new APIRequestor.
     #
     # @param config [Configuration] the configuration to use for this
-    #   requestor. Defaults to the global {Forem.configuration}.
+    #   requestor.
     # @return [APIRequestor]
-    def initialize(config: Forem.configuration)
+    def initialize(config:)
       @config = config
       @connection_manager = ConnectionManager.new
     end
@@ -74,11 +72,12 @@ module Forem
     def request(method, path, params = {}, opts = {})
       api_key = opts.delete(:api_key) || @config.api_key
       api_base = opts.delete(:api_base) || @config.api_base
+      extra_headers = opts.delete(:headers) || {}
       uri = URI("#{api_base}#{path}")
 
       retries_left = @config.max_network_retries
       begin
-        response = execute_request(method, uri, params, api_key)
+        response = execute_request(method, uri, params, api_key, extra_headers)
         handle_error_response(response) if response.http_status >= 400
         response
       rescue Forem::APIConnectionError
@@ -109,9 +108,9 @@ module Forem
     # @param api_key [String, nil] the API key to attach.
     # @return [ForemResponse]
     # @raise [APIConnectionError] on any network-level exception.
-    def execute_request(method, uri, params, api_key)
+    def execute_request(method, uri, params, api_key, extra_headers = {})
       http = @connection_manager.connection_for(uri, open_timeout: @config.open_timeout, read_timeout: @config.read_timeout)
-      request = build_request(method, uri, params, api_key)
+      request = build_request(method, uri, params, api_key, extra_headers)
 
       begin
         http_response = http.request(request)
@@ -139,7 +138,7 @@ module Forem
     # @param api_key [String, nil] the API key value.
     # @return [Net::HTTPRequest] the fully-configured request object.
     # @raise [ArgumentError] if +method+ is not one of the supported verbs.
-    def build_request(method, uri, params, api_key)
+    def build_request(method, uri, params, api_key, extra_headers = {})
       req = case method
             when :get
               uri.query = URI.encode_www_form(params) unless params.empty?
@@ -163,6 +162,7 @@ module Forem
       req["api-key"] = api_key if api_key
       req["Accept"] = "application/vnd.forem.api-v1+json"
       req["User-Agent"] = "forem-ruby/#{Forem::VERSION} ruby/#{RUBY_VERSION}"
+      extra_headers.each { |name, value| req[name.to_s] = value.to_s }
       req
     end
 

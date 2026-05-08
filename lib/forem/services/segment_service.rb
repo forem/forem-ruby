@@ -21,7 +21,7 @@ module Forem
       # @option params [Integer] :page page number (default: 1)
       # @option params [Integer] :per_page number of results per page
       # @param opts [Hash] per-request options
-      # @return [Array<Segment>] list of audience segments
+      # @return [Forem::ListObject<Forem::Segment>] paginated list of segments
       #
       # @example
       #   client.segments.list
@@ -33,13 +33,18 @@ module Forem
 
       # Create a new audience segment.
       #
-      # @param params [Hash] segment attributes
-      # @option params [String] :name name of the segment
+      # The Forem API does not accept any parameters on this endpoint —
+      # newly-created segments are always +type_of: "manual"+ and do not
+      # carry a name. Manage membership separately via {Segment#add_users}
+      # and {Segment#remove_users}.
+      #
+      # @param params [Hash] ignored by the API, kept for forward-compat
       # @param opts [Hash] per-request options
-      # @return [Segment] the newly created segment
+      # @return [Forem::Segment] the newly created (empty) segment
       #
       # @example
-      #   client.segments.create(name: "Ruby Enthusiasts")
+      #   segment = client.segments.create
+      #   segment.add_users(user_ids: [101, 102])
       #
       # @see https://developers.forem.com/api/v1#/operations/createSegment
       def create(params = {}, opts = {})

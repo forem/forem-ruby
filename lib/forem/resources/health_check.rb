@@ -1,83 +1,70 @@
 module Forem
   # Provides access to the health-check endpoints of a Forem instance.
   #
-  # Health check endpoints are public and do not require authentication.
-  #
   # Health checks let you verify that the various subsystems of a Forem
   # deployment are operational. There are three separate checks: the
-  # application server, the database, and the cache layer. These endpoints
-  # do not require authentication and return a simple status indicator.
+  # application server, the database, and the cache layer.
   #
-  # @example Check overall application health
-  #   status = Forem::HealthCheck.app
-  #   puts status.status   # => "OK" when healthy
+  # == Authentication
   #
-  # @example Check database connectivity
-  #   status = Forem::HealthCheck.database
-  #   puts status.status
+  # In production, the endpoints require an +health-check-token+ header
+  # whose value matches the instance's
+  # +Settings::General.health_check_token+ setting. The Forem controller
+  # bypasses the token check for requests originating from +localhost+,
+  # so a local-development instance accepts unauthenticated calls.
   #
-  # @example Check cache availability
-  #   status = Forem::HealthCheck.cache
-  #   puts status.status
+  # Pass the token via the +token:+ keyword on each method (or on the
+  # service-level wrapper). The +api-key+ header is *not* used by these
+  # endpoints — the token is a separate, dedicated mechanism.
+  #
+  # @example Production: pass the configured token
+  #   client.health_checks.app(token: ENV.fetch("FOREM_HEALTH_CHECK_TOKEN"))
+  #   #=> #<Forem::ForemObject {"message" => "App is up!"}>
+  #
+  # @example Local-development Forem (token bypassed for localhost)
+  #   client.health_checks.app
+  #   #=> #<Forem::ForemObject {"message" => "App is up!"}>
   #
   # @see https://developers.forem.com/api/v1
   class HealthCheck < APIResource
     OBJECT_NAME = "health_check"
     RESOURCE_PATH = "/api/health_checks"
 
-    # Check the health of the Forem application server.
-    #
-    # Returns a simple status object indicating whether the subsystem is healthy.
-    #
-    # Sends a GET request to +/api/health_checks/app+. Returns a 200 status
-    # with a +{"status": "OK"}+ body when the application is running normally,
-    # or a 503 when it is unhealthy.
-    #
-    # @param opts [Hash] per-request options (e.g., +:api_key+)
-    # @return [Forem::ForemObject] object with a +status+ field
-    # @example
-    #   result = Forem::HealthCheck.app
-    #   puts result.status   # => "OK"
-    # @see https://developers.forem.com/api/v1
-    def self.app(opts = {})
-      resp = request(:get, "/api/health_checks/app", {}, opts)
-      Forem::ForemObject.construct_from(resp.parsed_body)
+    # Application-server health.
+    # @param token [String, nil] value for the +health-check-token+ header
+    #   (required in production).
+    # @param opts [Hash] per-request options
+    # @return [Forem::ForemObject] response body
+    def self.app(token: nil, **opts)
+      check("/api/health_checks/app", token, opts)
     end
 
-    # Check the health of the Forem database connection.
-    #
-    # Returns a simple status object indicating whether the subsystem is healthy.
-    #
-    # Sends a GET request to +/api/health_checks/database+. Returns a 200
-    # status when the database is reachable and responsive, or a 503 otherwise.
-    #
-    # @param opts [Hash] per-request options (e.g., +:api_key+)
-    # @return [Forem::ForemObject] object with a +status+ field
-    # @example
-    #   result = Forem::HealthCheck.database
-    #   puts result.status   # => "OK"
-    # @see https://developers.forem.com/api/v1
-    def self.database(opts = {})
-      resp = request(:get, "/api/health_checks/database", {}, opts)
-      Forem::ForemObject.construct_from(resp.parsed_body)
+    # Database connectivity & responsiveness.
+    # @param token [String, nil] value for the +health-check-token+ header.
+    # @param opts [Hash] per-request options
+    # @return [Forem::ForemObject] response body
+    def self.database(token: nil, **opts)
+      check("/api/health_checks/database", token, opts)
     end
 
-    # Check the health of the Forem cache layer (e.g., Redis).
-    #
-    # Returns a simple status object indicating whether the subsystem is healthy.
-    #
-    # Sends a GET request to +/api/health_checks/cache+. Returns a 200 status
-    # when the cache store is reachable and responsive, or a 503 otherwise.
-    #
-    # @param opts [Hash] per-request options (e.g., +:api_key+)
-    # @return [Forem::ForemObject] object with a +status+ field
-    # @example
-    #   result = Forem::HealthCheck.cache
-    #   puts result.status   # => "OK"
-    # @see https://developers.forem.com/api/v1
-    def self.cache(opts = {})
-      resp = request(:get, "/api/health_checks/cache", {}, opts)
-      Forem::ForemObject.construct_from(resp.parsed_body)
+    # Cache (Redis) connectivity & responsiveness.
+    # @param token [String, nil] value for the +health-check-token+ header.
+    # @param opts [Hash] per-request options
+    # @return [Forem::ForemObject] response body
+    def self.cache(token: nil, **opts)
+      check("/api/health_checks/cache", token, opts)
     end
+
+    def self.check(path, token, opts)
+      requestor = opts[:requestor]
+      opts = opts.dup
+      if token
+        existing = opts[:headers] || {}
+        opts[:headers] = existing.merge("health-check-token" => token)
+      end
+      resp = request(:get, path, {}, opts)
+      Forem::ForemObject.construct_from(resp.parsed_body, requestor: requestor)
+    end
+    private_class_method :check
   end
 end

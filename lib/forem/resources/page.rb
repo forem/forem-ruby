@@ -18,25 +18,23 @@ module Forem
   #   - +Save+     — instance-level save (create or update)
   #
   # @example List all pages
-  #   pages = Forem::Page.list
-  #   pages.data.each { |p| puts "#{p.slug}: #{p.title}" }
+  #   pages = client.pages.list
+  #   pages.each { |p| puts "#{p.slug}: #{p.title}" }
   #
-  # @example Create a new page
-  #   page = Forem::Page.create(
-  #     page: {
-  #       title: "About Us",
-  #       slug: "about",
-  #       body_markdown: "We are a community of developers.",
-  #       is_top_level_path: true
-  #     }
+  # @example Create a new page (flat params — no +page:+ wrapper)
+  #   page = client.pages.create(
+  #     title: "About Us",
+  #     slug: "about",
+  #     body_markdown: "We are a community of developers.",
+  #     is_top_level_path: true
   #   )
   #
   # @example Retrieve a page by ID
-  #   page = Forem::Page.retrieve(3)
+  #   page = client.pages.retrieve(3)
   #   puts page.title
   #
   # @example Delete a page
-  #   page = Forem::Page.retrieve(3)
+  #   page = client.pages.retrieve(3)
   #   page.delete
   #
   # @see https://developers.forem.com/api/v1

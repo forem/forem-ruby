@@ -43,7 +43,7 @@ class Forem::ArticleTest < Minitest::Test
     mock_http, _ = stub_http_request(method: :get, path: "/api/articles/me", status: 200, body: '[{"id":1,"title":"Mine"}]')
     requestor = make_requestor(mock_http)
     result = Forem::Article.me({}, requestor: requestor)
-    assert_instance_of Array, result
+    assert_instance_of Forem::ListObject, result
     assert_instance_of Forem::Article, result[0]
     assert_equal "Mine", result[0].title
   end
@@ -52,7 +52,7 @@ class Forem::ArticleTest < Minitest::Test
     mock_http, _ = stub_http_request(method: :get, path: "/api/articles/me/published", status: 200, body: '[{"id":1,"title":"Published"}]')
     requestor = make_requestor(mock_http)
     result = Forem::Article.me_published({}, requestor: requestor)
-    assert_instance_of Array, result
+    assert_instance_of Forem::ListObject, result
     assert_instance_of Forem::Article, result[0]
     assert_equal "Published", result[0].title
   end
@@ -61,7 +61,7 @@ class Forem::ArticleTest < Minitest::Test
     mock_http, _ = stub_http_request(method: :get, path: "/api/articles/me/unpublished", status: 200, body: '[{"id":2,"title":"Draft"}]')
     requestor = make_requestor(mock_http)
     result = Forem::Article.me_unpublished({}, requestor: requestor)
-    assert_instance_of Array, result
+    assert_instance_of Forem::ListObject, result
     assert_instance_of Forem::Article, result[0]
     assert_equal "Draft", result[0].title
   end
@@ -70,7 +70,7 @@ class Forem::ArticleTest < Minitest::Test
     mock_http, _ = stub_http_request(method: :get, path: "/api/articles/me/all", status: 200, body: '[{"id":1},{"id":2}]')
     requestor = make_requestor(mock_http)
     result = Forem::Article.me_all({}, requestor: requestor)
-    assert_instance_of Array, result
+    assert_instance_of Forem::ListObject, result
     assert_equal 2, result.length
     assert_instance_of Forem::Article, result[0]
   end
@@ -79,7 +79,7 @@ class Forem::ArticleTest < Minitest::Test
     mock_http, _ = stub_http_request(method: :get, path: "/api/articles/latest", status: 200, body: '[{"id":1}]')
     requestor = make_requestor(mock_http)
     result = Forem::Article.latest({}, requestor: requestor)
-    assert_instance_of Array, result
+    assert_instance_of Forem::ListObject, result
     assert_instance_of Forem::Article, result[0]
   end
 
@@ -87,7 +87,7 @@ class Forem::ArticleTest < Minitest::Test
     mock_http, _ = stub_http_request(method: :get, path: "/api/articles/search", status: 200, body: '[{"id":1}]')
     requestor = make_requestor(mock_http)
     result = Forem::Article.search({}, requestor: requestor)
-    assert_instance_of Array, result
+    assert_instance_of Forem::ListObject, result
   end
 
   def test_retrieve_by_path

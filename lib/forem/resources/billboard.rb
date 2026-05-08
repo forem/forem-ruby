@@ -30,20 +30,18 @@ module Forem
   # - +type_of+ (String) — One of: +"in_house"+ (admin-created), +"community"+ (entity content), +"external"+ (everywhere)
   #
   # @example List all billboards
-  #   billboards = Forem::Billboard.list
+  #   billboards = client.billboards.list
   #   billboards.data.each { |b| puts "#{b.id}: #{b.name}" }
   #
-  # @example Create a billboard
-  #   billboard = Forem::Billboard.create(
-  #     billboard: {
-  #       name: "Summer Sale",
-  #       body_markdown: "**50% off** all plans!",
-  #       placement_area: "sidebar_left"
-  #     }
+  # @example Create a billboard (flat params — there is no +billboard:+ wrapper)
+  #   billboard = client.billboards.create(
+  #     name: "Summer Sale",
+  #     body_markdown: "**50% off** all plans!",
+  #     placement_area: "sidebar_left"
   #   )
   #
   # @example Retrieve a billboard by ID
-  #   billboard = Forem::Billboard.retrieve(7)
+  #   billboard = client.billboards.retrieve(7)
   #   puts billboard.name
   #
   # @see https://developers.forem.com/api/v1
@@ -68,7 +66,7 @@ module Forem
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [ForemResponse] the raw API response
     # @example
-    #   billboard = Forem::Billboard.retrieve(7)
+    #   billboard = client.billboards.retrieve(7)
     #   billboard.unpublish
     # @see https://developers.forem.com/api/v1
     def unpublish(opts = {})

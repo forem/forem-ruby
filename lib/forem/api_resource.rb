@@ -7,8 +7,10 @@ module Forem
   # (e.g. <tt>"/api/articles"</tt>).
   #
   # Resource classes mix in {APIOperations::Request} so that both the class
-  # and its instances can issue authenticated HTTP requests through
-  # {Forem.default_requestor} (or a custom one supplied via opts).
+  # and its instances can issue authenticated HTTP requests. Class methods
+  # require an explicit +:requestor+ option (normally injected by a
+  # {Forem::Client} via its service objects); instance methods fall back to
+  # the requestor stored on the object at construction time.
   #
   # @example Defining a resource subclass
   #   class Forem::Article < Forem::APIResource
@@ -17,8 +19,6 @@ module Forem
   #     extend APIOperations::Retrieve
   #   end
   class APIResource < ForemObject
-    include APIOperations::Request
-
     # Return the API collection path for this resource class.
     #
     # Delegates to the +RESOURCE_PATH+ constant that every concrete subclass
@@ -62,7 +62,7 @@ module Forem
     # @raise [ForemError] for other API-level errors.
     #
     # @example
-    #   article = Forem::Article.retrieve(42)
+    #   article = client.articles.retrieve(42)
     #   # ... time passes ...
     #   article.refresh   #=> same article object with updated attributes
     #

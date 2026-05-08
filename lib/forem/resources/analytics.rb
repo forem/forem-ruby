@@ -1,26 +1,37 @@
 module Forem
   # Provides access to analytics data for the authenticated user's content.
   #
-  # All analytics endpoints require authentication. Returns analytics for
-  # articles owned by the authenticated user.
+  # All analytics endpoints require authentication. They return analytics for
+  # the calling user (or an organization, when +:organization_id+ is passed).
   #
   # The Analytics resource exposes four read-only reporting endpoints:
   # cumulative totals, day-by-day historical data, yesterday's aggregates,
-  # and traffic referrer breakdowns. All endpoints require authentication.
-  # Organization-level analytics can be accessed by passing an +:org_id+
-  # parameter.
+  # and traffic referrer breakdowns.
   #
-  # @example Retrieve lifetime totals
-  #   totals = Forem::Analytics.totals
-  #   puts "Total reactions: #{totals.reactions}"
+  # == Response shapes
   #
-  # @example Retrieve historical data for a date range
-  #   history = Forem::Analytics.historical(start: "2024-01-01", end: "2024-01-31")
-  #   history.each { |day| puts "#{day.date}: #{day.page_views}" }
+  # The Forem analytics endpoints don't all return the same kind of object,
+  # so this resource preserves each endpoint's natural shape rather than
+  # forcing them into a uniform list:
   #
-  # @example Retrieve yesterday's stats for an organization
-  #   stats = Forem::Analytics.past_day(org_id: 7)
-  #   puts stats.page_views
+  # * {.totals}     — single nested-stats object
+  # * {.historical} — +Hash+ keyed by +"YYYY-MM-DD"+ date string
+  # * {.past_day}   — +Hash+ keyed by +"YYYY-MM-DD"+ (typically 1–2 entries)
+  # * {.referrers}  — +Array+ of referrer objects (extracted from +domains+)
+  #
+  # @example Lifetime totals
+  #   totals = client.analytics.totals
+  #   puts totals.reactions.total   #=> 7
+  #   puts totals.page_views.total  #=> 7
+  #
+  # @example Historical data for a date range
+  #   history = client.analytics.historical(start: "2026-04-01", end: "2026-04-30")
+  #   history.each do |date, stats|
+  #     puts "#{date}: #{stats.page_views.total} views"
+  #   end
+  #
+  # @example Referrer breakdown
+  #   client.analytics.referrers.each { |r| puts "#{r.domain}: #{r.count}" }
   #
   # @see https://developers.forem.com/api/v1
   class Analytics < APIResource
@@ -29,82 +40,112 @@ module Forem
 
     # Return cumulative analytics totals for the authenticated user (or org).
     #
-    # Sends a GET request to +/api/analytics/totals+.
+    # The response groups totals into nested buckets — +comments+, +follows+,
+    # +reactions+, and +page_views+ — each with its own sub-fields. To read
+    # a count, navigate one level deeper than you might expect (e.g.
+    # +totals.reactions.total+, not +totals.reactions+).
     #
     # @param params [Hash] query parameters
-    # @option params [String] :article_id filter analytics to a specific article
-    # @option params [String] :organization_id filter analytics to a specific organization
-    # @option params [Integer] :org_id ID of the organization to fetch analytics for
-    #   (omit for the authenticated user's personal analytics)
-    # @param opts [Hash] per-request options (e.g., +:api_key+)
-    # @return [Forem::ForemObject] object with cumulative stat fields
-    #   (e.g., +reactions+, +comments+, +page_views+)
+    # @option params [String] :article_id filter to a specific article
+    # @option params [Integer] :organization_id ID of the organization
+    # @param opts [Hash] per-request options
+    # @return [Forem::ForemObject] cumulative stats with nested sub-objects
     # @example
-    #   totals = Forem::Analytics.totals
-    #   puts totals.page_views
+    #   totals = client.analytics.totals
+    #   puts totals.reactions.total          #=> 7
+    #   puts totals.reactions.like           #=> 2
+    #   puts totals.page_views.total         #=> 7
     # @see https://developers.forem.com/api/v1
     def self.totals(params = {}, opts = {})
+      requestor = opts[:requestor]
       resp = request(:get, "/api/analytics/totals", params, opts)
-      Forem::ForemObject.construct_from(resp.parsed_body)
+      Forem::ForemObject.construct_from(resp.parsed_body, requestor: requestor)
     end
 
     # Return day-by-day historical analytics for a given date range.
     #
-    # Sends a GET request to +/api/analytics/historical+.
+    # The response is a +Hash+ keyed by the calendar date (+"YYYY-MM-DD"+).
+    # Each value is a stats object with the same nested shape as {.totals}.
     #
     # @param params [Hash] query parameters
-    # @option params [String] :article_id filter analytics to a specific article
-    # @option params [String] :organization_id filter analytics to a specific organization
-    # @option params [String] :start start date (ISO 8601)
-    # @option params [String] :end end date (ISO 8601)
-    # @option params [Integer] :org_id ID of the organization (omit for personal analytics)
-    # @param opts [Hash] per-request options (e.g., +:api_key+)
-    # @return [Array<Forem::ForemObject>] per-day stat objects covering the requested range
+    # @option params [String] :start (required) start date in YYYY-MM-DD form.
+    # @option params [String] :end end date in YYYY-MM-DD form.
+    # @option params [String] :article_id filter to a specific article.
+    # @option params [Integer] :organization_id ID of the organization.
+    # @param opts [Hash] per-request options
+    # @return [Hash{String => Forem::ForemObject}] stats keyed by date.
     # @example
-    #   history = Forem::Analytics.historical(start: "2024-06-01", end: "2024-06-30")
-    #   history.each { |day| puts "#{day.date}: #{day.page_views} views" }
+    #   history = client.analytics.historical(start: "2026-04-01", end: "2026-04-15")
+    #   history.each do |date, stats|
+    #     puts "#{date}: #{stats.page_views.total} views"
+    #   end
     # @see https://developers.forem.com/api/v1
     def self.historical(params = {}, opts = {})
+      requestor = opts[:requestor]
       resp = request(:get, "/api/analytics/historical", params, opts)
-      (resp.parsed_body || []).map { |item| Forem::ForemObject.construct_from(item) }
+      grouped_by_day(resp.parsed_body, requestor)
     end
 
-    # Return aggregated analytics for the previous calendar day.
+    # Return aggregated analytics for the previous calendar day(s).
     #
-    # Sends a GET request to +/api/analytics/past_day+.
+    # The response shape mirrors {.historical}: a +Hash+ keyed by date.
+    # Forem typically returns one or two entries (yesterday plus today's
+    # partial), so callers usually want either the most recent date or
+    # iteration with +#each+.
     #
     # @param params [Hash] query parameters
-    # @option params [String] :article_id filter analytics to a specific article
-    # @option params [String] :organization_id filter analytics to a specific organization
-    # @option params [Integer] :org_id ID of the organization (omit for personal analytics)
-    # @param opts [Hash] per-request options (e.g., +:api_key+)
-    # @return [Forem::ForemObject] stat object for yesterday (page views, reactions, etc.)
+    # @option params [String] :article_id filter to a specific article.
+    # @option params [Integer] :organization_id ID of the organization.
+    # @param opts [Hash] per-request options
+    # @return [Hash{String => Forem::ForemObject}] stats keyed by date.
     # @example
-    #   yesterday = Forem::Analytics.past_day
-    #   puts "Yesterday's page views: #{yesterday.page_views}"
+    #   stats = client.analytics.past_day
+    #   latest_date, latest_stats = stats.max_by { |date, _| date }
+    #   puts "#{latest_date}: #{latest_stats.page_views.total} views"
     # @see https://developers.forem.com/api/v1
     def self.past_day(params = {}, opts = {})
+      requestor = opts[:requestor]
       resp = request(:get, "/api/analytics/past_day", params, opts)
-      Forem::ForemObject.construct_from(resp.parsed_body)
+      grouped_by_day(resp.parsed_body, requestor)
     end
 
-    # Return a breakdown of traffic referrers for the authenticated user's content.
+    # Return the breakdown of traffic referrers for the authenticated user's
+    # content.
     #
-    # Sends a GET request to +/api/analytics/referrers+.
+    # The endpoint wraps the data in a +{"domains" => [...]}+ envelope. This
+    # method unwraps that envelope and returns the inner array directly so
+    # callers can iterate without an extra hop.
     #
     # @param params [Hash] query parameters
-    # @option params [String] :article_id filter analytics to a specific article
-    # @option params [String] :organization_id filter analytics to a specific organization
-    # @option params [Integer] :org_id ID of the organization (omit for personal analytics)
-    # @param opts [Hash] per-request options (e.g., +:api_key+)
-    # @return [Array<Forem::ForemObject>] referrer objects each with a +domain+ and +count+ field
+    # @option params [String] :start start date in YYYY-MM-DD form.
+    # @option params [String] :end end date in YYYY-MM-DD form.
+    # @option params [String] :article_id filter to a specific article.
+    # @option params [Integer] :organization_id ID of the organization.
+    # @param opts [Hash] per-request options
+    # @return [Array<Forem::ForemObject>] referrer objects with +domain+ and
+    #   +count+ fields.
     # @example
-    #   referrers = Forem::Analytics.referrers
-    #   referrers.each { |r| puts "#{r.domain}: #{r.count}" }
+    #   client.analytics.referrers.each { |r| puts "#{r.domain}: #{r.count}" }
     # @see https://developers.forem.com/api/v1
     def self.referrers(params = {}, opts = {})
+      requestor = opts[:requestor]
       resp = request(:get, "/api/analytics/referrers", params, opts)
-      (resp.parsed_body || []).map { |item| Forem::ForemObject.construct_from(item) }
+      body = resp.parsed_body
+      domains = body.is_a?(Hash) ? (body["domains"] || []) : []
+      domains.map { |item| Forem::ForemObject.construct_from(item, requestor: requestor) }
     end
+
+    # Internal: convert the date-keyed response of historical/past_day into a
+    # Hash<String, ForemObject>. Preserves +nil+ stat values (which the API
+    # emits for some days) by converting them to an empty ForemObject.
+    #
+    # @api private
+    def self.grouped_by_day(body, requestor)
+      return {} unless body.is_a?(Hash)
+      body.each_with_object({}) do |(date, stats), out|
+        out[date] = Forem::ForemObject.construct_from(stats || {}, requestor: requestor)
+      end
+    end
+    private_class_method :grouped_by_day
   end
 end
