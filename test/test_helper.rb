@@ -3,12 +3,9 @@ require "forem"
 require "minitest/autorun"
 
 module StubRequestHelper
-  def stub_http_request(method:, path:, status:, body:, request_headers: nil)
+  def stub_http_request(method:, path:, status:, body:, response_headers: {})
     captured = { method: nil, path: nil, body: nil, headers: {} }
-    response = Net::HTTPResponse::CODE_TO_OBJ[status.to_s].new("1.1", status, "")
-    response.instance_variable_set(:@body, body)
-    response.instance_variable_set(:@read, true)
-    response["content-type"] = "application/json"
+    response = http_response(status: status, body: body, headers: response_headers)
 
     mock_http = Minitest::Mock.new
     mock_http.expect(:request, response) do |req|
@@ -20,6 +17,15 @@ module StubRequestHelper
     end
 
     [mock_http, captured]
+  end
+
+  def http_response(status:, body:, headers: {})
+    response = Net::HTTPResponse::CODE_TO_OBJ[status.to_s].new("1.1", status.to_s, "")
+    response.instance_variable_set(:@body, body)
+    response.instance_variable_set(:@read, true)
+    response["content-type"] = "application/json"
+    headers.each { |name, value| response[name] = value }
+    response
   end
 
   def make_requestor(mock_http)

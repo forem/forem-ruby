@@ -39,6 +39,24 @@ class Forem::ErrorsTest < Minitest::Test
     assert Forem::RateLimitError < Forem::ForemError
   end
 
+  def test_rate_limit_error_exposes_integer_retry_after_seconds
+    error = Forem::RateLimitError.new("slow down", http_headers: { "retry-after" => "12" })
+
+    assert_equal 12, error.retry_after
+  end
+
+  def test_rate_limit_error_retry_after_is_nil_when_header_is_absent
+    error = Forem::RateLimitError.new("slow down")
+
+    assert_nil error.retry_after
+  end
+
+  def test_rate_limit_error_retry_after_is_nil_when_header_is_not_an_integer
+    error = Forem::RateLimitError.new("slow down", http_headers: { "retry-after" => "Wed, 21 Oct 2015 07:28:00 GMT" })
+
+    assert_nil error.retry_after
+  end
+
   def test_api_error_inherits_from_forem_error
     assert Forem::APIError < Forem::ForemError
   end

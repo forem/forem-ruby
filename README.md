@@ -84,7 +84,7 @@ silent fallbacks to an unauthenticated default.
 | `client.surveys` | `Forem::Survey` | `list`, `retrieve` (`#poll_votes`, `#poll_text_responses` on instance) |
 | `client.analytics` | `Forem::Analytics` | `totals`, `historical`, `past_day`, `referrers` |
 | `client.health_checks` | `Forem::HealthCheck` | `app`, `database`, `cache` (production requires `token:`) |
-| `client.admin_users` | `Forem::AdminUser` | `create` |
+| `client.admin_users` | `Forem::AdminUser` | `create`, `link_identity`, `bulk_link_identities`, `identities`, `unlink_identity`, `update_notification_settings` |
 
 ### Instance methods on retrieved objects
 
@@ -141,6 +141,31 @@ client.articles.list(tag: "ruby").auto_paging_each { |a| puts a.title }
 Cursor-paginated endpoints (e.g. `survey.poll_votes`) use the same
 `ListObject` surface — `next_page` advances by cursor automatically;
 `previous_page` returns `nil` (cursor pagination is forward-only).
+
+## Admin user synchronization
+
+Admin API keys can synchronize external identities and newsletter settings
+through `client.admin_users`:
+
+```ruby
+identity = client.admin_users.link_identity(
+  42,
+  provider: "github",
+  uid: "octocat"
+)
+
+client.admin_users.bulk_link_identities(
+  provider: "github",
+  identities: [
+    { user_id: 42, uid: "octocat" },
+    { user_id: 43, uid: "hubot" }
+  ]
+)
+
+client.admin_users.identities(42).each { |item| puts item.uid }
+client.admin_users.unlink_identity(42, identity.id)
+client.admin_users.update_notification_settings(42, email_newsletter: false)
+```
 
 ## Analytics response shapes
 
@@ -199,15 +224,24 @@ rescue Forem::NotFoundError => e
   puts "Not found: #{e.message} (HTTP #{e.http_status})"
 rescue Forem::AuthenticationError
   puts "Invalid API key"
-rescue Forem::RateLimitError
-  puts "Rate limited — back off and retry"
+rescue Forem::RateLimitError => e
+  delay = e.retry_after ? "#{e.retry_after} seconds" : "a backoff delay"
+  puts "Rate limited — retry after #{delay}"
 rescue Forem::ForemError => e
-  puts "API error: #{e.message}"
+  code = e.code || "unknown"
+  puts "API error: #{code}: #{e.message}"
 end
 ```
 
-The client retries automatically on connection errors and 5xx responses.
-See `max_network_retries` in the configuration table below.
+For JSON object error responses, `code` is populated from `error_code` when
+present. `RateLimitError#retry_after` returns integer seconds from the
+normalized `Retry-After` response header, or `nil` when the header is absent
+or not an integer.
+
+The client retries automatically on connection errors, rate limits, and 5xx
+responses. Rate-limit retries honor integer `Retry-After` seconds and fall
+back to jittered exponential backoff otherwise. See `max_network_retries` in
+the configuration table below.
 
 ## Configuration
 
@@ -232,7 +266,7 @@ client = Forem::Client.new(
 | `api_version` | String | `"v1"` | API version string (informational) |
 | `open_timeout` | Integer | `30` | Seconds to wait for a TCP connection |
 | `read_timeout` | Integer | `80` | Seconds to wait for a response |
-| `max_network_retries` | Integer | `1` | Automatic retries on connection errors and 5xx responses |
+| `max_network_retries` | Integer | `1` | Automatic retries on connection errors, rate limits, and 5xx responses |
 | `log_level` | Symbol | `nil` | Log level (`:debug`, `:info`, etc.) |
 | `logger` | Logger | `nil` | Custom logger instance |
 

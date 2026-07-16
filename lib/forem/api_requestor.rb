@@ -38,8 +38,9 @@ module Forem
     # returns a {ForemResponse}. On HTTP 4xx/5xx responses the method raises
     # the appropriate {ForemError} subclass. Transient failures
     # ({APIConnectionError}, {RateLimitError}, server 5xx) are automatically
-    # retried up to {Configuration#max_network_retries} times with exponential
-    # back-off.
+    # retried up to {Configuration#max_network_retries} times. Rate-limit
+    # retries honor integer +Retry-After+ seconds; other retries use
+    # exponential back-off.
     #
     # @param method [Symbol] the HTTP verb — +:get+, +:post+, +:put+, or
     #   +:delete+.
@@ -90,7 +91,8 @@ module Forem
       rescue Forem::RateLimitError, Forem::APIError => e
         if retries_left > 0 && retryable_error?(e)
           retries_left -= 1
-          sleep backoff_duration(@config.max_network_retries - retries_left)
+          retry_count = @config.max_network_retries - retries_left
+          sleep retry_delay(e, retry_count)
           retry
         end
         raise
@@ -177,6 +179,7 @@ module Forem
         http_status: response.http_status,
         http_body: response.http_body,
         http_headers: response.http_headers,
+        code: extract_error_code(response),
       }
 
       error_class = case response.http_status
@@ -215,6 +218,17 @@ module Forem
       response.http_body
     end
 
+    # Extract a machine-readable error code from an error response.
+    #
+    # @param response [ForemResponse] the error response.
+    # @return [String, nil] the +error_code+ value, or +nil+ when unavailable.
+    def extract_error_code(response)
+      body = response.parsed_body
+      body["error_code"] if body.is_a?(Hash)
+    rescue JSON::ParserError
+      nil
+    end
+
     # Convert a Net::HTTPResponse header enumerable into a plain Hash.
     #
     # @param http_response [Net::HTTPResponse] the raw response object.
@@ -238,6 +252,20 @@ module Forem
       when APIError then error.http_status >= 500
       else false
       end
+    end
+
+    # Calculate the delay for a retryable HTTP error.
+    #
+    # Rate-limit responses with an integer +Retry-After+ header use the
+    # server-provided delay. All other retryable errors retain the standard
+    # jittered exponential back-off.
+    #
+    # @param error [ForemError] the retryable error.
+    # @param retry_count [Integer] the 1-based retry count.
+    # @return [Numeric] seconds to sleep.
+    def retry_delay(error, retry_count)
+      retry_after = error.retry_after if error.is_a?(RateLimitError)
+      retry_after || backoff_duration(retry_count)
     end
 
     # Calculate the sleep duration before the next retry attempt.
