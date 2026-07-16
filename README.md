@@ -154,13 +154,16 @@ identity = client.admin_users.link_identity(
   uid: "octocat"
 )
 
-client.admin_users.bulk_link_identities(
+results = client.admin_users.bulk_link_identities(
   provider: "github",
   identities: [
     { user_id: 42, uid: "octocat" },
     { user_id: 43, uid: "hubot" }
   ]
 )
+results.each do |result|
+  puts "#{result.user_id}: #{result.status} #{result['error_code']}"
+end
 
 client.admin_users.identities(42).each { |item| puts item.uid }
 client.admin_users.unlink_identity(42, identity.id)
@@ -234,9 +237,9 @@ end
 ```
 
 For JSON object error responses, `code` is populated from `error_code` when
-present. `RateLimitError#retry_after` returns integer seconds from the
-normalized `Retry-After` response header, or `nil` when the header is absent
-or not an integer.
+present. `RateLimitError#retry_after` returns integer seconds when the
+normalized `Retry-After` response header contains only ASCII decimal digits,
+or `nil` otherwise.
 
 The client retries automatically on connection errors, rate limits, and 5xx
 responses. Rate-limit retries honor integer `Retry-After` seconds and fall

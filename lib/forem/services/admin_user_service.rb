@@ -56,13 +56,14 @@ module Forem
         )
       end
 
-      # Link multiple external identities in one request.
+      # Submit multiple external identity links in one request.
       #
       # @param provider [String] the identity provider shared by the identities.
       # @param identities [Array<Hash>] identity hashes containing +user_id+ and
       #   +uid+.
       # @param opts [Hash] per-request options.
-      # @return [Array<ForemObject>] the linked identities.
+      # @return [Array<ForemObject>] per-item results containing +user_id+,
+      #   +status+, and an +error_code+ when that item fails.
       def bulk_link_identities(provider:, identities:, **opts)
         AdminUser.bulk_link_identities(
           provider: provider,

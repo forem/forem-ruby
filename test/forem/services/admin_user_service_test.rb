@@ -27,8 +27,15 @@ class Forem::AdminUserServiceTest < Minitest::Test
     assert_equal({ "provider" => "github", "uid" => "octocat" }, JSON.parse(captured[:body]))
   end
 
-  def test_bulk_link_identities_posts_identities_and_returns_sdk_objects
-    body = '[{"id":7,"provider":"github","uid":"octocat"},{"id":8,"provider":"github","uid":"hubot"}]'
+  def test_bulk_link_identities_posts_identities_and_unwraps_result_objects
+    body = <<~JSON
+      {
+        "results": [
+          {"user_id":42,"status":"linked"},
+          {"user_id":43,"status":"error","error_code":"uid_taken"}
+        ]
+      }
+    JSON
     mock_http, captured = stub_http_request(
       method: :post,
       path: "/api/admin/users/identities/bulk",
@@ -42,7 +49,8 @@ class Forem::AdminUserServiceTest < Minitest::Test
 
     assert_equal 2, result.length
     assert_instance_of Forem::ForemObject, result.first
-    assert_equal "hubot", result.last.uid
+    assert_equal "linked", result.first.status
+    assert_equal "uid_taken", result.last.error_code
     assert_equal "POST", captured[:method]
     assert_equal "/api/admin/users/identities/bulk", captured[:path]
     assert_equal(
@@ -57,12 +65,12 @@ class Forem::AdminUserServiceTest < Minitest::Test
     )
   end
 
-  def test_identities_gets_and_returns_sdk_objects
+  def test_identities_gets_and_unwraps_identity_objects
     mock_http, captured = stub_http_request(
       method: :get,
       path: "/api/admin/users/42/identities",
       status: 200,
-      body: '[{"id":7,"provider":"github","uid":"octocat"}]'
+      body: '{"identities":[{"id":7,"provider":"github","uid":"octocat"}]}'
     )
     client = client_with_http(mock_http)
 
@@ -70,7 +78,10 @@ class Forem::AdminUserServiceTest < Minitest::Test
 
     assert_equal 1, result.length
     assert_instance_of Forem::ForemObject, result.first
-    assert_equal "github", result.first.provider
+    assert_equal(
+      { "id" => 7, "provider" => "github", "uid" => "octocat" },
+      result.first.to_hash
+    )
     assert_equal "GET", captured[:method]
     assert_equal "/api/admin/users/42/identities", captured[:path]
   end

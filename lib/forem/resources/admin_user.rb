@@ -76,13 +76,14 @@ module Forem
       ForemObject.construct_from(resp.parsed_body, requestor: requestor)
     end
 
-    # Link multiple external identities in one request.
+    # Submit multiple external identity links in one request.
     #
     # @param provider [String] the identity provider shared by the identities.
     # @param identities [Array<Hash>] identity hashes containing +user_id+ and
     #   +uid+.
     # @param opts [Hash] per-request options.
-    # @return [Array<ForemObject>] the linked identities.
+    # @return [Array<ForemObject>] per-item results containing +user_id+,
+    #   +status+, and an +error_code+ when that item fails.
     def self.bulk_link_identities(provider:, identities:, **opts)
       requestor = opts[:requestor]
       resp = request(
@@ -91,8 +92,9 @@ module Forem
         { provider: provider, identities: identities },
         opts
       )
-      (resp.parsed_body || []).map do |identity|
-        ForemObject.construct_from(identity, requestor: requestor)
+      results = resp.parsed_body["results"] || []
+      results.map do |result|
+        ForemObject.construct_from(result, requestor: requestor)
       end
     end
 
@@ -104,7 +106,8 @@ module Forem
     def self.identities(user_id, **opts)
       requestor = opts[:requestor]
       resp = request(:get, "#{resource_path}/#{user_id}/identities", {}, opts)
-      (resp.parsed_body || []).map do |identity|
+      identities = resp.parsed_body["identities"] || []
+      identities.map do |identity|
         ForemObject.construct_from(identity, requestor: requestor)
       end
     end

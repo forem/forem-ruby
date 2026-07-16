@@ -95,13 +95,11 @@ module Forem
   class RateLimitError < ForemError
     # Return the number of seconds requested by the server before retrying.
     #
-    # @return [Integer, nil] integer +Retry-After+ seconds, or +nil+ when the
-    #   normalized header is absent or is not an integer.
+    # @return [Integer, nil] +Retry-After+ seconds when the normalized header
+    #   contains only ASCII decimal digits, or +nil+ otherwise.
     def retry_after
       value = http_headers&.fetch("retry-after", nil)
-      Integer(value, 10) if value
-    rescue ArgumentError, TypeError
-      nil
+      Integer(value, 10) if value.is_a?(String) && value.match?(/\A[0-9]+\z/)
     end
   end
 

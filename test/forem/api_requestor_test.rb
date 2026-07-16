@@ -150,11 +150,11 @@ class Forem::APIRequestorTest < Minitest::Test
     connection_manager.verify
   end
 
-  def test_rate_limit_retry_without_integer_retry_after_uses_jittered_backoff
+  def test_rate_limit_retry_with_negative_retry_after_uses_jittered_backoff
     rate_limit_response = http_response(
       status: 429,
       body: '{"error":"rate limited"}',
-      headers: { "Retry-After" => "Wed, 21 Oct 2015 07:28:00 GMT" }
+      headers: { "Retry-After" => "-3" }
     )
     requestor, sleeps, connection_manager = retrying_requestor(
       rate_limit_response,
