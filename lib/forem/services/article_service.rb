@@ -192,6 +192,28 @@ module Forem
         Article.search(params, opts_with_requestor(opts))
       end
 
+      # Semantically search articles using Forem's embeddings-based search.
+      #
+      # Unlike +search+ (keyword matching), this finds articles whose meaning
+      # is close to the query text. Requires authentication.
+      #
+      # @param params [Hash] query parameters
+      # @option params [String] :q the search query text (required)
+      # @option params [Integer] :page page number (default: 1)
+      # @option params [Integer] :per_page number of results per page (default: 10, max: 50)
+      # @option params [Float] :threshold optional cosine distance threshold (0.0-2.0)
+      # @param opts [Hash] per-request options
+      # @return [Array<Article>] articles matching the query, each exposing
+      #   +distance+ and +similarity+ attributes
+      #
+      # @example
+      #   client.articles.semantic_search(q: "how to deploy rails apps")
+      #
+      # @see https://developers.forem.com/api/v1#/operations/semanticSearchArticles
+      def semantic_search(params = {}, opts = {})
+        Article.semantic_search(params, opts_with_requestor(opts))
+      end
+
       # Retrieve an article by its author username and slug.
       #
       # @param username [String] the author's username

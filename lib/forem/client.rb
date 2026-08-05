@@ -243,5 +243,37 @@ module Forem
     # @example
     #   client.admin_users.create(email: "new@example.com", name: "New User")
     def admin_users;                 @admin_users ||= Services::AdminUserService.new(@requestor); end
+
+    # Access the Trends API.
+    #
+    # @return [Services::TrendService] the trends service
+    #
+    # @example
+    #   client.trends.list
+    def trends;                      @trends ||= Services::TrendService.new(@requestor); end
+
+    # Access the Concepts API.
+    #
+    # @return [Services::ConceptService] the concepts service
+    #
+    # @example
+    #   client.concepts.list
+    def concepts;                    @concepts ||= Services::ConceptService.new(@requestor); end
+
+    # Access the Admin Concepts API.
+    #
+    # @return [Services::AdminConceptService] the admin concepts service
+    #
+    # @example
+    #   client.admin_concepts.list
+    def admin_concepts;              @admin_concepts ||= Services::AdminConceptService.new(@requestor); end
+
+    # Access the Admin Request Redirects API.
+    #
+    # @return [Services::RequestRedirectService] the request redirects service
+    #
+    # @example
+    #   client.request_redirects.list
+    def request_redirects;           @request_redirects ||= Services::RequestRedirectService.new(@requestor); end
   end
 end
