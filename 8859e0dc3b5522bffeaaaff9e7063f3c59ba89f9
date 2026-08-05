@@ -1,0 +1,84 @@
+test/forem/services/trend_service_test.rb
+  s_984b7ff40dee0e::t_4a82df9e3994b9 1-127
+test/forem/resources/admin_concept_test.rb
+  s_984b7ff40dee0e::t_9894dfd095bd19 1-181
+README.md
+  s_984b7ff40dee0e::t_b50cba99623bd4 88-91
+  s_984b7ff40dee0e::t_d2434010abb6e3 67
+test/forem/resources/request_redirect_test.rb
+  s_984b7ff40dee0e::t_e41d622d3efbf5 1-100
+lib/forem/services/trend_service.rb
+  s_984b7ff40dee0e::t_2c63a2a62bf478 3-17,19-67
+  s_984b7ff40dee0e::t_86d499cdeeac2f 1-2,18,68-70
+test/forem/services/admin_concept_service_test.rb
+  s_984b7ff40dee0e::t_f07cf3255094a7 1-199
+lib/forem/services/admin_concept_service.rb
+  s_984b7ff40dee0e::t_5dbc1bf7edc55f 3-20,22-135
+  s_984b7ff40dee0e::t_c452d111a88486 1-2,21,136-138
+test/forem/resources/concept_test.rb
+  s_984b7ff40dee0e::t_4a07a3b250e51d 1-275
+lib/forem/resources/article.rb
+  s_984b7ff40dee0e::t_ba8bdfcafdae34 211-237
+lib/forem.rb
+  s_984b7ff40dee0e::t_37754bec10f51f 39-42
+  s_984b7ff40dee0e::t_640df50dc233be 65-68
+lib/forem/client.rb
+  s_984b7ff40dee0e::t_62c4fefa97988a 246-277
+test/forem/resources/trend_test.rb
+  s_984b7ff40dee0e::t_fb9e78db0a42da 1-124
+lib/forem/resources/trend.rb
+  s_984b7ff40dee0e::t_7da210d6b9e96a 1,47,51-52,79-80
+  s_984b7ff40dee0e::t_cc34c1b806ed3e 2-46,48-50,53-78
+lib/forem/resources/request_redirect.rb
+  s_984b7ff40dee0e::t_19072b977f5965 1,49,57-60
+  s_984b7ff40dee0e::t_7397fbc504018a 2-48,50-56
+test/forem/services/concept_service_test.rb
+  s_984b7ff40dee0e::t_186985f36edb82 263
+  s_984b7ff40dee0e::t_5476d6b1f455de 1-262,264-276
+test/forem/services/article_service_test.rb
+  s_984b7ff40dee0e::t_9058e1f152e2cf 1-123
+test/test_helper.rb
+  s_984b7ff40dee0e::t_c15df129763d54 4
+test/forem/services/request_redirect_service_test.rb
+  s_984b7ff40dee0e::t_2d7160613d9e7b 1-116
+lib/forem/version.rb
+  s_984b7ff40dee0e::t_ce9115f9c95ecd 3
+lib/forem/services/article_service.rb
+  s_984b7ff40dee0e::t_1f982b84427ec7 195-216
+test/forem/resources/article_test.rb
+  s_984b7ff40dee0e::t_32879c2ea8de40 93-95,97-106,108-109
+  s_984b7ff40dee0e::t_272904b610939a 96,107
+lib/forem/services/concept_service.rb
+  s_984b7ff40dee0e::t_e3599c10e08794 3-21,23-64,66-140
+  s_984b7ff40dee0e::t_587eea626dcd79 65
+  s_984b7ff40dee0e::t_a1cc770e2e30f4 1-2,22,141-143
+lib/forem/resources/concept.rb
+  s_984b7ff40dee0e::t_99a199848fa645 2-20,22-69,71-73,98-190
+  s_984b7ff40dee0e::t_6582f340e57c2d 1,70,74-75,191-192
+  s_984b7ff40dee0e::t_24d4c4cfe9b538 21
+  s_984b7ff40dee0e::t_dd68bc479d998c 76-97
+lib/forem/services/request_redirect_service.rb
+  s_984b7ff40dee0e::t_4a421d067403be 1-2,27,116-118
+  s_984b7ff40dee0e::t_320abf8a54a610 3-26,28-115
+lib/forem/resources/admin_concept.rb
+  s_984b7ff40dee0e::t_a1eb85f7fffb3c 2-60,62-65,68-167
+  s_984b7ff40dee0e::t_2ea40a5bf7003b 1,61,66-67,168-169
+forem-ruby.gemspec
+  s_984b7ff40dee0e::t_566aaf80d51d47 16-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "8859e0dc3b5522bffeaaaff9e7063f3c59ba89f9",
+  "prompts": {},
+  "sessions": {
+    "s_984b7ff40dee0e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95b9f59b-3e59-4034-a985-d1114b122237",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
