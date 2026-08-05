@@ -1,0 +1,21 @@
+Rakefile
+  s_984b7ff40dee0e::t_8cdb44ad3fdc24 1
+.github/workflows/push_gem.yml
+  s_984b7ff40dee0e::t_27e04e994309b8 1-24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "63492d7ff519df5767708e00a96a408be0f695c8",
+  "prompts": {},
+  "sessions": {
+    "s_984b7ff40dee0e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95b9f59b-3e59-4034-a985-d1114b122237",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
