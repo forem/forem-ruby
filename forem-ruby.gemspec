@@ -13,5 +13,9 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.metadata = {
     "rubygems_mfa_required" => "true",
+    "homepage_uri" => "https://github.com/forem/forem-ruby",
+    "source_code_uri" => "https://github.com/forem/forem-ruby",
+    "bug_tracker_uri" => "https://github.com/forem/forem-ruby/issues",
+    "documentation_uri" => "https://rubydoc.info/gems/forem-ruby",
   }
 end
