@@ -1,0 +1,19 @@
+lib/forem/version.rb
+  s_984b7ff40dee0e::t_c1d7eb61e987e9 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "dda960458678e381478e8858711451198701d2d5",
+  "prompts": {},
+  "sessions": {
+    "s_984b7ff40dee0e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95b9f59b-3e59-4034-a985-d1114b122237",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
