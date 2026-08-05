@@ -208,6 +208,33 @@ module Forem
       paginated_list("/api/articles/search", params, opts)
     end
 
+    # Semantically search published articles using Forem's embeddings-based search.
+    #
+    # Unlike +search+ (keyword matching), this endpoint finds articles whose
+    # meaning is close to the query text, using vector similarity. Requires
+    # authentication.
+    #
+    # Sends a GET request to +/api/articles/semantic_search+.
+    #
+    # @param params [Hash] query parameters
+    # @option params [String] :q the search query text (required)
+    # @option params [Integer] :page page number (default: 1)
+    # @option params [Integer] :per_page number of results per page (default: 10, max: 50)
+    # @option params [Float] :threshold optional cosine distance threshold (0.0-2.0) used
+    #   to filter out weakly-related results
+    # @param opts [Hash] per-request options (e.g., +:api_key+)
+    # @return [Forem::ListObject<Forem::Article>] paginated list of articles
+    #   matching the query, ordered by relevance. Each article additionally
+    #   exposes +distance+ (cosine distance) and +similarity+ (1 - distance)
+    #   attributes.
+    # @example
+    #   results = client.articles.semantic_search(q: "how to deploy rails apps")
+    #   results.each { |a| puts "#{a.title} (#{a.similarity})" }
+    # @see https://developers.forem.com/api/v1
+    def self.semantic_search(params = {}, opts = {})
+      paginated_list("/api/articles/semantic_search", params, opts)
+    end
+
     # Retrieve a single article by the author's username and the article's slug.
     #
     # Sends a GET request to +/api/articles/:username/:slug+.

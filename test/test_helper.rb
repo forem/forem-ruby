@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "forem"
 require "minitest/autorun"
+require "minitest/mock"
 
 module StubRequestHelper
   def stub_http_request(method:, path:, status:, body:, response_headers: {})

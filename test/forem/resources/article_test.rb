@@ -90,6 +90,23 @@ class Forem::ArticleTest < Minitest::Test
     assert_instance_of Forem::ListObject, result
   end
 
+  def test_semantic_search
+    mock_http, captured = stub_http_request(
+      method: :get,
+      path: "/api/articles/semantic_search",
+      status: 200,
+      body: '[{"id":1,"title":"Ruby on Rails Basics","distance":0.12,"similarity":0.88}]'
+    )
+    requestor = make_requestor(mock_http)
+    result = Forem::Article.semantic_search({ q: "ruby on rails" }, requestor: requestor)
+    assert_instance_of Forem::ListObject, result
+    assert_instance_of Forem::Article, result[0]
+    assert_equal "Ruby on Rails Basics", result[0].title
+    assert_equal 0.88, result[0].similarity
+    assert_equal "GET", captured[:method]
+    assert_equal "/api/articles/semantic_search?q=ruby+on+rails", captured[:path]
+  end
+
   def test_retrieve_by_path
     mock_http, _ = stub_http_request(method: :get, path: "/api/articles/alice/hello-world", status: 200, body: '{"id":1,"title":"Hello World"}')
     requestor = make_requestor(mock_http)

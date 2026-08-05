@@ -64,7 +64,7 @@ silent fallbacks to an unauthenticated default.
 
 | Client accessor | Resource class | Available operations |
 |---|---|---|
-| `client.articles` | `Forem::Article` | `list`, `create`, `retrieve`, `update`, `me`, `me_published`, `me_unpublished`, `me_all`, `latest`, `search`, `retrieve_by_path` |
+| `client.articles` | `Forem::Article` | `list`, `create`, `retrieve`, `update`, `me`, `me_published`, `me_unpublished`, `me_all`, `latest`, `search`, `semantic_search`, `retrieve_by_path` |
 | `client.users` | `Forem::User` | `retrieve`, `me`, `search` (by `email:` exact-match) |
 | `client.comments` | `Forem::Comment` | `list`, `retrieve` |
 | `client.organizations` | `Forem::Organization` | `list`, `create`, `retrieve`, `update`, `delete` |
@@ -85,6 +85,10 @@ silent fallbacks to an unauthenticated default.
 | `client.analytics` | `Forem::Analytics` | `totals`, `historical`, `past_day`, `referrers` |
 | `client.health_checks` | `Forem::HealthCheck` | `app`, `database`, `cache` (production requires `token:`) |
 | `client.admin_users` | `Forem::AdminUser` | `create`, `link_identity`, `bulk_link_identities`, `identities`, `unlink_identity`, `update_notification_settings` |
+| `client.trends` | `Forem::Trend` | `list`, `retrieve` (by id or slug), `articles` |
+| `client.concepts` | `Forem::Concept` | `list`, `retrieve`, `update`, `articles`, `search` (semantic) |
+| `client.admin_concepts` | `Forem::AdminConcept` | `list`, `retrieve`, `create`, `update`, `delete`, `trigger_lookback` |
+| `client.request_redirects` | `Forem::RequestRedirect` | `list`, `retrieve`, `create`, `update`, `delete` (admin only) |
 
 ### Instance methods on retrieved objects
 
