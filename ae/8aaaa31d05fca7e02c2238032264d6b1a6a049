@@ -1,0 +1,29 @@
+lib/forem/services/admin_user_service.rb
+  s_d61821b145c511::t_fedf8f6da86f96 101,104,107
+lib/forem/version.rb
+  s_d61821b145c511::t_f4efce19d67556 3
+test/forem/services/admin_user_service_test.rb
+  s_d61821b145c511::t_b370ec76927789 127,139-154,156
+  s_d61821b145c511::t_08b80549b56d0d 155
+  s_d61821b145c511::t_32af022f835943 157-158
+lib/forem/resources/admin_user.rb
+  s_d61821b145c511::t_d2b961820cf2ae 136-139,142,147
+README.md
+  s_d61821b145c511::t_ed7987837cf51f 174
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "ae8aaaa31d05fca7e02c2238032264d6b1a6a049",
+  "prompts": {},
+  "sessions": {
+    "s_d61821b145c511": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6459e182-5069-47bb-a6c9-c33a81595270",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
