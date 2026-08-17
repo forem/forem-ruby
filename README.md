@@ -171,7 +171,7 @@ end
 
 client.admin_users.identities(42).each { |item| puts item.uid }
 client.admin_users.unlink_identity(42, identity.id)
-client.admin_users.update_notification_settings(42, email_newsletter: false)
+client.admin_users.update_notification_settings(42, settings: { email_newsletter: false })
 ```
 
 ## Analytics response shapes

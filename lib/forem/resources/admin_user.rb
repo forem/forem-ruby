@@ -132,18 +132,19 @@ module Forem
       ForemObject.construct_from(resp.parsed_body, requestor: requestor)
     end
 
-    # Update the email newsletter notification setting for a user.
-    #
     # @param user_id [Integer, String] the Forem user ID.
-    # @param email_newsletter [Boolean] whether newsletter email is enabled.
+    # @param settings [Hash] notification setting columns to write, e.g.
+    #   +{ email_newsletter: false, email_digest_periodic: false }+. Sent
+    #   verbatim under the +notification_setting+ wrapper; the server owns
+    #   which keys it accepts.
     # @param opts [Hash] per-request options.
     # @return [ForemObject] the updated notification setting.
-    def self.update_notification_settings(user_id, email_newsletter:, **opts)
+    def self.update_notification_settings(user_id, settings:, **opts)
       requestor = opts[:requestor]
       resp = request(
         :put,
         "#{resource_path}/#{user_id}/notification_settings",
-        { notification_setting: { email_newsletter: email_newsletter } },
+        { notification_setting: settings },
         opts
       )
       ForemObject.construct_from(resp.parsed_body, requestor: requestor)

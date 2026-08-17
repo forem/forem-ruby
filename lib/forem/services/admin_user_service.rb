@@ -96,16 +96,15 @@ module Forem
         )
       end
 
-      # Update the email newsletter notification setting for a user.
       #
       # @param user_id [Integer, String] the Forem user ID.
-      # @param email_newsletter [Boolean] whether newsletter email is enabled.
+      # @param settings [Hash] notification setting columns to write.
       # @param opts [Hash] per-request options.
       # @return [ForemObject] the updated notification setting.
-      def update_notification_settings(user_id, email_newsletter:, **opts)
+      def update_notification_settings(user_id, settings:, **opts)
         AdminUser.update_notification_settings(
           user_id,
-          email_newsletter: email_newsletter,
+          settings: settings,
           **opts_with_requestor(opts)
         )
       end
