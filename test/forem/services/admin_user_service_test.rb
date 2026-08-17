@@ -124,7 +124,7 @@ class Forem::AdminUserServiceTest < Minitest::Test
     )
     client = client_with_http(mock_http)
 
-    result = client.admin_users.update_notification_settings(42, email_newsletter: false)
+    result = client.admin_users.update_notification_settings(42, settings: { email_newsletter: false })
 
     assert_instance_of Forem::ForemObject, result
     assert_equal false, result.email_newsletter
@@ -132,6 +132,26 @@ class Forem::AdminUserServiceTest < Minitest::Test
     assert_equal "/api/admin/users/42/notification_settings", captured[:path]
     assert_equal(
       { "notification_setting" => { "email_newsletter" => false } },
+      JSON.parse(captured[:body])
+    )
+  end
+
+  def test_update_notification_settings_sends_every_supplied_key
+    mock_http, captured = stub_http_request(
+      method: :put,
+      path: "/api/admin/users/42/notification_settings",
+      status: 200,
+      body: '{"email_newsletter":false,"email_digest_periodic":false}'
+    )
+    client = client_with_http(mock_http)
+
+    client.admin_users.update_notification_settings(
+      42, settings: { email_newsletter: false, email_digest_periodic: false }
+    )
+
+    assert_equal(
+      { "notification_setting" => { "email_newsletter" => false,
+                                    "email_digest_periodic" => false } },
       JSON.parse(captured[:body])
     )
   end
