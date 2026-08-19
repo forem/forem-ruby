@@ -61,6 +61,26 @@ module Forem
     #   client.users.retrieve(42)
     def users;                       @users ||= Services::UserService.new(@requestor); end
 
+    # Access the Badges API.
+    #
+    # @return [Services::BadgeService] the badges service
+    # @see https://developers.forem.com/api/v1
+    #
+    # @example
+    #   client.badges.list(page: 1)
+    #   client.badges.retrieve(45)
+    def badges;                      @badges ||= Services::BadgeService.new(@requestor); end
+
+    # Access the Badge Achievements API.
+    #
+    # @return [Services::BadgeAchievementService] the badge achievements service
+    # @see https://developers.forem.com/api/v1
+    #
+    # @example
+    #   client.badge_achievements.create(user_id: 123, badge_id: 45)
+    #   client.badge_achievements.delete(9876)
+    def badge_achievements;          @badge_achievements ||= Services::BadgeAchievementService.new(@requestor); end
+
     # Access the Comments API.
     #
     # @return [Services::CommentService] the comments service
