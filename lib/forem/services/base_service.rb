@@ -40,6 +40,26 @@ module Forem
       def opts_with_requestor(opts)
         opts.merge(requestor: @requestor)
       end
+
+      # Wrap flat attributes in the envelope key an endpoint expects.
+      #
+      # Some write endpoints expect a nested body
+      # (<tt>{ badge: { title: "..." } }</tt>). This lets service methods take
+      # flat attributes and nest them on the caller's behalf. Params that are
+      # already enveloped are passed through untouched, so both call styles
+      # work.
+      #
+      # @param key [Symbol] the envelope key (e.g. +:badge+)
+      # @param params [Hash] attributes, flat or already enveloped
+      # @return [Hash] the enveloped params
+      #
+      # @example
+      #   enveloped(:badge, title: "Top 7")   #=> { badge: { title: "Top 7" } }
+      def enveloped(key, params)
+        return params if params.key?(key) || params.key?(key.to_s)
+
+        { key => params }
+      end
     end
   end
 end

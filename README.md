@@ -66,6 +66,8 @@ silent fallbacks to an unauthenticated default.
 |---|---|---|
 | `client.articles` | `Forem::Article` | `list`, `create`, `retrieve`, `update`, `me`, `me_published`, `me_unpublished`, `me_all`, `latest`, `search`, `semantic_search`, `retrieve_by_path` |
 | `client.users` | `Forem::User` | `retrieve`, `me`, `search` (by `email:` exact-match) |
+| `client.badges` | `Forem::Badge` | `list`, `create`, `retrieve`, `update`, `delete` |
+| `client.badge_achievements` | `Forem::BadgeAchievement` | `list`, `create`, `retrieve`, `delete` |
 | `client.comments` | `Forem::Comment` | `list`, `retrieve` |
 | `client.organizations` | `Forem::Organization` | `list`, `create`, `retrieve`, `update`, `delete` |
 | `client.tags` | `Forem::Tag` | `list` |
