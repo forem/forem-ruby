@@ -1,0 +1,76 @@
+test/forem/resources/badge_achievement_test.rb
+  s_d35d53fea79f1b::t_c33cbfcb62fc10 1-66
+  s_d35d53fea79f1b::t_b24ae1851e4a74 67-71
+README.md
+  s_d35d53fea79f1b::t_1949540727191c 69-70
+lib/forem/services/badge_service.rb
+  s_d35d53fea79f1b::t_893de1f572ef3b 1-117
+lib/forem.rb
+  s_d35d53fea79f1b::t_41d1a77a3d9013 47-48
+  s_d35d53fea79f1b::t_04877f4e025855 19-20
+lib/forem/client.rb
+  s_d35d53fea79f1b::t_342c74cff3a3f4 64-83
+lib/forem/resources/badge_achievement.rb
+  s_d35d53fea79f1b::t_b1ae5e444932de 1-53
+  s_c8bdca6be73591::t_937db5f9671b8c 54-55
+lib/forem/resources/badge.rb
+  s_d35d53fea79f1b::t_7a89e1cc9524b4 1-61
+lib/forem/services/base_service.rb
+  s_d35d53fea79f1b::t_0a46e23ee04926 43-61
+  s_d35d53fea79f1b::t_a86b27cf505fc1 62
+test/forem/resources/badge_test.rb
+  s_d35d53fea79f1b::t_72dcf0577a5fcc 1-74
+lib/forem/services/badge_achievement_service.rb
+  s_d35d53fea79f1b::t_c1bb186c553a2d 1-95
+lib/forem/version.rb
+  s_c8bdca6be73591::t_372c1671342c9f 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "79476c327f1f05cd76718e864be8e87c1c520bc1",
+  "prompts": {
+    "0616d259618e2764": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2aaba1c7-5de1-41d7-97b9-2603ed08cd0e",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>",
+      "total_additions": 7,
+      "total_deletions": 0,
+      "accepted_lines": 7,
+      "overriden_lines": 0
+    },
+    "17b54431fe08affa": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "34105f37-5171-419d-8120-489d80e9bece",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>",
+      "total_additions": 1226,
+      "total_deletions": 336,
+      "accepted_lines": 890,
+      "overriden_lines": 0
+    }
+  },
+  "sessions": {
+    "s_c8bdca6be73591": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "350845e1-ece3-4fd7-be68-c44b3b5b7e14",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    },
+    "s_d35d53fea79f1b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "508e0a55-53a4-4498-81bb-b956351f13f8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}
