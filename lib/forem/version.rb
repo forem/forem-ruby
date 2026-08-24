@@ -1,4 +1,4 @@
 module Forem
   # The current version of the forem-ruby gem.
-  VERSION = "0.1.0.beta4"
+  VERSION = "0.1.0.beta5"
 end

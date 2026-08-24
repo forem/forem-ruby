@@ -1,3 +1,5 @@
+require "json"
+
 module Forem
   # Base error class for all errors raised by the forem-ruby library.
   #
@@ -44,6 +46,28 @@ module Forem
       @http_headers = http_headers
       @code = code
       super(message)
+    end
+
+    # The response body parsed as JSON.
+    #
+    # Useful when the API returns structured detail alongside an error. An empty
+    # or unparseable body yields +nil+.
+    #
+    # @return [Hash, Array, nil] the parsed body, or +nil+ when there is
+    #   nothing parseable to return.
+    #
+    # @example Reading a field the API returned with the error
+    #   begin
+    #     client.badge_achievements.create(user_id: 123, badge_id: 45)
+    #   rescue Forem::ConflictError => e
+    #     e.parsed_body&.dig("achievement_id")
+    #   end
+    def parsed_body
+      return @parsed_body if defined?(@parsed_body)
+
+      @parsed_body = (JSON.parse(http_body) if http_body && !http_body.empty?)
+    rescue JSON::ParserError
+      @parsed_body = nil
     end
   end
 

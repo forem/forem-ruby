@@ -69,6 +69,23 @@ class Forem::ErrorsTest < Minitest::Test
     assert_nil error.retry_after
   end
 
+  def test_parsed_body_parses_a_json_body
+    error = Forem::ConflictError.new("conflict", http_body: '{"achievement_id":22}')
+
+    assert_equal 22, error.parsed_body["achievement_id"]
+  end
+
+  def test_parsed_body_is_nil_when_the_body_is_not_json
+    error = Forem::APIError.new("boom", http_body: "<!DOCTYPE html><html></html>")
+
+    assert_nil error.parsed_body
+  end
+
+  def test_parsed_body_is_nil_when_there_is_no_body
+    assert_nil Forem::ForemError.new("boom").parsed_body
+    assert_nil Forem::ForemError.new("boom", http_body: "").parsed_body
+  end
+
   def test_api_error_inherits_from_forem_error
     assert Forem::APIError < Forem::ForemError
   end
