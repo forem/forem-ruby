@@ -21,6 +21,7 @@ module Forem
   # - +rewarding_context_message+ (String) — Rendered from
   #   +rewarding_context_message_markdown+ by the API; not writable
   # - +include_default_description+ (Boolean) — Whether the badge description accompanies the message
+  # - +metadata+ (ForemObject) — Arbitrary key/value data supplied for context. Defaults to +{}+.
   # - +created_at+ / +updated_at+ (String) — ISO 8601 timestamps; not writable
   #
   # == Authentication
@@ -37,6 +38,13 @@ module Forem
   #     badge_id: 45
   #   )
   #   puts achievement.id
+  #
+  # @example Award a badge with caller-supplied metadata
+  #   client.badge_achievements.create(
+  #     user_id: 123,
+  #     badge_id: 45,
+  #     metadata: { entitlement_id: "01a0…", source: "core" }
+  #   )
   #
   # @example Revoke a badge
   #   client.badge_achievements.delete(9876)

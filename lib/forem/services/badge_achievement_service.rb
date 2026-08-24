@@ -51,6 +51,16 @@ module Forem
 
       # Award a badge to a user.
       #
+      # If the badge cannot be awarded more than once and the user already holds
+      # it, this raises {ConflictError} (HTTP 409). The response carries
+      # +achievement_id+, the id of the award that blocked the request.
+      #
+      #   begin
+      #     client.badge_achievements.create(user_id: 123, badge_id: 45)
+      #   rescue Forem::ConflictError => e
+      #     existing_id = e.parsed_body&.dig("achievement_id")
+      #   end
+      #
       # @param params [Hash] achievement attributes
       # @option params [Integer] :user_id the user ID (required)
       # @option params [Integer] :badge_id the badge ID (required)
@@ -58,14 +68,19 @@ module Forem
       #   shown with the award
       # @option params [Boolean] :include_default_description whether to show
       #   the badge's own description alongside the message (default true)
+      # @option params [Hash] :metadata arbitrary key/value data stored with the
+      #   achievement for context
       # @param opts [Hash] per-request options
       # @return [BadgeAchievement] the newly created achievement
+      # @raise [ConflictError] on HTTP 409 when the user already holds a badge
+      #   that cannot be awarded more than once
       # @raise [InvalidRequestError] on HTTP 422
       #
       # @example
       #   client.badge_achievements.create(
       #     user_id: 123,
-      #     badge_id: 45
+      #     badge_id: 45,
+      #     metadata: { entitlement_id: "01a0…" }
       #   )
       #
       # @see https://developers.forem.com/api/v1
