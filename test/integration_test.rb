@@ -92,6 +92,24 @@ class IntegrationTest < Minitest::Test
     assert_equal({"id" => 5, "name" => "Bob"}, hash["user"])
   end
 
+  def test_event_workflow
+    mock_http, captured = stub_http_request(
+      method: :get,
+      path: "/api/events?type_of=challenge",
+      status: 200,
+      body: '[{"id":100,"title":"Hackathon 2026","type_of":"challenge","full_details":"All details"}]'
+    )
+    client = Forem::Client.new("test-key")
+    client.requestor.instance_variable_set(:@connection_manager, mock_conn(mock_http))
+
+    events = client.events.list(type_of: "challenge")
+    assert_instance_of Forem::ListObject, events
+    assert_equal 1, events.data.length
+    assert_equal "Hackathon 2026", events.data[0].title
+    assert_equal "All details", events.data[0].full_details
+    assert_equal "/api/events?type_of=challenge", captured[:path]
+  end
+
   private
 
   def mock_conn(mock_http)

@@ -15,10 +15,11 @@ class Forem::ClientTest < Minitest::Test
 
   def test_client_has_all_resource_accessors
     client = Forem::Client.new("key")
-    %i[articles users comments organizations tags follows followers
+    %i[articles users badges badge_achievements comments organizations tags follows followers
        reading_list podcast_episodes videos profile_images billboards
        pages segments reactions recommended_articles_lists agent_sessions
-       surveys analytics health_checks admin_users].each do |resource|
+       surveys analytics health_checks admin_users trends concepts
+       admin_concepts request_redirects events].each do |resource|
       assert_respond_to client, resource, "Client missing #{resource} accessor"
     end
   end
