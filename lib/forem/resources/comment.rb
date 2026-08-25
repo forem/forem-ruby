@@ -17,6 +17,11 @@ module Forem
   # - +page+ (Integer) — Page number
   # - +per_page+ (Integer) — Items per page (default: 50)
   #
+  # == Comment Fields
+  #
+  # Comment objects expose attributes such as +id_code+, +created_at+, +body_html+,
+  # +ai_disclosure_level+, and +ai_disclosure_label+.
+  #
   # Returns threaded conversations with nested replies.
   #
   # @example List all comments for an article

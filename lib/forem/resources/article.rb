@@ -43,8 +43,12 @@ module Forem
   # @option params [String] 'article.canonical_url' (nullable)
   # @option params [String] 'article.main_image' (nullable)
   # @option params [Integer] 'article.organization_id' (nullable)
+  # @option params [Integer] 'article.ai_disclosure_level' AI disclosure level (e.g. 0 for none, 1 for assisted, 2 for generated)
   #
-  # @example List published articles
+  # == Article Fields
+  #
+  # Additional response attributes include +ai_disclosure_level+, +ai_disclosure_label+,
+  # +cover_image+, +social_image+, +reading_time+, +positive_reactions_count+, etc.
   #   articles = client.articles.list(per_page: 10, tag: "ruby")
   #   articles.data.each { |a| puts a.title }
   #

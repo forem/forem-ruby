@@ -295,5 +295,15 @@ module Forem
     # @example
     #   client.request_redirects.list
     def request_redirects;           @request_redirects ||= Services::RequestRedirectService.new(@requestor); end
+
+    # Access the Events API.
+    #
+    # @return [Services::EventService] the events service
+    # @see https://developers.forem.com/api/v1
+    #
+    # @example
+    #   client.events.list(type_of: "challenge")
+    #   client.events.retrieve(12)
+    def events;                      @events ||= Services::EventService.new(@requestor); end
   end
 end

@@ -91,6 +91,7 @@ silent fallbacks to an unauthenticated default.
 | `client.concepts` | `Forem::Concept` | `list`, `retrieve`, `update`, `articles`, `search` (semantic) |
 | `client.admin_concepts` | `Forem::AdminConcept` | `list`, `retrieve`, `create`, `update`, `delete`, `trigger_lookback` |
 | `client.request_redirects` | `Forem::RequestRedirect` | `list`, `retrieve`, `create`, `update`, `delete` (admin only) |
+| `client.events` | `Forem::Event` | `list` (with `type_of:` filter), `retrieve`, `create`, `update`, `delete` (admin only) |
 
 ### Instance methods on retrieved objects
 
