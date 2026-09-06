@@ -22,6 +22,12 @@ module Forem
   #   requestor = Forem::APIRequestor.new(config: config)
   #   requestor.request(:get, "/api/articles")
   class APIRequestor
+    # HTTP methods that RFC 9110 defines as idempotent: sending the same
+    # request twice has the same effect on the server as sending it once.
+    # Replaying these after a failure is safe. POST and PATCH are absent
+    # deliberately — a retried POST can create a second resource.
+    IDEMPOTENT_METHODS = %i[get head put delete options trace].freeze
+
     # Create a new APIRequestor.
     #
     # @param config [Configuration] the configuration to use for this
@@ -42,6 +48,13 @@ module Forem
     # retries honor integer +Retry-After+ seconds; other retries use
     # exponential back-off.
     #
+    # Retries are constrained by idempotency. A network error or a server 5xx
+    # leaves it unknown whether the server processed the request, so those are
+    # replayed only for {IDEMPOTENT_METHODS}; a POST is not retried and the
+    # error is raised to the caller. A 429 is always retried, for any method,
+    # because the server rejected the request without processing it. Override
+    # per request with +opts[:idempotent]+.
+    #
     # @param method [Symbol] the HTTP verb — +:get+, +:post+, +:put+, or
     #   +:delete+.
     # @param path [String] the API path relative to {Configuration#api_base}
@@ -53,6 +66,10 @@ module Forem
     # @option opts [String] :api_base override the base URL for this request.
     # @option opts [APIRequestor] :requestor an alternative requestor to use
     #   (consumed by higher-level helpers before reaching this method).
+    # @option opts [Boolean] :idempotent override whether replaying this
+    #   request is safe. Defaults to +true+ for {IDEMPOTENT_METHODS} and
+    #   +false+ for POST/PATCH. Set it to +true+ on a POST only when the
+    #   endpoint deduplicates server-side (e.g. an idempotency key).
     # @return [ForemResponse] the parsed response wrapper.
     # @raise [AuthenticationError] on HTTP 401.
     # @raise [AuthorizationError] on HTTP 403.
@@ -76,20 +93,26 @@ module Forem
       extra_headers = opts.delete(:headers) || {}
       uri = URI("#{api_base}#{path}")
 
+      idempotent = opts.delete(:idempotent)
+      idempotent = IDEMPOTENT_METHODS.include?(method) if idempotent.nil?
+
       retries_left = @config.max_network_retries
       begin
         response = execute_request(method, uri, params, api_key, extra_headers)
         handle_error_response(response) if response.http_status >= 400
         response
       rescue Forem::APIConnectionError
-        if retries_left > 0
+        # A network failure is ambiguous: the request may have reached the
+        # server and been processed before the connection broke. Only replay
+        # it when doing so cannot create a second resource.
+        if retries_left > 0 && idempotent
           retries_left -= 1
           sleep backoff_duration(@config.max_network_retries - retries_left)
           retry
         end
         raise
       rescue Forem::RateLimitError, Forem::APIError => e
-        if retries_left > 0 && retryable_error?(e)
+        if retries_left > 0 && retryable_error?(e, idempotent: idempotent)
           retries_left -= 1
           retry_count = @config.max_network_retries - retries_left
           sleep retry_delay(e, retry_count)
@@ -241,15 +264,21 @@ module Forem
 
     # Determine whether a given error is eligible for an automatic retry.
     #
-    # {RateLimitError} is always retryable. {APIError} is retryable only when
-    # the HTTP status is 500 or greater (server errors).
+    # {RateLimitError} is always retryable, including for non-idempotent
+    # methods: a 429 means the server rejected the request without processing
+    # it, so replaying cannot duplicate anything.
+    #
+    # A server {APIError} (5xx) is ambiguous — the request may have been
+    # processed before the failure — so it is retried only for idempotent
+    # methods.
     #
     # @param error [ForemError] the error to evaluate.
+    # @param idempotent [Boolean] whether replaying this request is safe.
     # @return [Boolean] +true+ if the request should be retried.
-    def retryable_error?(error)
+    def retryable_error?(error, idempotent:)
       case error
       when RateLimitError then true
-      when APIError then error.http_status >= 500
+      when APIError then idempotent && error.http_status >= 500
       else false
       end
     end
