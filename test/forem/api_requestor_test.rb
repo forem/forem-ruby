@@ -169,6 +169,71 @@ class Forem::APIRequestorTest < Minitest::Test
     connection_manager.verify
   end
 
+  def test_post_is_not_retried_after_a_server_error
+    requestor, attempts, = counting_requestor(
+      http_response(status: 500, body: '{"error":"boom"}'),
+      http_response(status: 201, body: '{"id":1}')
+    )
+
+    assert_raises(Forem::APIError) { requestor.request(:post, "/api/articles", { title: "Hi" }) }
+    assert_equal 1, attempts.length, "a 5xx may already have been processed; replaying a POST can duplicate it"
+  end
+
+  def test_post_is_not_retried_after_a_connection_error
+    requestor, attempts, = counting_requestor(
+      Net::ReadTimeout.new,
+      http_response(status: 201, body: '{"id":1}')
+    )
+
+    assert_raises(Forem::APIConnectionError) { requestor.request(:post, "/api/articles", { title: "Hi" }) }
+    assert_equal 1, attempts.length, "a timed-out POST may have been processed by the server"
+  end
+
+  def test_put_is_still_retried_after_a_server_error
+    requestor, attempts, = counting_requestor(
+      http_response(status: 500, body: '{"error":"boom"}'),
+      http_response(status: 200, body: '{"id":1}')
+    )
+
+    response = requestor.request(:put, "/api/articles/1", { title: "Hi" })
+
+    assert_equal 200, response.http_status
+    assert_equal 2, attempts.length, "PUT is idempotent, so replaying is safe"
+  end
+
+  def test_post_is_retried_after_a_rate_limit
+    requestor, attempts, = counting_requestor(
+      http_response(status: 429, body: '{"error":"rate limited"}', headers: { "Retry-After" => "1" }),
+      http_response(status: 201, body: '{"id":1}')
+    )
+
+    response = requestor.request(:post, "/api/articles", { title: "Hi" })
+
+    assert_equal 201, response.http_status
+    assert_equal 2, attempts.length, "a 429 is rejected without processing, so replaying cannot duplicate"
+  end
+
+  def test_post_is_retried_when_explicitly_marked_idempotent
+    requestor, attempts, = counting_requestor(
+      http_response(status: 500, body: '{"error":"boom"}'),
+      http_response(status: 201, body: '{"id":1}')
+    )
+
+    response = requestor.request(:post, "/api/articles", { title: "Hi" }, { idempotent: true })
+
+    assert_equal 201, response.http_status
+    assert_equal 2, attempts.length
+  end
+
+  def test_idempotent_option_is_not_sent_as_a_header
+    mock_http, captured = stub_http_request(method: :post, path: "/api/articles", status: 201, body: '{"id":1}')
+    requestor = make_requestor(mock_http)
+
+    requestor.request(:post, "/api/articles", { title: "Hi" }, { idempotent: true })
+
+    refute captured[:headers].key?("idempotent")
+  end
+
   def test_per_request_api_key_override
     mock_http, captured = stub_http_request(method: :get, path: "/api/articles", status: 200, body: '[]')
     requestor = make_requestor(mock_http)
@@ -177,6 +242,32 @@ class Forem::APIRequestorTest < Minitest::Test
   end
 
   private
+
+  # Like retrying_requestor, but tolerates the request NOT being replayed and
+  # reports how many attempts actually reached the transport. A queued entry
+  # that is an Exception is raised instead of returned.
+  def counting_requestor(*responses, retries: 1)
+    queued = responses.dup
+    attempts = []
+    http = Object.new
+    http.define_singleton_method(:request) do |request|
+      attempts << request
+      nxt = queued.shift
+      raise nxt if nxt.is_a?(Exception)
+
+      nxt
+    end
+
+    @config.max_network_retries = retries
+    requestor = Forem::APIRequestor.new(config: @config)
+    connection_manager = Object.new
+    connection_manager.define_singleton_method(:connection_for) { |_uri, **_kwargs| http }
+    requestor.instance_variable_set(:@connection_manager, connection_manager)
+
+    sleeps = []
+    requestor.define_singleton_method(:sleep) { |seconds| sleeps << seconds }
+    [requestor, attempts, sleeps]
+  end
 
   def retrying_requestor(*responses)
     queued_responses = responses.dup
