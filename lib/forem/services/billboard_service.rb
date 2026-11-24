@@ -86,6 +86,24 @@ module Forem
       def update(id, params = {}, opts = {})
         Billboard.update(id, params, opts_with_requestor(opts))
       end
+
+      # Preview rendered HTML for a billboard without saving it.
+      #
+      # @param params [Hash] preview attributes (+:body_markdown+, +:minimized_body_markdown+, +:placement_area+, +:render_mode+)
+      # @param opts [Hash] per-request options
+      # @return [ForemObject] preview payload (+processed_html+, +minimized_processed_html+)
+      def preview(params = {}, opts = {})
+        Billboard.preview(params, opts_with_requestor(opts))
+      end
+
+      # Unpublish a billboard by ID.
+      #
+      # @param id [Integer, String] the billboard ID
+      # @param opts [Hash] per-request options
+      # @return [ForemResponse] raw API response
+      def unpublish(id, opts = {})
+        Billboard.unpublish(id, opts_with_requestor(opts))
+      end
     end
   end
 end

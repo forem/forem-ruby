@@ -117,4 +117,30 @@ class Forem::UserTest < Minitest::Test
     result = user.unpublish(requestor: requestor)
     assert_equal 204, result.http_status
   end
+
+  def test_suspend_with_note
+    mock_http, captured = stub_http_request(method: :put, path: "/api/users/1/suspend", status: 204, body: "")
+    requestor = make_requestor(mock_http)
+    user = Forem::User.construct_from({"id" => 1})
+    result = user.suspend(note: "Abuse", requestor: requestor)
+    assert_equal 204, result.http_status
+    assert_equal({ "note" => "Abuse" }, JSON.parse(captured[:body]))
+  end
+
+  def test_add_and_remove_base_subscriber
+    mock_http, captured = stub_http_request(method: :put, path: "/api/users/1/base_subscriber", status: 204, body: "")
+    requestor = make_requestor(mock_http)
+    user = Forem::User.construct_from({"id" => 1})
+    result = user.add_base_subscriber(requestor: requestor)
+    assert_equal 204, result.http_status
+    assert_equal "PUT", captured[:method]
+    assert_equal "/api/users/1/base_subscriber", captured[:path]
+
+    mock_http2, captured2 = stub_http_request(method: :delete, path: "/api/users/1/base_subscriber", status: 204, body: "")
+    requestor2 = make_requestor(mock_http2)
+    result2 = user.remove_base_subscriber(requestor: requestor2)
+    assert_equal 204, result2.http_status
+    assert_equal "DELETE", captured2[:method]
+    assert_equal "/api/users/1/base_subscriber", captured2[:path]
+  end
 end

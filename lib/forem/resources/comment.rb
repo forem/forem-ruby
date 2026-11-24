@@ -44,5 +44,19 @@ module Forem
 
     OBJECT_NAME = "comment"
     RESOURCE_PATH = "/api/comments"
+
+    # Preview rendered Markdown for a comment without persisting it.
+    #
+    # Sends a POST request to +/api/comments/preview+. Accepts either flat
+    # +{ body_markdown: "..." }+ or wrapped +{ comment: { body_markdown: "..." } }+.
+    #
+    # @param params [Hash] preview attributes
+    # @param opts [Hash] per-request options
+    # @return [Forem::ForemObject] object containing +processed_html+
+    def self.preview(params = {}, opts = {})
+      requestor = opts[:requestor]
+      resp = request(:post, "#{resource_path}/preview", params, opts)
+      ForemObject.construct_from(resp.parsed_body, requestor: requestor)
+    end
   end
 end

@@ -135,6 +135,61 @@ module Forem
       domains.map { |item| Forem::ForemObject.construct_from(item, requestor: requestor) }
     end
 
+    # Return the top engaged contributors (reactors and commenters) for the
+    # authenticated user or organization's articles.
+    #
+    # Sends a GET request to +/api/analytics/top_contributors+.
+    #
+    # @param params [Hash] query parameters (+:start+, +:end+, +:article_id+, +:organization_id+)
+    # @param opts [Hash] per-request options
+    # @return [Array<Forem::ForemObject>] contributor entries with +user_id+,
+    #   +username+, +name+, +profile_image+, +reactions_count+, +comments_count+, +score+
+    def self.top_contributors(params = {}, opts = {})
+      requestor = opts[:requestor]
+      resp = request(:get, "/api/analytics/top_contributors", params, opts)
+      (resp.parsed_body || []).map { |item| Forem::ForemObject.construct_from(item, requestor: requestor) }
+    end
+
+    # Return follower engagement metrics for the authenticated user or organization.
+    #
+    # Sends a GET request to +/api/analytics/follower_engagement+.
+    #
+    # @param params [Hash] query parameters (+:start+, +:end+, +:organization_id+)
+    # @param opts [Hash] per-request options
+    # @return [Forem::ForemObject] object with +total_followers+, +engaged_followers+, +ratio+
+    def self.follower_engagement(params = {}, opts = {})
+      requestor = opts[:requestor]
+      resp = request(:get, "/api/analytics/follower_engagement", params, opts)
+      Forem::ForemObject.construct_from(resp.parsed_body, requestor: requestor)
+    end
+
+    # Return the bundled analytics dashboard payload in a single request.
+    #
+    # Sends a GET request to +/api/analytics/dashboard+.
+    #
+    # @param params [Hash] query parameters (+:start+, +:end+, +:article_id+, +:organization_id+)
+    # @param opts [Hash] per-request options
+    # @return [Forem::ForemObject] bundled dashboard metrics (+historical+,
+    #   +totals+, +referrers+, +top_contributors+, +follower_engagement+, +start_date_floor+)
+    def self.dashboard(params = {}, opts = {})
+      requestor = opts[:requestor]
+      resp = request(:get, "/api/analytics/dashboard", params, opts)
+      Forem::ForemObject.construct_from(resp.parsed_body, requestor: requestor)
+    end
+
+    # Return the rolling 365-day personal activity heatmap for the authenticated user.
+    #
+    # Sends a GET request to +/api/analytics/heatmap+.
+    #
+    # @param params [Hash] query parameters (optional +:end+ in YYYY-MM-DD format)
+    # @param opts [Hash] per-request options
+    # @return [Forem::ForemObject] activity heatmap payload
+    def self.heatmap(params = {}, opts = {})
+      requestor = opts[:requestor]
+      resp = request(:get, "/api/analytics/heatmap", params, opts)
+      Forem::ForemObject.construct_from(resp.parsed_body, requestor: requestor)
+    end
+
     # Internal: convert the date-keyed response of historical/past_day into a
     # Hash<String, ForemObject>. Preserves +nil+ stat values (which the API
     # emits for some days) by converting them to an empty ForemObject.

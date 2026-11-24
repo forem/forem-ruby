@@ -305,5 +305,60 @@ module Forem
     #   client.events.list(type_of: "challenge")
     #   client.events.retrieve(12)
     def events;                      @events ||= Services::EventService.new(@requestor); end
+
+    # Access the Related Articles API.
+    #
+    # @return [Services::RelatedArticleService] the related articles service
+    # @see https://developers.forem.com/api/v1
+    #
+    # @example
+    #   client.related_articles.list(organization_id: 7, q: "ruby")
+    def related_articles;            @related_articles ||= Services::RelatedArticleService.new(@requestor); end
+
+    # Access the Subforems API.
+    #
+    # @return [Services::SubforemService] the subforems service
+    # @see https://developers.forem.com/api/v1
+    #
+    # @example
+    #   client.subforems.list
+    def subforems;                   @subforems ||= Services::SubforemService.new(@requestor); end
+
+    # Access the Instance metadata API.
+    #
+    # @return [Services::InstanceService] the instance service
+    # @see https://developers.forem.com/api/v1
+    #
+    # @example
+    #   client.instance.retrieve
+    def instance;                    @instance ||= Services::InstanceService.new(@requestor); end
+
+    # Access the Billboard Campaigns API.
+    #
+    # @return [Services::BillboardCampaignService] the billboard campaigns service
+    # @see https://developers.forem.com/api/v1
+    #
+    # @example
+    #   client.billboard_campaigns.list
+    def billboard_campaigns;         @billboard_campaigns ||= Services::BillboardCampaignService.new(@requestor); end
+
+    # Access the Feedback Messages API.
+    #
+    # @return [Services::FeedbackMessageService] the feedback messages service
+    # @see https://developers.forem.com/api/v1
+    #
+    # @example
+    #   client.feedback_messages.update(42, status: "Resolved")
+    def feedback_messages;           @feedback_messages ||= Services::FeedbackMessageService.new(@requestor); end
+
+    # Access the Images API (upload and AI image generation).
+    #
+    # @return [Services::ImageService] the images service
+    # @see https://developers.forem.com/api/v1
+    #
+    # @example
+    #   client.images.create(image: "/path/to/cover.png")
+    #   client.images.generate(prompt: "A minimalist ruby icon")
+    def images;                      @images ||= Services::ImageService.new(@requestor); end
   end
 end

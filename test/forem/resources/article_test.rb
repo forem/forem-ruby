@@ -122,4 +122,25 @@ class Forem::ArticleTest < Minitest::Test
     result = article.unpublish(requestor: requestor)
     assert_equal 204, result.http_status
   end
+
+  def test_class_unpublish
+    mock_http, captured = stub_http_request(method: :put, path: "/api/articles/42/unpublish", status: 204, body: "")
+    requestor = make_requestor(mock_http)
+    result = Forem::Article.unpublish(42, requestor: requestor)
+    assert_equal 204, result.http_status
+    assert_equal "PUT", captured[:method]
+    assert_equal "/api/articles/42/unpublish", captured[:path]
+  end
+
+  def test_preview
+    body = '{"processed_html":"<h1>Hello</h1>","body_html":"<h1>Hello</h1>","title":"Hello","reading_time_minutes":1}'
+    mock_http, captured = stub_http_request(method: :post, path: "/api/articles/preview", status: 200, body: body)
+    requestor = make_requestor(mock_http)
+    result = Forem::Article.preview({ body_markdown: "# Hello", title: "Hello" }, requestor: requestor)
+    assert_instance_of Forem::ForemObject, result
+    assert_equal "<h1>Hello</h1>", result.processed_html
+    assert_equal 1, result.reading_time_minutes
+    assert_equal "POST", captured[:method]
+    assert_equal "/api/articles/preview", captured[:path]
+  end
 end

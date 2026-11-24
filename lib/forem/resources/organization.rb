@@ -40,6 +40,46 @@ module Forem
     OBJECT_NAME = "organization"
     RESOURCE_PATH = "/api/organizations"
 
+    # Return the members of an organization by ID or slug.
+    #
+    # Sends a GET request to +/api/organizations/:id_or_slug/users+.
+    #
+    # @param id_or_slug [Integer, String] organization ID or username slug
+    # @param params [Hash] query parameters (+:page+, +:per_page+)
+    # @param opts [Hash] per-request options
+    # @return [Array<Forem::User>] members of the organization
+    def self.users(id_or_slug, params = {}, opts = {})
+      requestor = opts[:requestor]
+      resp = request(:get, "#{resource_path}/#{id_or_slug}/users", params, opts)
+      (resp.parsed_body || []).map { |item| Forem::User.construct_from(item, requestor: requestor) }
+    end
+
+    # Return articles published under an organization by ID or slug.
+    #
+    # Sends a GET request to +/api/organizations/:id_or_slug/articles+.
+    #
+    # @param id_or_slug [Integer, String] organization ID or username slug
+    # @param params [Hash] query parameters (+:page+, +:per_page+)
+    # @param opts [Hash] per-request options
+    # @return [Array<Forem::Article>] articles belonging to the organization
+    def self.articles(id_or_slug, params = {}, opts = {})
+      requestor = opts[:requestor]
+      resp = request(:get, "#{resource_path}/#{id_or_slug}/articles", params, opts)
+      (resp.parsed_body || []).map { |item| Forem::Article.construct_from(item, requestor: requestor) }
+    end
+
+    # Return per-article analytics for an organization.
+    #
+    # Sends a GET request to +/api/organizations/:organization_id/article_analytics+.
+    #
+    # @param organization_id [Integer, String] numeric organization ID
+    # @param params [Hash] query parameters (+:page+, +:per_page+, optional +:start+ and +:end+ YYYY-MM-DD pair)
+    # @param opts [Hash] per-request options
+    # @return [Forem::ListObject<Forem::ForemObject>] paginated list of per-article analytics
+    def self.article_analytics(organization_id, params = {}, opts = {})
+      Forem::ForemObject.paginated_list("#{resource_path}/#{organization_id}/article_analytics", params, opts)
+    end
+
     # Return the members of this organization.
     #
     # Sends a GET request to +/api/organizations/:id/users+.
@@ -74,6 +114,19 @@ module Forem
     def articles(params = {}, opts = {})
       resp = request(:get, "#{resource_url}/articles", params, opts)
       (resp.parsed_body || []).map { |item| Forem::Article.construct_from(item) }
+    end
+
+    # Return per-article analytics for this organization instance.
+    #
+    # Sends a GET request to +/api/organizations/:id/article_analytics+.
+    #
+    # @param params [Hash] query parameters (+:page+, +:per_page+, +:start+, +:end+)
+    # @param opts [Hash] per-request options
+    # @return [Forem::ListObject<Forem::ForemObject>] paginated per-article analytics
+    def article_analytics(params = {}, opts = {})
+      opts = opts.dup
+      opts[:requestor] ||= @requestor
+      Forem::ForemObject.paginated_list("#{resource_url}/article_analytics", params, opts)
     end
   end
 end

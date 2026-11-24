@@ -1,0 +1,323 @@
+name: Sync Forem API
+
+on:
+  schedule:
+    # Daily at 14:00 UTC (9:00 AM EST / 10:00 AM EDT)
+    - cron: "0 14 * * *"
+  workflow_dispatch:
+    inputs:
+      forem_ref:
+        description: "forem/forem branch, tag, or commit SHA to sync against"
+        required: false
+        default: "main"
+        type: string
+      dry_run:
+        description: "Audit only (report drift without modifying code or opening a PR)"
+        required: false
+        default: false
+        type: boolean
+      force_full_audit:
+        description: "Force a full sync run even if no upstream API diffs are detected"
+        required: false
+        default: false
+        type: boolean
+      provider:
+        description: "AI coding CLI provider for automated PR generation"
+        required: false
+        default: "auto"
+        type: choice
+        options:
+          - auto
+          - gemini
+          - claude
+          - codex
+
+concurrency:
+  group: forem-api-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  sync:
+    name: Audit & Sync with forem/forem
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout forem-ruby
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.FOREM_SYNC_TOKEN || github.token }}
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3.14"
+          bundler-cache: true
+
+      - name: Clone forem/forem (treeless full history)
+        env:
+          FOREM_REF: ${{ inputs.forem_ref || 'main' }}
+        run: |
+          git clone --filter=blob:none --no-tags https://github.com/forem/forem.git ../forem
+          git -C ../forem checkout "$FOREM_REF"
+          echo "FOREM_HEAD_SHA=$(git -C ../forem rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "FOREM_SHORT_SHA=$(git -C ../forem rev-parse --short=10 HEAD)" >> "$GITHUB_ENV"
+
+      - name: Run deterministic Forem API audit
+        id: audit
+        env:
+          FORCE_FULL: ${{ inputs.force_full_audit == true && 'true' || 'false' }}
+        run: |
+          mkdir -p tmp
+          ARGS=(--forem-dir ../forem --json-out tmp/api_sync_report.json --markdown-out tmp/api_sync_report.md)
+          if [ "$FORCE_FULL" = "true" ]; then
+            ARGS+=(--force-full-audit)
+          fi
+
+          set +e
+          ruby script/api_sync/cli.rb audit "${ARGS[@]}"
+          STATUS=$?
+          set -e
+
+          cat tmp/api_sync_report.md >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$STATUS" -eq 0 ]; then
+            echo "needs_sync=false" >> "$GITHUB_OUTPUT"
+            echo "100% in sync with forem/forem@${FOREM_SHORT_SHA}."
+          elif [ "$STATUS" -eq 2 ]; then
+            echo "needs_sync=true" >> "$GITHUB_OUTPUT"
+            echo "API changes or parity drift detected against forem/forem@${FOREM_SHORT_SHA}."
+          else
+            echo "::error::Forem API audit failed with exit code $STATUS"
+            exit "$STATUS"
+          fi
+
+      - name: Resolve AI coding provider
+        id: provider
+        if: steps.audit.outputs.needs_sync == 'true'
+        env:
+          REQUESTED_PROVIDER: ${{ inputs.provider || 'auto' }}
+          HAS_GEMINI: ${{ secrets.GEMINI_API_KEY != '' && 'true' || 'false' }}
+          HAS_ANTHROPIC: ${{ secrets.ANTHROPIC_API_KEY != '' && 'true' || 'false' }}
+          HAS_OPENAI: ${{ secrets.OPENAI_API_KEY != '' && 'true' || 'false' }}
+        run: |
+          RESOLVED="none"
+          case "$REQUESTED_PROVIDER" in
+            gemini)
+              [ "$HAS_GEMINI" = "true" ] && RESOLVED="gemini"
+              ;;
+            claude)
+              [ "$HAS_ANTHROPIC" = "true" ] && RESOLVED="claude"
+              ;;
+            codex)
+              [ "$HAS_OPENAI" = "true" ] && RESOLVED="codex"
+              ;;
+            auto)
+              if [ "$HAS_GEMINI" = "true" ]; then
+                RESOLVED="gemini"
+              elif [ "$HAS_ANTHROPIC" = "true" ]; then
+                RESOLVED="claude"
+              elif [ "$HAS_OPENAI" = "true" ]; then
+                RESOLVED="codex"
+              fi
+              ;;
+          esac
+          echo "selected=$RESOLVED" >> "$GITHUB_OUTPUT"
+          echo "Resolved AI provider: $RESOLVED"
+
+      - name: Ensure api-sync label exists
+        if: steps.audit.outputs.needs_sync == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.FOREM_SYNC_TOKEN || github.token }}
+        run: |
+          gh label create "api-sync" \
+            --description "Automated sync with forem/forem API changes" \
+            --color "1d76db" \
+            --force || true
+
+      - name: Report drift via GitHub Issue (dry-run or no AI secret configured)
+        if: steps.audit.outputs.needs_sync == 'true' && (inputs.dry_run == true || steps.provider.outputs.selected == 'none')
+        env:
+          GH_TOKEN: ${{ secrets.FOREM_SYNC_TOKEN || github.token }}
+          DRY_RUN: ${{ inputs.dry_run == true && 'true' || 'false' }}
+          SELECTED_PROVIDER: ${{ steps.provider.outputs.selected }}
+        run: |
+          ISSUE_TITLE="[api-sync] Forem API changes detected (${FOREM_SHORT_SHA})"
+          {
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "> Dry-run audit triggered. No code changes or PR were created."
+            else
+              echo "> No AI provider secret (\`GEMINI_API_KEY\`, \`ANTHROPIC_API_KEY\`, or \`OPENAI_API_KEY\`) is configured in repository Actions secrets. Add one to enable automatic PR generation on daily sync runs."
+            fi
+            echo ""
+            cat tmp/api_sync_report.md
+          } > tmp/api_sync_issue_body.md
+
+          EXISTING_ISSUE=$(gh issue list --label "api-sync" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING_ISSUE" ]; then
+            gh issue edit "$EXISTING_ISSUE" --title "$ISSUE_TITLE" --body-file tmp/api_sync_issue_body.md
+            echo "Updated tracking issue #$EXISTING_ISSUE"
+          else
+            gh issue create --title "$ISSUE_TITLE" --label "api-sync" --body-file tmp/api_sync_issue_body.md
+          fi
+
+      - name: Set up Node.js for AI coding CLI
+        if: steps.audit.outputs.needs_sync == 'true' && inputs.dry_run != true && steps.provider.outputs.selected != 'none'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Prepare sync branch
+        id: branch
+        if: steps.audit.outputs.needs_sync == 'true' && inputs.dry_run != true && steps.provider.outputs.selected != 'none'
+        env:
+          GH_TOKEN: ${{ secrets.FOREM_SYNC_TOKEN || github.token }}
+        run: |
+          git config user.name "forem-api-sync[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          EXISTING_PR=$(gh pr list --label "api-sync" --state open --json number,headRefName --jq '.[0] // empty')
+          if [ -n "$EXISTING_PR" ]; then
+            PR_NUM=$(echo "$EXISTING_PR" | jq -r '.number')
+            BRANCH=$(echo "$EXISTING_PR" | jq -r '.headRefName')
+            echo "existing_pr=$PR_NUM" >> "$GITHUB_OUTPUT"
+            echo "name=$BRANCH" >> "$GITHUB_OUTPUT"
+            git checkout -B "$BRANCH" origin/main
+            echo "Reusing open api-sync PR #$PR_NUM on branch $BRANCH (reset to origin/main)"
+          else
+            BRANCH="api-sync/${FOREM_SHORT_SHA}"
+            echo "existing_pr=" >> "$GITHUB_OUTPUT"
+            echo "name=$BRANCH" >> "$GITHUB_OUTPUT"
+            git checkout -B "$BRANCH" origin/main
+            echo "Created new sync branch $BRANCH"
+          fi
+
+      - name: Run autonomous SDK sync agent
+        if: steps.audit.outputs.needs_sync == 'true' && inputs.dry_run != true && steps.provider.outputs.selected != 'none'
+        env:
+          PROVIDER: ${{ steps.provider.outputs.selected }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          PROMPT_FILE="tmp/combined_sync_prompt.md"
+          {
+            cat script/api_sync/PROMPT.md
+            echo ""
+            echo "---"
+            echo ""
+            cat tmp/api_sync_report.md
+          } > "$PROMPT_FILE"
+
+          case "$PROVIDER" in
+            gemini)
+              npm install -g @google/gemini-cli
+              gemini --yolo --include-directories ../forem -p "$(cat "$PROMPT_FILE")"
+              ;;
+            claude)
+              npm install -g @anthropic-ai/claude-code
+              claude -p "$(cat "$PROMPT_FILE")" \
+                --add-dir ../forem \
+                --allowedTools "Read,Edit,Write,MultiEdit,Glob,Grep,Bash"
+              ;;
+            codex)
+              npm install -g @openai/codex
+              codex exec --full-auto --add-dir ../forem "$(cat "$PROMPT_FILE")"
+              ;;
+            *)
+              echo "::error::Unsupported provider: $PROVIDER"
+              exit 1
+              ;;
+          esac
+
+      - name: Enforce verification gates (tests, 100% route parity, gem build)
+        id: verify
+        if: steps.audit.outputs.needs_sync == 'true' && inputs.dry_run != true && steps.provider.outputs.selected != 'none'
+        run: |
+          bundle exec rake test
+          ruby script/api_sync/cli.rb verify --forem-dir ../forem
+          gem build forem-ruby.gemspec
+          rm -f forem-ruby-*.gem
+
+      - name: Open or update Pull Request
+        if: steps.audit.outputs.needs_sync == 'true' && inputs.dry_run != true && steps.provider.outputs.selected != 'none' && steps.verify.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.FOREM_SYNC_TOKEN || github.token }}
+          BRANCH: ${{ steps.branch.outputs.name }}
+          EXISTING_PR: ${{ steps.branch.outputs.existing_pr }}
+        run: |
+          if git diff --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
+            echo "No repository changes after sync run."
+            exit 0
+          fi
+
+          git add -A
+          git commit -m "chore(api-sync): sync Forem API to forem/forem@${FOREM_SHORT_SHA}"
+          git push --force-with-lease -u origin "$BRANCH"
+
+          PR_TITLE="Sync Forem API changes (forem/forem@${FOREM_SHORT_SHA})"
+          {
+            echo "## Automated Forem API Sync"
+            echo ""
+            echo "Synced \`forem-ruby\` with \`forem/forem\` at [\`${FOREM_SHORT_SHA}\`](https://github.com/forem/forem/commit/${FOREM_HEAD_SHA})."
+            echo ""
+            if [ -f tmp/api_sync_pr_summary.md ]; then
+              cat tmp/api_sync_pr_summary.md
+              echo ""
+            fi
+            echo "<details>"
+            echo "<summary>Full deterministic audit report</summary>"
+            echo ""
+            cat tmp/api_sync_report.md
+            echo ""
+            echo "</details>"
+            echo ""
+            echo "### Verification"
+            echo "- [x] \`bundle exec rake test\` passed"
+            echo "- [x] \`ruby script/api_sync/cli.rb verify --forem-dir ../forem\` passed (100% route & SDK parity)"
+            echo "- [x] \`gem build forem-ruby.gemspec\` succeeded"
+          } > tmp/pr_body.md
+
+          if [ -n "$EXISTING_PR" ]; then
+            gh pr edit "$EXISTING_PR" --title "$PR_TITLE" --body-file tmp/pr_body.md
+            echo "Updated PR #$EXISTING_PR"
+          else
+            gh pr create \
+              --base main \
+              --head "$BRANCH" \
+              --title "$PR_TITLE" \
+              --label "api-sync" \
+              --body-file tmp/pr_body.md
+          fi
+
+          # Close any open drift tracking issue now that a verified sync PR is open
+          EXISTING_ISSUE=$(gh issue list --label "api-sync" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING_ISSUE" ]; then
+            gh issue close "$EXISTING_ISSUE" --comment "Superseded by verified sync PR on branch \`${BRANCH}\`."
+          fi
+
+      - name: Notify tracking issue if automated sync failed verification
+        if: failure() && steps.audit.outputs.needs_sync == 'true' && inputs.dry_run != true && steps.provider.outputs.selected != 'none'
+        env:
+          GH_TOKEN: ${{ secrets.FOREM_SYNC_TOKEN || github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          ISSUE_TITLE="[api-sync] Automated sync failed for forem/forem@${FOREM_SHORT_SHA}"
+          {
+            echo "> Automated API sync encountered a failure or verification error. Inspect the workflow run: ${RUN_URL}"
+            echo ""
+            cat tmp/api_sync_report.md
+          } > tmp/api_sync_failure_body.md
+
+          EXISTING_ISSUE=$(gh issue list --label "api-sync" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING_ISSUE" ]; then
+            gh issue edit "$EXISTING_ISSUE" --title "$ISSUE_TITLE" --body-file tmp/api_sync_failure_body.md
+          else
+            gh issue create --title "$ISSUE_TITLE" --label "api-sync" --body-file tmp/api_sync_failure_body.md
+          fi

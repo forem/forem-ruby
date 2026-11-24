@@ -239,6 +239,34 @@ module Forem
       paginated_list("/api/articles/semantic_search", params, opts)
     end
 
+    # Unpublish an article by ID, reverting it to draft status.
+    #
+    # Sends a PUT request to +/api/articles/:id/unpublish+. Requires admin or
+    # moderator role.
+    #
+    # @param id [Integer, String] the article ID to unpublish
+    # @param opts [Hash] per-request options (e.g., +:api_key+)
+    # @return [ForemResponse] the raw API response
+    def self.unpublish(id, opts = {})
+      request(:put, "#{resource_path}/#{id}/unpublish", {}, opts)
+    end
+
+    # Preview rendered Markdown for an article without persisting it.
+    #
+    # Sends a POST request to +/api/articles/preview+. Accepts either flat
+    # params (+{ body_markdown: ..., title: ... }+) or an +article:+ hash.
+    #
+    # @param params [Hash] article preview attributes
+    # @param opts [Hash] per-request options
+    # @return [Forem::ForemObject] preview payload (+processed_html+,
+    #   +body_html+, +title+, +description+, +tags+, +cover_image+,
+    #   +reading_time_minutes+, +ai_disclosure_level+)
+    def self.preview(params = {}, opts = {})
+      requestor = opts[:requestor]
+      resp = request(:post, "/api/articles/preview", params, opts)
+      ForemObject.construct_from(resp.parsed_body, requestor: requestor)
+    end
+
     # Retrieve a single article by the author's username and the article's slug.
     #
     # Sends a GET request to +/api/articles/:username/:slug+.

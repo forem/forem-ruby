@@ -1,0 +1,2149 @@
+{
+  "schema_version": 1,
+  "forem_repo": "forem/forem",
+  "forem_sha": "2c6b7277858d5261308273d8de0efbfba14dc7ba",
+  "synced_at": "2026-11-24T22:21:27Z",
+  "watched_paths": [
+    "config/routes.rb",
+    "config/routes/api.rb",
+    "app/controllers/api",
+    "app/controllers/concerns/api",
+    "app/views/api",
+    "swagger",
+    "public/openapi.yml"
+  ],
+  "endpoints": {
+    "GET /api/admin/concepts": {
+      "status": "implemented",
+      "controller": "api/v1/admin/concepts",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_concepts",
+        "service_method": "list",
+        "resource": "AdminConcept",
+        "resource_class_method": "list"
+      }
+    },
+    "POST /api/admin/concepts": {
+      "status": "implemented",
+      "controller": "api/v1/admin/concepts",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_concepts",
+        "service_method": "create",
+        "resource": "AdminConcept",
+        "resource_class_method": "create"
+      }
+    },
+    "DELETE /api/admin/concepts/:id": {
+      "status": "implemented",
+      "controller": "api/v1/admin/concepts",
+      "action": "destroy",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_concepts",
+        "service_method": "delete",
+        "resource": "AdminConcept",
+        "resource_class_method": "delete"
+      }
+    },
+    "GET /api/admin/concepts/:id": {
+      "status": "implemented",
+      "controller": "api/v1/admin/concepts",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_concepts",
+        "service_method": "retrieve",
+        "resource": "AdminConcept",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "PUT /api/admin/concepts/:id": {
+      "status": "implemented",
+      "controller": "api/v1/admin/concepts",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_concepts",
+        "service_method": "update",
+        "resource": "AdminConcept",
+        "resource_class_method": "update"
+      }
+    },
+    "POST /api/admin/concepts/:id/trigger_lookback": {
+      "status": "implemented",
+      "controller": "api/v1/admin/concepts",
+      "action": "trigger_lookback",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_concepts",
+        "service_method": "trigger_lookback",
+        "resource": "AdminConcept",
+        "resource_class_method": "trigger_lookback"
+      }
+    },
+    "GET /api/admin/request_redirects": {
+      "status": "implemented",
+      "controller": "api/v1/admin/request_redirects",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "request_redirects",
+        "service_method": "list",
+        "resource": "RequestRedirect",
+        "resource_class_method": "list"
+      }
+    },
+    "POST /api/admin/request_redirects": {
+      "status": "implemented",
+      "controller": "api/v1/admin/request_redirects",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "request_redirects",
+        "service_method": "create",
+        "resource": "RequestRedirect",
+        "resource_class_method": "create"
+      }
+    },
+    "DELETE /api/admin/request_redirects/:id": {
+      "status": "implemented",
+      "controller": "api/v1/admin/request_redirects",
+      "action": "destroy",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "request_redirects",
+        "service_method": "delete",
+        "resource": "RequestRedirect",
+        "resource_class_method": "delete"
+      }
+    },
+    "GET /api/admin/request_redirects/:id": {
+      "status": "implemented",
+      "controller": "api/v1/admin/request_redirects",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "request_redirects",
+        "service_method": "retrieve",
+        "resource": "RequestRedirect",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "PUT /api/admin/request_redirects/:id": {
+      "status": "implemented",
+      "controller": "api/v1/admin/request_redirects",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "request_redirects",
+        "service_method": "update",
+        "resource": "RequestRedirect",
+        "resource_class_method": "update"
+      }
+    },
+    "GET /api/admin/users": {
+      "status": "implemented",
+      "controller": "api/v1/admin/users",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_users",
+        "service_method": "list",
+        "resource": "AdminUser",
+        "resource_class_method": "list"
+      }
+    },
+    "POST /api/admin/users": {
+      "status": "implemented",
+      "controller": "api/v1/admin/users",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_users",
+        "service_method": "create",
+        "resource": "AdminUser",
+        "resource_class_method": "create"
+      }
+    },
+    "GET /api/admin/users/:id": {
+      "status": "implemented",
+      "controller": "api/v1/admin/users",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_users",
+        "service_method": "retrieve",
+        "resource": "AdminUser",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "PUT /api/admin/users/:id": {
+      "status": "implemented",
+      "controller": "api/v1/admin/users",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_users",
+        "service_method": "update",
+        "resource": "AdminUser",
+        "resource_class_method": "update"
+      }
+    },
+    "PUT /api/admin/users/:id/email": {
+      "status": "implemented",
+      "controller": "api/v1/admin/users",
+      "action": "update_email",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_users",
+        "service_method": "update_email",
+        "resource": "AdminUser",
+        "resource_class_method": "update_email"
+      }
+    },
+    "POST /api/admin/users/:id/merge": {
+      "status": "implemented",
+      "controller": "api/v1/admin/users",
+      "action": "merge",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_users",
+        "service_method": "merge",
+        "resource": "AdminUser",
+        "resource_class_method": "merge"
+      }
+    },
+    "PUT /api/admin/users/:id/notification_settings": {
+      "status": "implemented",
+      "controller": "api/v1/admin/users",
+      "action": "update_notification_settings",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_users",
+        "service_method": "update_notification_settings",
+        "resource": "AdminUser",
+        "resource_class_method": "update_notification_settings"
+      }
+    },
+    "PUT /api/admin/users/:id/status": {
+      "status": "implemented",
+      "controller": "api/v1/admin/users",
+      "action": "update_status",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_users",
+        "service_method": "update_status",
+        "resource": "AdminUser",
+        "resource_class_method": "update_status"
+      }
+    },
+    "GET /api/admin/users/:user_id/identities": {
+      "status": "implemented",
+      "controller": "api/v1/admin/user_identities",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_users",
+        "service_method": "identities",
+        "resource": "AdminUser",
+        "resource_class_method": "identities"
+      }
+    },
+    "POST /api/admin/users/:user_id/identities": {
+      "status": "implemented",
+      "controller": "api/v1/admin/user_identities",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_users",
+        "service_method": "link_identity",
+        "resource": "AdminUser",
+        "resource_class_method": "link_identity"
+      }
+    },
+    "DELETE /api/admin/users/:user_id/identities/:id": {
+      "status": "implemented",
+      "controller": "api/v1/admin/user_identities",
+      "action": "destroy",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_users",
+        "service_method": "unlink_identity",
+        "resource": "AdminUser",
+        "resource_class_method": "unlink_identity"
+      }
+    },
+    "GET /api/admin/users/:user_id/notes": {
+      "status": "implemented",
+      "controller": "api/v1/admin/user_notes",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_users",
+        "service_method": "notes",
+        "resource": "AdminUser",
+        "resource_class_method": "notes"
+      }
+    },
+    "POST /api/admin/users/:user_id/notes": {
+      "status": "implemented",
+      "controller": "api/v1/admin/user_notes",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_users",
+        "service_method": "create_note",
+        "resource": "AdminUser",
+        "resource_class_method": "create_note"
+      }
+    },
+    "POST /api/admin/users/identities/bulk": {
+      "status": "implemented",
+      "controller": "api/v1/admin/user_identities",
+      "action": "bulk_create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "admin_users",
+        "service_method": "bulk_link_identities",
+        "resource": "AdminUser",
+        "resource_class_method": "bulk_link_identities"
+      }
+    },
+    "GET /api/agent_sessions": {
+      "status": "implemented",
+      "controller": "api/v1/agent_sessions",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "agent_sessions",
+        "service_method": "list",
+        "resource": "AgentSession",
+        "resource_class_method": "list"
+      }
+    },
+    "POST /api/agent_sessions": {
+      "status": "implemented",
+      "controller": "api/v1/agent_sessions",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "agent_sessions",
+        "service_method": "create",
+        "resource": "AgentSession",
+        "resource_class_method": "create"
+      }
+    },
+    "GET /api/agent_sessions/:id": {
+      "status": "implemented",
+      "controller": "api/v1/agent_sessions",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "agent_sessions",
+        "service_method": "retrieve",
+        "resource": "AgentSession",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "GET /api/agent_sessions/:id/raw_url": {
+      "status": "implemented",
+      "controller": "api/v1/agent_sessions",
+      "action": "raw_url",
+      "api_version": "v1",
+      "sdk": {
+        "resource": "AgentSession",
+        "resource_instance_method": "raw_url"
+      }
+    },
+    "POST /api/agent_sessions/presign": {
+      "status": "implemented",
+      "controller": "api/v1/agent_sessions",
+      "action": "presign",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "agent_sessions",
+        "service_method": "presign",
+        "resource": "AgentSession",
+        "resource_class_method": "presign"
+      }
+    },
+    "GET /api/analytics/dashboard": {
+      "status": "implemented",
+      "controller": "api/v1/analytics",
+      "action": "dashboard",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "analytics",
+        "service_method": "dashboard",
+        "resource": "Analytics",
+        "resource_class_method": "dashboard"
+      }
+    },
+    "GET /api/analytics/follower_engagement": {
+      "status": "implemented",
+      "controller": "api/v1/analytics",
+      "action": "follower_engagement",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "analytics",
+        "service_method": "follower_engagement",
+        "resource": "Analytics",
+        "resource_class_method": "follower_engagement"
+      }
+    },
+    "GET /api/analytics/heatmap": {
+      "status": "implemented",
+      "controller": "api/v1/analytics",
+      "action": "heatmap",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "analytics",
+        "service_method": "heatmap",
+        "resource": "Analytics",
+        "resource_class_method": "heatmap"
+      }
+    },
+    "GET /api/analytics/historical": {
+      "status": "implemented",
+      "controller": "api/v1/analytics",
+      "action": "historical",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "analytics",
+        "service_method": "historical",
+        "resource": "Analytics",
+        "resource_class_method": "historical"
+      }
+    },
+    "GET /api/analytics/past_day": {
+      "status": "implemented",
+      "controller": "api/v1/analytics",
+      "action": "past_day",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "analytics",
+        "service_method": "past_day",
+        "resource": "Analytics",
+        "resource_class_method": "past_day"
+      }
+    },
+    "GET /api/analytics/referrers": {
+      "status": "implemented",
+      "controller": "api/v1/analytics",
+      "action": "referrers",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "analytics",
+        "service_method": "referrers",
+        "resource": "Analytics",
+        "resource_class_method": "referrers"
+      }
+    },
+    "GET /api/analytics/top_contributors": {
+      "status": "implemented",
+      "controller": "api/v1/analytics",
+      "action": "top_contributors",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "analytics",
+        "service_method": "top_contributors",
+        "resource": "Analytics",
+        "resource_class_method": "top_contributors"
+      }
+    },
+    "GET /api/analytics/totals": {
+      "status": "implemented",
+      "controller": "api/v1/analytics",
+      "action": "totals",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "analytics",
+        "service_method": "totals",
+        "resource": "Analytics",
+        "resource_class_method": "totals"
+      }
+    },
+    "GET /api/articles": {
+      "status": "implemented",
+      "controller": "api/v1/articles",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "articles",
+        "service_method": "list",
+        "resource": "Article",
+        "resource_class_method": "list"
+      }
+    },
+    "POST /api/articles": {
+      "status": "implemented",
+      "controller": "api/v1/articles",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "articles",
+        "service_method": "create",
+        "resource": "Article",
+        "resource_class_method": "create"
+      }
+    },
+    "GET /api/articles/:id": {
+      "status": "implemented",
+      "controller": "api/v1/articles",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "articles",
+        "service_method": "retrieve",
+        "resource": "Article",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "PUT /api/articles/:id": {
+      "status": "implemented",
+      "controller": "api/v1/articles",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "articles",
+        "service_method": "update",
+        "resource": "Article",
+        "resource_class_method": "update"
+      }
+    },
+    "PUT /api/articles/:id/unpublish": {
+      "status": "implemented",
+      "controller": "api/v1/articles",
+      "action": "unpublish",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "articles",
+        "service_method": "unpublish",
+        "resource": "Article",
+        "resource_class_method": "unpublish",
+        "resource_instance_method": "unpublish"
+      }
+    },
+    "GET /api/articles/:username/:slug": {
+      "status": "implemented",
+      "controller": "api/v1/articles",
+      "action": "show_by_slug",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "articles",
+        "service_method": "retrieve_by_path",
+        "resource": "Article",
+        "resource_class_method": "retrieve_by_path"
+      }
+    },
+    "GET /api/articles/latest": {
+      "status": "implemented",
+      "controller": "api/v1/articles",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "articles",
+        "service_method": "latest",
+        "resource": "Article",
+        "resource_class_method": "latest"
+      }
+    },
+    "GET /api/articles/me": {
+      "status": "implemented",
+      "controller": "api/v1/articles",
+      "action": "me",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "articles",
+        "service_method": "me",
+        "resource": "Article",
+        "resource_class_method": "me"
+      }
+    },
+    "GET /api/articles/me/all": {
+      "status": "implemented",
+      "controller": "api/v1/articles",
+      "action": "me",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "articles",
+        "service_method": "me_all",
+        "resource": "Article",
+        "resource_class_method": "me_all"
+      }
+    },
+    "GET /api/articles/me/published": {
+      "status": "implemented",
+      "controller": "api/v1/articles",
+      "action": "me",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "articles",
+        "service_method": "me_published",
+        "resource": "Article",
+        "resource_class_method": "me_published"
+      }
+    },
+    "GET /api/articles/me/unpublished": {
+      "status": "implemented",
+      "controller": "api/v1/articles",
+      "action": "me",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "articles",
+        "service_method": "me_unpublished",
+        "resource": "Article",
+        "resource_class_method": "me_unpublished"
+      }
+    },
+    "POST /api/articles/preview": {
+      "status": "implemented",
+      "controller": "api/v1/articles",
+      "action": "preview",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "articles",
+        "service_method": "preview",
+        "resource": "Article",
+        "resource_class_method": "preview"
+      }
+    },
+    "GET /api/articles/search": {
+      "status": "implemented",
+      "controller": "api/v1/articles",
+      "action": "search",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "articles",
+        "service_method": "search",
+        "resource": "Article",
+        "resource_class_method": "search"
+      }
+    },
+    "GET /api/articles/semantic_search": {
+      "status": "implemented",
+      "controller": "api/v1/articles",
+      "action": "semantic_search",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "articles",
+        "service_method": "semantic_search",
+        "resource": "Article",
+        "resource_class_method": "semantic_search"
+      }
+    },
+    "POST /api/auth/mobile_exchange": {
+      "status": "excluded",
+      "reason": "internal_mobile_oauth_exchange",
+      "controller": "api/v0/mobile_auth",
+      "action": "create",
+      "api_version": "v0"
+    },
+    "GET /api/badge_achievements": {
+      "status": "implemented",
+      "controller": "api/v1/badge_achievements",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "badge_achievements",
+        "service_method": "list",
+        "resource": "BadgeAchievement",
+        "resource_class_method": "list"
+      }
+    },
+    "POST /api/badge_achievements": {
+      "status": "implemented",
+      "controller": "api/v1/badge_achievements",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "badge_achievements",
+        "service_method": "create",
+        "resource": "BadgeAchievement",
+        "resource_class_method": "create"
+      }
+    },
+    "DELETE /api/badge_achievements/:id": {
+      "status": "implemented",
+      "controller": "api/v1/badge_achievements",
+      "action": "destroy",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "badge_achievements",
+        "service_method": "delete",
+        "resource": "BadgeAchievement",
+        "resource_class_method": "delete"
+      }
+    },
+    "GET /api/badge_achievements/:id": {
+      "status": "implemented",
+      "controller": "api/v1/badge_achievements",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "badge_achievements",
+        "service_method": "retrieve",
+        "resource": "BadgeAchievement",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "GET /api/badges": {
+      "status": "implemented",
+      "controller": "api/v1/badges",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "badges",
+        "service_method": "list",
+        "resource": "Badge",
+        "resource_class_method": "list"
+      }
+    },
+    "POST /api/badges": {
+      "status": "implemented",
+      "controller": "api/v1/badges",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "badges",
+        "service_method": "create",
+        "resource": "Badge",
+        "resource_class_method": "create"
+      }
+    },
+    "DELETE /api/badges/:id": {
+      "status": "implemented",
+      "controller": "api/v1/badges",
+      "action": "destroy",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "badges",
+        "service_method": "delete",
+        "resource": "Badge",
+        "resource_class_method": "delete"
+      }
+    },
+    "GET /api/badges/:id": {
+      "status": "implemented",
+      "controller": "api/v1/badges",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "badges",
+        "service_method": "retrieve",
+        "resource": "Badge",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "PUT /api/badges/:id": {
+      "status": "implemented",
+      "controller": "api/v1/badges",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "badges",
+        "service_method": "update",
+        "resource": "Badge",
+        "resource_class_method": "update"
+      }
+    },
+    "GET /api/billboard_campaigns": {
+      "status": "implemented",
+      "controller": "api/v1/billboard_campaigns",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "billboard_campaigns",
+        "service_method": "list",
+        "resource": "BillboardCampaign",
+        "resource_class_method": "list"
+      }
+    },
+    "POST /api/billboard_campaigns": {
+      "status": "implemented",
+      "controller": "api/v1/billboard_campaigns",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "billboard_campaigns",
+        "service_method": "create",
+        "resource": "BillboardCampaign",
+        "resource_class_method": "create"
+      }
+    },
+    "GET /api/billboard_campaigns/:id": {
+      "status": "implemented",
+      "controller": "api/v1/billboard_campaigns",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "billboard_campaigns",
+        "service_method": "retrieve",
+        "resource": "BillboardCampaign",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "PUT /api/billboard_campaigns/:id": {
+      "status": "implemented",
+      "controller": "api/v1/billboard_campaigns",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "billboard_campaigns",
+        "service_method": "update",
+        "resource": "BillboardCampaign",
+        "resource_class_method": "update"
+      }
+    },
+    "GET /api/billboards": {
+      "status": "implemented",
+      "controller": "api/v1/billboards",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "billboards",
+        "service_method": "list",
+        "resource": "Billboard",
+        "resource_class_method": "list"
+      }
+    },
+    "POST /api/billboards": {
+      "status": "implemented",
+      "controller": "api/v1/billboards",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "billboards",
+        "service_method": "create",
+        "resource": "Billboard",
+        "resource_class_method": "create"
+      }
+    },
+    "GET /api/billboards/:id": {
+      "status": "implemented",
+      "controller": "api/v1/billboards",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "billboards",
+        "service_method": "retrieve",
+        "resource": "Billboard",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "PUT /api/billboards/:id": {
+      "status": "implemented",
+      "controller": "api/v1/billboards",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "billboards",
+        "service_method": "update",
+        "resource": "Billboard",
+        "resource_class_method": "update"
+      }
+    },
+    "PUT /api/billboards/:id/unpublish": {
+      "status": "implemented",
+      "controller": "api/v1/billboards",
+      "action": "unpublish",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "billboards",
+        "service_method": "unpublish",
+        "resource": "Billboard",
+        "resource_class_method": "unpublish",
+        "resource_instance_method": "unpublish"
+      }
+    },
+    "POST /api/billboards/preview": {
+      "status": "implemented",
+      "controller": "api/v1/billboards",
+      "action": "preview",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "billboards",
+        "service_method": "preview",
+        "resource": "Billboard",
+        "resource_class_method": "preview"
+      }
+    },
+    "GET /api/comments": {
+      "status": "implemented",
+      "controller": "api/v1/comments",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "comments",
+        "service_method": "list",
+        "resource": "Comment",
+        "resource_class_method": "list"
+      }
+    },
+    "GET /api/comments/:id": {
+      "status": "implemented",
+      "controller": "api/v1/comments",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "comments",
+        "service_method": "retrieve",
+        "resource": "Comment",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "POST /api/comments/preview": {
+      "status": "implemented",
+      "controller": "api/v1/comments",
+      "action": "preview",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "comments",
+        "service_method": "preview",
+        "resource": "Comment",
+        "resource_class_method": "preview"
+      }
+    },
+    "GET /api/concepts": {
+      "status": "implemented",
+      "controller": "api/v1/concepts",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "concepts",
+        "service_method": "list",
+        "resource": "Concept",
+        "resource_class_method": "list"
+      }
+    },
+    "GET /api/concepts/:id": {
+      "status": "implemented",
+      "controller": "api/v1/concepts",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "concepts",
+        "service_method": "retrieve",
+        "resource": "Concept",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "PUT /api/concepts/:id": {
+      "status": "implemented",
+      "controller": "api/v1/concepts",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "concepts",
+        "service_method": "update",
+        "resource": "Concept",
+        "resource_class_method": "update"
+      }
+    },
+    "GET /api/concepts/:id/articles": {
+      "status": "implemented",
+      "controller": "api/v1/concepts",
+      "action": "articles",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "concepts",
+        "service_method": "articles",
+        "resource": "Concept",
+        "resource_class_method": "articles"
+      }
+    },
+    "GET /api/concepts/search": {
+      "status": "implemented",
+      "controller": "api/v1/concepts",
+      "action": "search",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "concepts",
+        "service_method": "search",
+        "resource": "Concept",
+        "resource_class_method": "search"
+      }
+    },
+    "GET /api/display_ads": {
+      "status": "excluded",
+      "reason": "deprecated_alias_for_billboards",
+      "controller": "api/v1/billboards",
+      "action": "index",
+      "api_version": "v1"
+    },
+    "POST /api/display_ads": {
+      "status": "excluded",
+      "reason": "deprecated_alias_for_billboards",
+      "controller": "api/v1/billboards",
+      "action": "create",
+      "api_version": "v1"
+    },
+    "GET /api/display_ads/:id": {
+      "status": "excluded",
+      "reason": "deprecated_alias_for_billboards",
+      "controller": "api/v1/billboards",
+      "action": "show",
+      "api_version": "v1"
+    },
+    "PUT /api/display_ads/:id": {
+      "status": "excluded",
+      "reason": "deprecated_alias_for_billboards",
+      "controller": "api/v1/billboards",
+      "action": "update",
+      "api_version": "v1"
+    },
+    "PUT /api/display_ads/:id/unpublish": {
+      "status": "excluded",
+      "reason": "deprecated_alias_for_billboards",
+      "controller": "api/v1/billboards",
+      "action": "unpublish",
+      "api_version": "v1"
+    },
+    "POST /api/display_ads/preview": {
+      "status": "excluded",
+      "reason": "deprecated_alias_for_billboards",
+      "controller": "api/v1/billboards",
+      "action": "preview",
+      "api_version": "v1"
+    },
+    "GET /api/events": {
+      "status": "implemented",
+      "controller": "api/v0/events",
+      "action": "index",
+      "api_version": "v0",
+      "sdk": {
+        "client_accessor": "events",
+        "service_method": "list",
+        "resource": "Event",
+        "resource_class_method": "list"
+      }
+    },
+    "POST /api/events": {
+      "status": "implemented",
+      "controller": "api/v0/events",
+      "action": "create",
+      "api_version": "v0",
+      "sdk": {
+        "client_accessor": "events",
+        "service_method": "create",
+        "resource": "Event",
+        "resource_class_method": "create"
+      }
+    },
+    "DELETE /api/events/:id": {
+      "status": "implemented",
+      "controller": "api/v0/events",
+      "action": "destroy",
+      "api_version": "v0",
+      "sdk": {
+        "client_accessor": "events",
+        "service_method": "delete",
+        "resource": "Event",
+        "resource_class_method": "delete"
+      }
+    },
+    "GET /api/events/:id": {
+      "status": "implemented",
+      "controller": "api/v0/events",
+      "action": "show",
+      "api_version": "v0",
+      "sdk": {
+        "client_accessor": "events",
+        "service_method": "retrieve",
+        "resource": "Event",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "PUT /api/events/:id": {
+      "status": "implemented",
+      "controller": "api/v0/events",
+      "action": "update",
+      "api_version": "v0",
+      "sdk": {
+        "client_accessor": "events",
+        "service_method": "update",
+        "resource": "Event",
+        "resource_class_method": "update"
+      }
+    },
+    "DELETE /api/feature_flags": {
+      "status": "excluded",
+      "reason": "test_environment_only",
+      "controller": "api/v1/feature_flags",
+      "action": "destroy",
+      "api_version": "v1"
+    },
+    "GET /api/feature_flags": {
+      "status": "excluded",
+      "reason": "test_environment_only",
+      "controller": "api/v1/feature_flags",
+      "action": "show",
+      "api_version": "v1"
+    },
+    "POST /api/feature_flags": {
+      "status": "excluded",
+      "reason": "test_environment_only",
+      "controller": "api/v1/feature_flags",
+      "action": "create",
+      "api_version": "v1"
+    },
+    "PUT /api/feedback_messages/:id": {
+      "status": "implemented",
+      "controller": "api/v1/feedback_messages",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "feedback_messages",
+        "service_method": "update",
+        "resource": "FeedbackMessage",
+        "resource_class_method": "update"
+      }
+    },
+    "GET /api/followers/organizations": {
+      "status": "excluded",
+      "reason": "unimplemented_route_in_forem",
+      "controller": "api/v1/followers",
+      "action": "organizations",
+      "api_version": "v1"
+    },
+    "GET /api/followers/users": {
+      "status": "implemented",
+      "controller": "api/v1/followers",
+      "action": "users",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "followers",
+        "service_method": "list",
+        "resource": "Follower",
+        "resource_class_method": "list"
+      }
+    },
+    "POST /api/follows": {
+      "status": "implemented",
+      "controller": "api/v1/follows",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "follows",
+        "service_method": "create",
+        "resource": "Follow",
+        "resource_class_method": "create"
+      }
+    },
+    "GET /api/follows/tags": {
+      "status": "implemented",
+      "controller": "api/v1/follows",
+      "action": "tags",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "follows",
+        "service_method": "list",
+        "resource": "Follow",
+        "resource_class_method": "list"
+      }
+    },
+    "GET /api/health_checks/app": {
+      "status": "implemented",
+      "controller": "api/v1/health_checks",
+      "action": "app",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "health_checks",
+        "service_method": "app",
+        "resource": "HealthCheck",
+        "resource_class_method": "app"
+      }
+    },
+    "GET /api/health_checks/cache": {
+      "status": "implemented",
+      "controller": "api/v1/health_checks",
+      "action": "cache",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "health_checks",
+        "service_method": "cache",
+        "resource": "HealthCheck",
+        "resource_class_method": "cache"
+      }
+    },
+    "GET /api/health_checks/database": {
+      "status": "implemented",
+      "controller": "api/v1/health_checks",
+      "action": "database",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "health_checks",
+        "service_method": "database",
+        "resource": "HealthCheck",
+        "resource_class_method": "database"
+      }
+    },
+    "POST /api/images": {
+      "status": "implemented",
+      "controller": "api/v1/images",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "images",
+        "service_method": "create",
+        "resource": "Image",
+        "resource_class_method": "create"
+      }
+    },
+    "POST /api/images/generate": {
+      "status": "implemented",
+      "controller": "api/v1/images",
+      "action": "generate",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "images",
+        "service_method": "generate",
+        "resource": "Image",
+        "resource_class_method": "generate"
+      }
+    },
+    "GET /api/instance": {
+      "status": "implemented",
+      "controller": "api/v1/instances",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "instance",
+        "service_method": "retrieve",
+        "resource": "Instance",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "GET /api/organizations": {
+      "status": "implemented",
+      "controller": "api/v1/organizations",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "organizations",
+        "service_method": "list",
+        "resource": "Organization",
+        "resource_class_method": "list"
+      }
+    },
+    "POST /api/organizations": {
+      "status": "implemented",
+      "controller": "api/v1/organizations",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "organizations",
+        "service_method": "create",
+        "resource": "Organization",
+        "resource_class_method": "create"
+      }
+    },
+    "DELETE /api/organizations/:id": {
+      "status": "implemented",
+      "controller": "api/v1/organizations",
+      "action": "destroy",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "organizations",
+        "service_method": "delete",
+        "resource": "Organization",
+        "resource_class_method": "delete"
+      }
+    },
+    "PUT /api/organizations/:id": {
+      "status": "implemented",
+      "controller": "api/v1/organizations",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "organizations",
+        "service_method": "update",
+        "resource": "Organization",
+        "resource_class_method": "update"
+      }
+    },
+    "GET /api/organizations/:id_or_slug": {
+      "status": "implemented",
+      "controller": "api/v1/organizations",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "organizations",
+        "service_method": "retrieve",
+        "resource": "Organization",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "GET /api/organizations/:organization_id/article_analytics": {
+      "status": "implemented",
+      "controller": "api/v1/organization_article_analytics",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "organizations",
+        "service_method": "article_analytics",
+        "resource": "Organization",
+        "resource_class_method": "article_analytics",
+        "resource_instance_method": "article_analytics"
+      }
+    },
+    "GET /api/organizations/:organization_id_or_slug/articles": {
+      "status": "implemented",
+      "controller": "api/v1/organizations",
+      "action": "articles",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "organizations",
+        "service_method": "articles",
+        "resource": "Organization",
+        "resource_class_method": "articles",
+        "resource_instance_method": "articles"
+      }
+    },
+    "GET /api/organizations/:organization_id_or_slug/users": {
+      "status": "implemented",
+      "controller": "api/v1/organizations",
+      "action": "users",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "organizations",
+        "service_method": "users",
+        "resource": "Organization",
+        "resource_class_method": "users",
+        "resource_instance_method": "users"
+      }
+    },
+    "GET /api/pages": {
+      "status": "implemented",
+      "controller": "api/v1/pages",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "pages",
+        "service_method": "list",
+        "resource": "Page",
+        "resource_class_method": "list"
+      }
+    },
+    "POST /api/pages": {
+      "status": "implemented",
+      "controller": "api/v1/pages",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "pages",
+        "service_method": "create",
+        "resource": "Page",
+        "resource_class_method": "create"
+      }
+    },
+    "DELETE /api/pages/:id": {
+      "status": "implemented",
+      "controller": "api/v1/pages",
+      "action": "destroy",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "pages",
+        "service_method": "delete",
+        "resource": "Page",
+        "resource_class_method": "delete"
+      }
+    },
+    "GET /api/pages/:id": {
+      "status": "implemented",
+      "controller": "api/v1/pages",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "pages",
+        "service_method": "retrieve",
+        "resource": "Page",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "PUT /api/pages/:id": {
+      "status": "implemented",
+      "controller": "api/v1/pages",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "pages",
+        "service_method": "update",
+        "resource": "Page",
+        "resource_class_method": "update"
+      }
+    },
+    "POST /api/pages/preview": {
+      "status": "implemented",
+      "controller": "api/v1/pages",
+      "action": "preview",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "pages",
+        "service_method": "preview",
+        "resource": "Page",
+        "resource_class_method": "preview"
+      }
+    },
+    "GET /api/podcast_episodes": {
+      "status": "implemented",
+      "controller": "api/v1/podcast_episodes",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "podcast_episodes",
+        "service_method": "list",
+        "resource": "PodcastEpisode",
+        "resource_class_method": "list"
+      }
+    },
+    "GET /api/profile_images/:username": {
+      "status": "implemented",
+      "controller": "api/v1/profile_images",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "profile_images",
+        "service_method": "retrieve",
+        "resource": "ProfileImage",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "POST /api/reactions": {
+      "status": "implemented",
+      "controller": "api/v1/reactions",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "reactions",
+        "service_method": "create",
+        "resource": "Reaction",
+        "resource_class_method": "create"
+      }
+    },
+    "POST /api/reactions/toggle": {
+      "status": "implemented",
+      "controller": "api/v1/reactions",
+      "action": "toggle",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "reactions",
+        "service_method": "toggle",
+        "resource": "Reaction",
+        "resource_class_method": "toggle"
+      }
+    },
+    "GET /api/readinglist": {
+      "status": "implemented",
+      "controller": "api/v1/readinglist",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "reading_list",
+        "service_method": "list",
+        "resource": "ReadingList",
+        "resource_class_method": "list"
+      }
+    },
+    "GET /api/recommended_articles_lists": {
+      "status": "implemented",
+      "controller": "api/v1/recommended_articles_lists",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "recommended_articles_lists",
+        "service_method": "list",
+        "resource": "RecommendedArticlesList",
+        "resource_class_method": "list"
+      }
+    },
+    "POST /api/recommended_articles_lists": {
+      "status": "implemented",
+      "controller": "api/v1/recommended_articles_lists",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "recommended_articles_lists",
+        "service_method": "create",
+        "resource": "RecommendedArticlesList",
+        "resource_class_method": "create"
+      }
+    },
+    "GET /api/recommended_articles_lists/:id": {
+      "status": "implemented",
+      "controller": "api/v1/recommended_articles_lists",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "recommended_articles_lists",
+        "service_method": "retrieve",
+        "resource": "RecommendedArticlesList",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "PUT /api/recommended_articles_lists/:id": {
+      "status": "implemented",
+      "controller": "api/v1/recommended_articles_lists",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "recommended_articles_lists",
+        "service_method": "update",
+        "resource": "RecommendedArticlesList",
+        "resource_class_method": "update"
+      }
+    },
+    "GET /api/related_articles": {
+      "status": "implemented",
+      "controller": "api/v1/related_articles",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "related_articles",
+        "service_method": "list",
+        "resource": "RelatedArticle",
+        "resource_class_method": "list"
+      }
+    },
+    "GET /api/segments": {
+      "status": "implemented",
+      "controller": "api/v1/audience_segments",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "segments",
+        "service_method": "list",
+        "resource": "Segment",
+        "resource_class_method": "list"
+      }
+    },
+    "POST /api/segments": {
+      "status": "implemented",
+      "controller": "api/v1/audience_segments",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "segments",
+        "service_method": "create",
+        "resource": "Segment",
+        "resource_class_method": "create"
+      }
+    },
+    "DELETE /api/segments/:id": {
+      "status": "implemented",
+      "controller": "api/v1/audience_segments",
+      "action": "destroy",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "segments",
+        "service_method": "delete",
+        "resource": "Segment",
+        "resource_class_method": "delete"
+      }
+    },
+    "GET /api/segments/:id": {
+      "status": "implemented",
+      "controller": "api/v1/audience_segments",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "segments",
+        "service_method": "retrieve",
+        "resource": "Segment",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "PUT /api/segments/:id/add_users": {
+      "status": "implemented",
+      "controller": "api/v1/audience_segments",
+      "action": "add_users",
+      "api_version": "v1",
+      "sdk": {
+        "resource": "Segment",
+        "resource_instance_method": "add_users"
+      }
+    },
+    "PUT /api/segments/:id/remove_users": {
+      "status": "implemented",
+      "controller": "api/v1/audience_segments",
+      "action": "remove_users",
+      "api_version": "v1",
+      "sdk": {
+        "resource": "Segment",
+        "resource_instance_method": "remove_users"
+      }
+    },
+    "GET /api/segments/:id/users": {
+      "status": "implemented",
+      "controller": "api/v1/audience_segments",
+      "action": "users",
+      "api_version": "v1",
+      "sdk": {
+        "resource": "Segment",
+        "resource_instance_method": "users"
+      }
+    },
+    "GET /api/subforems": {
+      "status": "implemented",
+      "controller": "api/v1/subforems",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "subforems",
+        "service_method": "list",
+        "resource": "Subforem",
+        "resource_class_method": "list"
+      }
+    },
+    "GET /api/surveys": {
+      "status": "implemented",
+      "controller": "api/v1/surveys",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "surveys",
+        "service_method": "list",
+        "resource": "Survey",
+        "resource_class_method": "list"
+      }
+    },
+    "POST /api/surveys": {
+      "status": "implemented",
+      "controller": "api/v1/surveys",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "surveys",
+        "service_method": "create",
+        "resource": "Survey",
+        "resource_class_method": "create"
+      }
+    },
+    "DELETE /api/surveys/:id_or_slug": {
+      "status": "implemented",
+      "controller": "api/v1/surveys",
+      "action": "destroy",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "surveys",
+        "service_method": "delete",
+        "resource": "Survey",
+        "resource_class_method": "delete"
+      }
+    },
+    "GET /api/surveys/:id_or_slug": {
+      "status": "implemented",
+      "controller": "api/v1/surveys",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "surveys",
+        "service_method": "retrieve",
+        "resource": "Survey",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "PUT /api/surveys/:id_or_slug": {
+      "status": "implemented",
+      "controller": "api/v1/surveys",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "surveys",
+        "service_method": "update",
+        "resource": "Survey",
+        "resource_class_method": "update"
+      }
+    },
+    "GET /api/surveys/:id_or_slug/poll_text_responses": {
+      "status": "implemented",
+      "controller": "api/v1/surveys",
+      "action": "poll_text_responses",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "surveys",
+        "service_method": "poll_text_responses",
+        "resource": "Survey",
+        "resource_class_method": "poll_text_responses",
+        "resource_instance_method": "poll_text_responses"
+      }
+    },
+    "GET /api/surveys/:id_or_slug/poll_votes": {
+      "status": "implemented",
+      "controller": "api/v1/surveys",
+      "action": "poll_votes",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "surveys",
+        "service_method": "poll_votes",
+        "resource": "Survey",
+        "resource_class_method": "poll_votes",
+        "resource_instance_method": "poll_votes"
+      }
+    },
+    "GET /api/tags": {
+      "status": "implemented",
+      "controller": "api/v1/tags",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "tags",
+        "service_method": "list",
+        "resource": "Tag",
+        "resource_class_method": "list"
+      }
+    },
+    "POST /api/tags": {
+      "status": "implemented",
+      "controller": "api/v1/tags",
+      "action": "create",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "tags",
+        "service_method": "create",
+        "resource": "Tag",
+        "resource_class_method": "create"
+      }
+    },
+    "PUT /api/tags/:id": {
+      "status": "implemented",
+      "controller": "api/v1/tags",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "tags",
+        "service_method": "update",
+        "resource": "Tag",
+        "resource_class_method": "update"
+      }
+    },
+    "DELETE /api/tags/:id/moderators": {
+      "status": "implemented",
+      "controller": "api/v1/tags",
+      "action": "remove_moderator",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "tags",
+        "service_method": "remove_moderator",
+        "resource": "Tag",
+        "resource_class_method": "remove_moderator",
+        "resource_instance_method": "remove_moderator"
+      }
+    },
+    "POST /api/tags/:id/moderators": {
+      "status": "implemented",
+      "controller": "api/v1/tags",
+      "action": "add_moderator",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "tags",
+        "service_method": "add_moderator",
+        "resource": "Tag",
+        "resource_class_method": "add_moderator",
+        "resource_instance_method": "add_moderator"
+      }
+    },
+    "GET /api/tags/supported": {
+      "status": "implemented",
+      "controller": "api/v1/tags",
+      "action": "supported",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "tags",
+        "service_method": "supported",
+        "resource": "Tag",
+        "resource_class_method": "supported"
+      }
+    },
+    "GET /api/trends": {
+      "status": "implemented",
+      "controller": "api/v1/trends",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "trends",
+        "service_method": "list",
+        "resource": "Trend",
+        "resource_class_method": "list"
+      }
+    },
+    "GET /api/trends/:id_or_slug": {
+      "status": "implemented",
+      "controller": "api/v1/trends",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "trends",
+        "service_method": "retrieve",
+        "resource": "Trend",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "GET /api/trends/:trend_id_or_slug/articles": {
+      "status": "implemented",
+      "controller": "api/v1/trends",
+      "action": "articles",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "trends",
+        "service_method": "articles",
+        "resource": "Trend",
+        "resource_class_method": "articles"
+      }
+    },
+    "GET /api/users/:id": {
+      "status": "implemented",
+      "controller": "api/v1/users",
+      "action": "show",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "users",
+        "service_method": "retrieve",
+        "resource": "User",
+        "resource_class_method": "retrieve"
+      }
+    },
+    "DELETE /api/users/:id/base_subscriber": {
+      "status": "implemented",
+      "controller": "api/v1/user_roles",
+      "action": "destroy",
+      "api_version": "v1",
+      "sdk": {
+        "resource": "User",
+        "resource_instance_method": "remove_base_subscriber"
+      }
+    },
+    "PUT /api/users/:id/base_subscriber": {
+      "status": "implemented",
+      "controller": "api/v1/user_roles",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "resource": "User",
+        "resource_instance_method": "add_base_subscriber"
+      }
+    },
+    "DELETE /api/users/:id/limited": {
+      "status": "implemented",
+      "controller": "api/v1/user_roles",
+      "action": "destroy",
+      "api_version": "v1",
+      "sdk": {
+        "resource": "User",
+        "resource_instance_method": "remove_limited"
+      }
+    },
+    "PUT /api/users/:id/limited": {
+      "status": "implemented",
+      "controller": "api/v1/user_roles",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "resource": "User",
+        "resource_instance_method": "add_limited"
+      }
+    },
+    "DELETE /api/users/:id/spam": {
+      "status": "implemented",
+      "controller": "api/v1/user_roles",
+      "action": "destroy",
+      "api_version": "v1",
+      "sdk": {
+        "resource": "User",
+        "resource_instance_method": "remove_spam"
+      }
+    },
+    "PUT /api/users/:id/spam": {
+      "status": "implemented",
+      "controller": "api/v1/user_roles",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "resource": "User",
+        "resource_instance_method": "add_spam"
+      }
+    },
+    "PUT /api/users/:id/suspend": {
+      "status": "implemented",
+      "controller": "api/v1/user_roles",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "resource": "User",
+        "resource_instance_method": "suspend"
+      }
+    },
+    "PUT /api/users/:id/suspended": {
+      "status": "excluded",
+      "reason": "alias_for_put_api_users_id_suspend",
+      "controller": "api/v1/user_roles",
+      "action": "update",
+      "api_version": "v1"
+    },
+    "DELETE /api/users/:id/trusted": {
+      "status": "implemented",
+      "controller": "api/v1/user_roles",
+      "action": "destroy",
+      "api_version": "v1",
+      "sdk": {
+        "resource": "User",
+        "resource_instance_method": "remove_trusted"
+      }
+    },
+    "PUT /api/users/:id/trusted": {
+      "status": "implemented",
+      "controller": "api/v1/user_roles",
+      "action": "update",
+      "api_version": "v1",
+      "sdk": {
+        "resource": "User",
+        "resource_instance_method": "add_trusted"
+      }
+    },
+    "PUT /api/users/:id/unpublish": {
+      "status": "implemented",
+      "controller": "api/v1/users",
+      "action": "unpublish",
+      "api_version": "v1",
+      "sdk": {
+        "resource": "User",
+        "resource_instance_method": "unpublish"
+      }
+    },
+    "GET /api/users/me": {
+      "status": "implemented",
+      "controller": "api/v1/users",
+      "action": "me",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "users",
+        "service_method": "me",
+        "resource": "User",
+        "resource_class_method": "me"
+      }
+    },
+    "GET /api/users/search": {
+      "status": "implemented",
+      "controller": "api/v1/users",
+      "action": "search",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "users",
+        "service_method": "search",
+        "resource": "User",
+        "resource_class_method": "search"
+      }
+    },
+    "GET /api/videos": {
+      "status": "implemented",
+      "controller": "api/v1/videos",
+      "action": "index",
+      "api_version": "v1",
+      "sdk": {
+        "client_accessor": "videos",
+        "service_method": "list",
+        "resource": "Video",
+        "resource_class_method": "list"
+      }
+    }
+  },
+  "file_digests": {
+    "app/controllers/api/v0/admin/users_controller.rb": "fc772e1cfc102de41a55ddaed484566957a8d302f5b63a37ddc4349efa476768",
+    "app/controllers/api/v0/analytics_controller.rb": "224aca3b7e304e2345f8208c3e61c9670ddeae67756b4d19eb8de1803f4e1a19",
+    "app/controllers/api/v0/api_controller.rb": "601d1b581fd560167fbb7cf1ef3ed1e6634db2914870c7fafb705d1a8f4a4adc",
+    "app/controllers/api/v0/articles_controller.rb": "4654df0097958c4cd9e698eabd796753dfb87c8126c1f7b9d549b3c7eeba6351",
+    "app/controllers/api/v0/badge_achievements_controller.rb": "e5ee01dbb395df7dabcf7b2ee6ea2c49269f5427d069cc932f054741562b4e72",
+    "app/controllers/api/v0/badges_controller.rb": "820eeb9f5565557a4f025bb6a2cede5a88d9958607f7eab0f4e0b366e798f4af",
+    "app/controllers/api/v0/comments_controller.rb": "ccadcc104d21ca682ae146e8fbda17dc5dc6f3fe20816b2796d4a8cd4a4853e5",
+    "app/controllers/api/v0/events_controller.rb": "a5c4644f29488231a51d63d21fd176423f0d36dc3edb8ad21974bf54b085c82c",
+    "app/controllers/api/v0/feature_flags_controller.rb": "ff4e0d771a2e2523d8114303f6e5393d9de5f5978657010ab996ecb27ec471e1",
+    "app/controllers/api/v0/followers_controller.rb": "37feff63388b22248461ac1aa428d958ed1e2fec63a90134492501d210495083",
+    "app/controllers/api/v0/follows_controller.rb": "be900d9f82121edce498d6a5d73d10c6b455d69902ccdd0ae55bf2083304fd12",
+    "app/controllers/api/v0/health_checks_controller.rb": "e0f31691bdcb84140924642e536f48aee3c21d9bb0b621a433f182665e2e5e05",
+    "app/controllers/api/v0/instances_controller.rb": "18e66b122d62a6afd1405fff92d39dfa0006205a461e4260dcf03ec4ef893674",
+    "app/controllers/api/v0/listings_controller.rb": "8fd6567fc9febb090e97b81230891d65ca7ef9cfc219e7f196cc9f8b461aa428",
+    "app/controllers/api/v0/mobile_auth_controller.rb": "e549700290aa55e78a6ef93c6eacaf3f91237ac0675962e848182da9e978c102",
+    "app/controllers/api/v0/organizations_controller.rb": "9717e1736135ccddddc4acdfad564cb1af2752bdb882f42507d090912115d764",
+    "app/controllers/api/v0/podcast_episodes_controller.rb": "e07ba6778bb1680ca9e1083b0b5712a67251b817ae301918ee0876f51d4c9891",
+    "app/controllers/api/v0/profile_images_controller.rb": "b282a0543eb6a393599cc58d9fe756f06a86c5a029c55f99ed6a4e41ba6db02a",
+    "app/controllers/api/v0/readinglist_controller.rb": "e28f2b58faefb4461b688fc010f1919c38d22b000de6b67b704860bf36199312",
+    "app/controllers/api/v0/subforems_controller.rb": "aec431faa1a96119e5dd1ae424974eb92312fbc34b2dca808a396762008f07ce",
+    "app/controllers/api/v0/surveys_controller.rb": "f88af63ee2144d52428d818714acbb4a094d564dba5ae836e3f502f51f68cba2",
+    "app/controllers/api/v0/tags_controller.rb": "0f1b9c1262a6cbbd585dff986c176b674fc72e993108207afb86cdfa26c1cec4",
+    "app/controllers/api/v0/trends_controller.rb": "7a8424b9f69cbf7a9c324f80adde47acd4ea5ba216061cd372d720af0806c5ec",
+    "app/controllers/api/v0/users_controller.rb": "d1f10a0b111a0ab0950c69d92a75103af7320d0e9f861e90ff743add5755a420",
+    "app/controllers/api/v0/videos_controller.rb": "741a0d03a0ac8b4f37128650e9802fcca28153d9eb9192ab606df45941dd281a",
+    "app/controllers/api/v1/admin/base_controller.rb": "dc097bfc5e3d5d4b769a4428bff19de326884fbb16cc32ea1a11f1e8c46efa88",
+    "app/controllers/api/v1/admin/concepts_controller.rb": "ef73729eea80d7c5005fab52a07b9a1a3a461ee728ec7a1f3b4d267d096a46f1",
+    "app/controllers/api/v1/admin/request_redirects_controller.rb": "44a846fba3a188e9cf3d18ca2135c14156189934e811b3f1dde125c086ae715c",
+    "app/controllers/api/v1/admin/user_identities_controller.rb": "c4760fad1aa2845220a1cf2f817b72da862258f73de936ce81b4fb7dde736cc2",
+    "app/controllers/api/v1/admin/user_notes_controller.rb": "7476dcb8bd823199e94299c057179b939b97ffd9f276d90af17927831037b675",
+    "app/controllers/api/v1/admin/users_controller.rb": "71f460cf805fdc10f5e5656efec231cc79c2d18057fea2796150790c11b5e062",
+    "app/controllers/api/v1/agent_sessions_controller.rb": "c318fd0a3f5aa85c5252af2cfe562cc1f57adab4ca0a6aa419c64d158859f8a9",
+    "app/controllers/api/v1/analytics_controller.rb": "85b505d9143e39f5d3520a9f3e9352fc8934226bdaeca487a705388911900b3e",
+    "app/controllers/api/v1/api_controller.rb": "730c3e91d6d825bc8397f3a42393de09ea8aaf97f468c06dcc531edd9988f5fa",
+    "app/controllers/api/v1/articles_controller.rb": "c9d3cb73caf7c5391f9f5eb33305ed58cbdfd87924b7c1aa52e68f6c059e045d",
+    "app/controllers/api/v1/audience_segments_controller.rb": "87f0aaa133438a5798700028dbdc77e813a566960af5794869ab9661da4918d8",
+    "app/controllers/api/v1/badge_achievements_controller.rb": "6d3edfa546a5f8f809920d0e680b1d4e3e8485af205e7f8f646be0becafdd18d",
+    "app/controllers/api/v1/badges_controller.rb": "df7dab0da43575eb479064fc77b4f61261e05388e806c32871d94a37842b1a81",
+    "app/controllers/api/v1/billboard_campaigns_controller.rb": "3ed9dd5a900f878ed5fecee9374c08ffcedbf7b410b4729bcc1b300ef3306b9d",
+    "app/controllers/api/v1/billboards_controller.rb": "ac297b38ad9fa701d94fc4b1bb284f2068ae722d500cf495969efff0493fb70b",
+    "app/controllers/api/v1/comments_controller.rb": "e66cb90afdbcb9b8950910e41e4fba280f5bd82c748d26f6af94108b4ab2b77e",
+    "app/controllers/api/v1/concepts_controller.rb": "34db9dfaf05d19b42c8209c40aea6026c53eea2c785e325f926ceaf1160d706a",
+    "app/controllers/api/v1/feature_flags_controller.rb": "85ba7d4d235f85917dc54f768a876671f526b52ee997ba3da2f12f45eb975802",
+    "app/controllers/api/v1/feedback_messages_controller.rb": "019e881c9eb8fa3e8b9baf7c620d6a3f90ed6a9b64ab57bf0d7ec60558c19e5d",
+    "app/controllers/api/v1/followers_controller.rb": "f4fc107d0b809173170ae6999844b08f0270dca0621be758dde27f7718f37981",
+    "app/controllers/api/v1/follows_controller.rb": "b80293a565d63385d8878b97f86d43db17871f840627eff80d9fef6ab4e7b864",
+    "app/controllers/api/v1/health_checks_controller.rb": "be7d7e0d0fb9ad3c2888660edf4bb27f3cbcdcf55b8668fcc224c818d680e5d2",
+    "app/controllers/api/v1/images_controller.rb": "077832983a289ec01c50c1a78fcedc5736548a1ab6cdb6070cf30501824a78d0",
+    "app/controllers/api/v1/instances_controller.rb": "795de5fa56dd60dfd1c51be995b7a939119c3687173a1bbba7c403e1be50a4ee",
+    "app/controllers/api/v1/listings_controller.rb": "b19f5f1ae0f3bc39c88b776baffb534c1675e4019769212ffe10181ac533890b",
+    "app/controllers/api/v1/organization_article_analytics_controller.rb": "05744a93cfef1ddc37b3beea34711a96d4ae852163a6cd61bdcd1a0a7684fd70",
+    "app/controllers/api/v1/organizations_controller.rb": "bdb96a5da54034e73d707b186a2a08dfce1ed473a7820055b79d6d502ed7116e",
+    "app/controllers/api/v1/pages_controller.rb": "23559419181c213a5c1cf6d99f1b5981839885d324a1677348b44c781b745829",
+    "app/controllers/api/v1/podcast_episodes_controller.rb": "98bc12d8168e20ac5d25a43efbe0b2f1d5ec49afd8b2be25d282353d7d5a30ce",
+    "app/controllers/api/v1/profile_images_controller.rb": "6473e9ce40ae069bef97ffa003311964b44543f1b76d47c0d1cdf37177c6438f",
+    "app/controllers/api/v1/reactions_controller.rb": "71ea1c470003ae9e0e116e123f6a67ccaa16ec4476b09854b47cc84a93dfefac",
+    "app/controllers/api/v1/readinglist_controller.rb": "1304aaae40b38b1807f7abce49765b24a860f17405280c471a6e243381ab62bd",
+    "app/controllers/api/v1/recommended_articles_lists_controller.rb": "77cfdfd01b59bc4e9f1a9bede2ef24692a683b2b146f2802dbf6f0d1c1e8e2b8",
+    "app/controllers/api/v1/related_articles_controller.rb": "b81694a052bb303425e9b9f7a1f885fbb47b7435b1089a52a1690c521047ed8c",
+    "app/controllers/api/v1/subforems_controller.rb": "98ba94d4069ccc678e62ec4b1728f938a3a716ef68bc20947c394e5c430e6d6a",
+    "app/controllers/api/v1/surveys_controller.rb": "277ea2494efa0537ae27693a7af81dd6a3d8a717afd8f0a84758462a165c2f67",
+    "app/controllers/api/v1/tags_controller.rb": "66e3db798cb5736a90998332dd6bf376b1993b6ea73b9fe4cf41068efea2f9c4",
+    "app/controllers/api/v1/trends_controller.rb": "698399f334b1b5a0ec16bc67097ba9f60e8620448f2748bb375e133a7984667a",
+    "app/controllers/api/v1/user_roles_controller.rb": "aadc2ad8b67d7a01e5f7c898352d5d7c8c4b06c02133bba000a6275d7d73276b",
+    "app/controllers/api/v1/users_controller.rb": "f17ff94eaef90b1344ab492e1a9d9c60b6e5c418c843922a12f6be51cdf4c5d8",
+    "app/controllers/api/v1/videos_controller.rb": "c73587ab803bf126134e1d292ded42085f9af9c2bcfd0537e815550eb34dcd9b",
+    "app/controllers/concerns/api/admin/user_identities_controller.rb": "afa6a55d4b78b02edf09d5618a981de7c07033d32eb88afa92ad354f101631f1",
+    "app/controllers/concerns/api/admin/user_notes_controller.rb": "1295abc268fc7c69165f1887bfc2a663f8cf117d708a724a16990dbf0e230cfb",
+    "app/controllers/concerns/api/admin/users_controller.rb": "d9df25ab3a44e555dcbfe01b306e2866ef79b118ccbace95ca2f1e67ead5b086",
+    "app/controllers/concerns/api/analytics_controller.rb": "b0fa0e06625ba87fd4aae206310d914072bb5eb4834c2ec2382409172123ab43",
+    "app/controllers/concerns/api/articles_controller.rb": "234967a41cde1ccecadb67b5b727c516c242c3bb11cc1992ffefaf43d352a411",
+    "app/controllers/concerns/api/badge_achievements_controller.rb": "3175bbbdec4db454a4421717739a9d25a6d0fb31371b6451be79ec040b5ef6db",
+    "app/controllers/concerns/api/badges_controller.rb": "d183c6ca618026187a1f0c07bbb56bf989bceffd4c3be134f04e0e4b99cd6650",
+    "app/controllers/concerns/api/comments_controller.rb": "478444d8ad0f56220dc94ce7dc8133398ca25248a8f90bec07f6bd51f3233510",
+    "app/controllers/concerns/api/feature_flags_controller.rb": "2c2971bfc33dd6781c2ab4dc6c4556576be5cc3cfac611c5c6e6382caf368fa4",
+    "app/controllers/concerns/api/followers_controller.rb": "7ea2da89c25dcb25f7786ea1e40ed8097c24ca5c5c1220146c8c63c986c49c08",
+    "app/controllers/concerns/api/follows_controller.rb": "ff983f003bf098cf88ac1a97a88492027228f3c3b8857e15e2b74d45304f26cb",
+    "app/controllers/concerns/api/health_checks_controller.rb": "61d05287f158093ad7935a0869c594607de90d167fcce347f834a3f580ed70cc",
+    "app/controllers/concerns/api/instances_controller.rb": "7d616706714f35e67a8abf4cc9c84287af58e90cc7d31b04d8e2915c27d165bd",
+    "app/controllers/concerns/api/listings_controller.rb": "89cc62fec4175283833ca5dfeec0219385414b251a17bfe53f4df1c7abf3c8eb",
+    "app/controllers/concerns/api/organizations_controller.rb": "a777629b29841dd5007b00a58a72f7fe130604328675bc56043942a0fcc65afb",
+    "app/controllers/concerns/api/podcast_episodes_controller.rb": "cc2585bab77c09ef153bdf2df4788003f37866e15813b0022d912ec796202e60",
+    "app/controllers/concerns/api/profile_images_controller.rb": "5f82d4d0b7f35d96f91bc74c2c63a2b5eb088f6a18a61dde680eb740d4368e31",
+    "app/controllers/concerns/api/readinglist_controller.rb": "7a05c0c273cf1eddebd826ae85387a3fdb6c459315df9f5a04289c5527fa6a1c",
+    "app/controllers/concerns/api/subforems_controller.rb": "96ee39960d2f2a054e8140b4bb7af2cc333f0a3722239d045b65d6689675089d",
+    "app/controllers/concerns/api/surveys_controller.rb": "004d2a7aee232d0efa70e937249fd3b3d2824f107742c0872eeceb6f8b5c40fb",
+    "app/controllers/concerns/api/tags_controller.rb": "694e27325c3825bf2d562edb58f325d8a389aefcf00873649e1e58e3bd067821",
+    "app/controllers/concerns/api/trends_controller.rb": "1ca67ec3ff2e44a1d329182f7495c85a91bed655af465185ef87b634ee054339",
+    "app/controllers/concerns/api/users_controller.rb": "a6187410eb471ed26cdb492c8d9c48e65c600abad1ed3d90d0b5173f9ffb4d40",
+    "app/controllers/concerns/api/videos_controller.rb": "4b9348f7c521edd805f35548156f5f72d2df200e8cf73baf72c0ba984893db5b",
+    "app/views/api/v0/articles/_article.json.jbuilder": "5a2cb19452ac95aef110ea6dfc5a1fa6f79cd35e18da8d7c6c83947ceb28e01e",
+    "app/views/api/v0/articles/_flare_tag.json.jbuilder": "d4c168a2d8a4524c70b8eea473ff1a86847f4474d606f9fe05b50b6d431c74e1",
+    "app/views/api/v0/articles/index.json.jbuilder": "62f478961c1c3846cf86f9ef273de643a5e0641158430cdc4d745fd36bc459b8",
+    "app/views/api/v0/articles/me.json.jbuilder": "ba24ab3234ab4815c4fc91d90fdb29f7aac724a758cec5a685be24c636ae8d66",
+    "app/views/api/v0/articles/onboarding.json.jbuilder": "f6917b2743dc39a909f228b1d37c4396d808ffc69944f10b9f4a8702122f1eda",
+    "app/views/api/v0/articles/search.json.jbuilder": "589fa046748f0162011bdda3556b20f38568aa31018c34a3a7267b4ef5ad2cce",
+    "app/views/api/v0/articles/show.json.jbuilder": "6c7440fe54ae9fa99a724e827d951e6d86e327be65a3e34410ceb1ef596adb76",
+    "app/views/api/v0/comments/_comment.json.jbuilder": "635f8d94a45987f4a8c8389346989c1cffdc5c08bbd6c50c8115a00a5b9b3b1d",
+    "app/views/api/v0/comments/_comment_with_children.json.jbuilder": "1e83a422f1fb78b9922666ba260be87129c41fb9f2abd6b9568419e38b264dbf",
+    "app/views/api/v0/comments/_comments_with_children.json.jbuilder": "3f6db9f70146e96cb577c8b9e1963734a95e3ed4c9ecf02261221be0a2c5593f",
+    "app/views/api/v0/comments/index.json.jbuilder": "0fde7cbea36bd573d9b6d31206bbc48866f2ed365ef25fbd68e51902cb595ef5",
+    "app/views/api/v0/comments/show.json.jbuilder": "2dc5a39c6c5a568174d14a4bac7b502c049e2c7548dd816bbbb448b8a7db604f",
+    "app/views/api/v0/followers/users.json.jbuilder": "d5702e19b7fa22d1a4fe6bddd1d049ef63540ba49ad79d91cdc976fb67a2ef51",
+    "app/views/api/v0/follows/tags.json.jbuilder": "cbf48f77c84b0b92f3d1103e6cb225d31315c34a5797a61d752f9a75240434fd",
+    "app/views/api/v0/listings/index.json.jbuilder": "b83cf63765f312e173ddc53d605b69fc7912c584c7fc715c6d93551d14df898a",
+    "app/views/api/v0/listings/show.json.jbuilder": "d9d02adb7ff706cc29926b47989e1a2853013d9077695e406afcab1e341690d5",
+    "app/views/api/v0/organizations/listings.json.jbuilder": "9ea630d204a9bca4fd2680b7cd510d67430922067003fe949aa3b89b6a35808a",
+    "app/views/api/v0/organizations/show.json.jbuilder": "4ec2bd1be2a1039b16d3594a0b15f7bf1ae93a54a114bb90d129d246c8209ecc",
+    "app/views/api/v0/organizations/users.json.jbuilder": "b3a17a37f4c9b2fbe832df360ad7a8bb47144d59515aa21e0190e101eae1f98a",
+    "app/views/api/v0/podcast_episodes/index.json.jbuilder": "fb89b58cf384a2d9a19a2775b87fd45b2de6f7d297bb65cf483f7c896857efb8",
+    "app/views/api/v0/profile_images/show.json.jbuilder": "f8efc36ac28597eaf58662354ffff0e93cce8d533a55f43ef87f0eaa7ca460b9",
+    "app/views/api/v0/readinglist/index.json.jbuilder": "cff2c6b58399167a1954086280c13750df9a28b6f2cb3664847a1e19b15a8fe8",
+    "app/views/api/v0/shared/_follows.json.jbuilder": "f12ed5a29a5378e37f34feb81d72299b87d372e98805e0683949b429d13c981f",
+    "app/views/api/v0/shared/_listing.json.jbuilder": "03ca70612e8edd164a8ac3129aa9c63fcc1c3ae00ef2ca64d06d1f9e71b5ff7b",
+    "app/views/api/v0/shared/_organization.json.jbuilder": "0d4b45dfceec1ae35d6bc434d7439f750a8e68b26f70ba7aa41a91076c32467f",
+    "app/views/api/v0/shared/_trend.json.jbuilder": "ccd35f1484b1001384a234c506147203eab5351e69468ed7bf2ca252b58b96dd",
+    "app/views/api/v0/shared/_user.json.jbuilder": "4cc94725a1b2a9a5fe6bb96374e7bacbfa8799af2b7ec3a0d83420e7e1df8228",
+    "app/views/api/v0/shared/_user_show.json.jbuilder": "a2dc04eed645f132a46cfd24dab4665399aab499ed2fa861293d5bcd68d5abff",
+    "app/views/api/v0/subforems/index.json.jbuilder": "aa2c65e6657d486b59ad33d7d15d4c7d0fb644632f1496af9e0ef7c128f272d4",
+    "app/views/api/v0/surveys/_survey.json.jbuilder": "33388834e76a57b3241edd84968f610729b244c451970d5166e0de74c289bc27",
+    "app/views/api/v0/surveys/index.json.jbuilder": "b015b527df4eb4dd07d6acad71ed1fa812efe13856af1d10cf5593a68183c3ff",
+    "app/views/api/v0/surveys/poll_text_responses.json.jbuilder": "7d4f6b998dc127dddf1fe5e5ea5159ee2f737aeb036c1809e6c100a937f34cb7",
+    "app/views/api/v0/surveys/poll_votes.json.jbuilder": "898cf26a7bf06b839ff0423e2b68c2a48ffad9995e5ef006090c05283349a8f2",
+    "app/views/api/v0/surveys/show.json.jbuilder": "126c6a2d57aa0c10594bc53b401dbf806e289c938a6a90fbc0f3bb4e972962eb",
+    "app/views/api/v0/tags/index.json.jbuilder": "d782e6fefed6d98a013dd792ea2ca174dc1695f2d53a06d92dd09aeee28d0a47",
+    "app/views/api/v0/trends/index.json.jbuilder": "b62f670a53104ee0ee0742cbc8071854a858f2e9cdc5e4407aab3689f72c9321",
+    "app/views/api/v0/trends/show.json.jbuilder": "11bad9bb634f9cff12cfb2d2a5f8181ac2fa03099798f15e0208ea3f13c6e8d8",
+    "app/views/api/v0/users/me.json.jbuilder": "dd637a253acb4ba004f296aa4a71a6cc2c5a3430fd90deeed8f16b3ee38de1ec",
+    "app/views/api/v0/users/show.json.jbuilder": "dd637a253acb4ba004f296aa4a71a6cc2c5a3430fd90deeed8f16b3ee38de1ec",
+    "app/views/api/v0/videos/index.json.jbuilder": "d49146328d2d20d9a16552e8a06bbe8e1eefbb8b2f22330fa4e797b4162387c1",
+    "app/views/api/v1/admin/user_identities/_identity.json.jbuilder": "e2a2f47d80e3f292b55523b30aea32d9f06737473b8557a5c83208a58f52e902",
+    "app/views/api/v1/admin/user_identities/bulk_create.json.jbuilder": "5f1b512df4ea87437d989f017ad826a2cb956a273ad15a0adb9c3e06b0907368",
+    "app/views/api/v1/admin/user_identities/create.json.jbuilder": "e7569f4b5e29fba0edd61debaeb8826967dc374c1364f63a5d2bfc9ecd1cd312",
+    "app/views/api/v1/admin/user_identities/index.json.jbuilder": "e8ec32acaeb373e8d13b393b923a048f73659602ad5b1f76cfe876571ccc9554",
+    "app/views/api/v1/admin/user_notes/_note.json.jbuilder": "ad2561a267e57de31d61110addcaf4045b2e76eb951e20fb2bfb811999815de4",
+    "app/views/api/v1/admin/user_notes/create.json.jbuilder": "9684d42c110a5c89fb75203979c03054249a6d82d405a9eccc5dd86ee4c3639c",
+    "app/views/api/v1/admin/user_notes/index.json.jbuilder": "68c3d7d6a1d202efdc5460df5615bf00727a470c85f3ec90509a935519658e1b",
+    "app/views/api/v1/admin/users/_user.json.jbuilder": "3eb128f35f99e12bd9c49256ce707398c6da859a72c78b5151440a2e80fa12fc",
+    "app/views/api/v1/admin/users/index.json.jbuilder": "a26cf1fd3b09fe48e1671621f01764fb905947b961d90473f0a33ea42c1353f4",
+    "app/views/api/v1/admin/users/merge.json.jbuilder": "744d944eefd85ab440f57be8518164d038a74470cbb2d9346c8ec6c83a3728e2",
+    "app/views/api/v1/admin/users/show.json.jbuilder": "744d944eefd85ab440f57be8518164d038a74470cbb2d9346c8ec6c83a3728e2",
+    "app/views/api/v1/admin/users/update.json.jbuilder": "744d944eefd85ab440f57be8518164d038a74470cbb2d9346c8ec6c83a3728e2",
+    "app/views/api/v1/articles/_article.json.jbuilder": "5a2cb19452ac95aef110ea6dfc5a1fa6f79cd35e18da8d7c6c83947ceb28e01e",
+    "app/views/api/v1/articles/_flare_tag.json.jbuilder": "d4c168a2d8a4524c70b8eea473ff1a86847f4474d606f9fe05b50b6d431c74e1",
+    "app/views/api/v1/articles/index.json.jbuilder": "98b640fe49c9fe52b906e7fb40bf569907d453315a70443ac11f7e7b45b67aea",
+    "app/views/api/v1/articles/me.json.jbuilder": "d34ac11e6de821577c62b983a8a5b32bb5b0cffaa10e980e7959ff198aaef15d",
+    "app/views/api/v1/articles/onboarding.json.jbuilder": "f6917b2743dc39a909f228b1d37c4396d808ffc69944f10b9f4a8702122f1eda",
+    "app/views/api/v1/articles/search.json.jbuilder": "50e42b85406f3cb8cc45a631c324e97ec40bbce07b7a9726e05f8a1952d295d1",
+    "app/views/api/v1/articles/show.json.jbuilder": "f70e95079aa1ad6e5f71c1a4adf71c75bb78dad6bb9990694e7e5a0cc91583f8",
+    "app/views/api/v1/articles/unpublish.json.jbuilder": "a989fa9c5520f04f09cc1481c321b078f941fcb6ace30009d9140b68347613e4",
+    "app/views/api/v1/audience_segments/users.json.jbuilder": "6ee6f45bc3794a48b21b1a8ed59dc69fdc855fc39bf0daac2ff390367073c3cf",
+    "app/views/api/v1/comments/_comment.json.jbuilder": "635f8d94a45987f4a8c8389346989c1cffdc5c08bbd6c50c8115a00a5b9b3b1d",
+    "app/views/api/v1/comments/_comment_with_children.json.jbuilder": "1e83a422f1fb78b9922666ba260be87129c41fb9f2abd6b9568419e38b264dbf",
+    "app/views/api/v1/comments/_comments_with_children.json.jbuilder": "3f6db9f70146e96cb577c8b9e1963734a95e3ed4c9ecf02261221be0a2c5593f",
+    "app/views/api/v1/comments/index.json.jbuilder": "0fde7cbea36bd573d9b6d31206bbc48866f2ed365ef25fbd68e51902cb595ef5",
+    "app/views/api/v1/comments/show.json.jbuilder": "2dc5a39c6c5a568174d14a4bac7b502c049e2c7548dd816bbbb448b8a7db604f",
+    "app/views/api/v1/followers/users.json.jbuilder": "42cc2398d2cb7d38cb72e59cadc42d115b4428b525699d41adb7307fbb56b9b5",
+    "app/views/api/v1/follows/tags.json.jbuilder": "cbf48f77c84b0b92f3d1103e6cb225d31315c34a5797a61d752f9a75240434fd",
+    "app/views/api/v1/listings/index.json.jbuilder": "b83cf63765f312e173ddc53d605b69fc7912c584c7fc715c6d93551d14df898a",
+    "app/views/api/v1/listings/show.json.jbuilder": "224d95e0c4a2e89b1702fb2ea9e032f25433465a38423b599dd3c63aab859242",
+    "app/views/api/v1/organizations/listings.json.jbuilder": "72d5b39af659183865e5b54739ea8cc3c2ee4bcd96ba54f960103630ade98492",
+    "app/views/api/v1/organizations/show.json.jbuilder": "4ec2bd1be2a1039b16d3594a0b15f7bf1ae93a54a114bb90d129d246c8209ecc",
+    "app/views/api/v1/organizations/users.json.jbuilder": "6ee6f45bc3794a48b21b1a8ed59dc69fdc855fc39bf0daac2ff390367073c3cf",
+    "app/views/api/v1/podcast_episodes/index.json.jbuilder": "fb89b58cf384a2d9a19a2775b87fd45b2de6f7d297bb65cf483f7c896857efb8",
+    "app/views/api/v1/profile_images/show.json.jbuilder": "f8efc36ac28597eaf58662354ffff0e93cce8d533a55f43ef87f0eaa7ca460b9",
+    "app/views/api/v1/readinglist/index.json.jbuilder": "3cba07510dd0d4c94e2faff7684f86fb1c12a46b3f99959f31be85f2db481940",
+    "app/views/api/v1/related_articles/index.json.jbuilder": "5015beb27be77a0dbf16d57622e8a22ce35a24fc85df6db3108eff3182ac6738",
+    "app/views/api/v1/shared/_follows.json.jbuilder": "f12ed5a29a5378e37f34feb81d72299b87d372e98805e0683949b429d13c981f",
+    "app/views/api/v1/shared/_listing.json.jbuilder": "03ca70612e8edd164a8ac3129aa9c63fcc1c3ae00ef2ca64d06d1f9e71b5ff7b",
+    "app/views/api/v1/shared/_organization.json.jbuilder": "0d4b45dfceec1ae35d6bc434d7439f750a8e68b26f70ba7aa41a91076c32467f",
+    "app/views/api/v1/shared/_trend.json.jbuilder": "ccd35f1484b1001384a234c506147203eab5351e69468ed7bf2ca252b58b96dd",
+    "app/views/api/v1/shared/_user.json.jbuilder": "4cc94725a1b2a9a5fe6bb96374e7bacbfa8799af2b7ec3a0d83420e7e1df8228",
+    "app/views/api/v1/shared/_user_show.json.jbuilder": "a2dc04eed645f132a46cfd24dab4665399aab499ed2fa861293d5bcd68d5abff",
+    "app/views/api/v1/shared/_user_show_extended.json.jbuilder": "90375b78c5cf620d18cb08a7d77412b71bd3d23c8bc61563be69958f541a6527",
+    "app/views/api/v1/subforems/index.json.jbuilder": "aa2c65e6657d486b59ad33d7d15d4c7d0fb644632f1496af9e0ef7c128f272d4",
+    "app/views/api/v1/surveys/_survey.json.jbuilder": "33388834e76a57b3241edd84968f610729b244c451970d5166e0de74c289bc27",
+    "app/views/api/v1/surveys/index.json.jbuilder": "37be575669c5e2fac3636d5c49f22c74848bb211d998910651de36ed375dd86e",
+    "app/views/api/v1/surveys/poll_text_responses.json.jbuilder": "7d4f6b998dc127dddf1fe5e5ea5159ee2f737aeb036c1809e6c100a937f34cb7",
+    "app/views/api/v1/surveys/poll_votes.json.jbuilder": "898cf26a7bf06b839ff0423e2b68c2a48ffad9995e5ef006090c05283349a8f2",
+    "app/views/api/v1/surveys/show.json.jbuilder": "9a1dd97143cf357c257f26af1c7fb1f6cb68a3390e0d4b25dcbb3d85f90c41cc",
+    "app/views/api/v1/tags/index.json.jbuilder": "d782e6fefed6d98a013dd792ea2ca174dc1695f2d53a06d92dd09aeee28d0a47",
+    "app/views/api/v1/tags/update.json.jbuilder": "85f6d6a54d9c13427314c0a24c4e31bc7fcc58518f3821b39be87d7d4312b0ef",
+    "app/views/api/v1/trends/index.json.jbuilder": "805eb3fdfeaaa176515cc56520b2d49f32853ea59604a039db58e77266a36485",
+    "app/views/api/v1/trends/show.json.jbuilder": "5e0500f6da91e2a58a1e42335b499cc95461f408c70fa0ed598711bb6a221eaa",
+    "app/views/api/v1/users/me.json.jbuilder": "ea9dd72fdefdae151a2336cf0ff50b2978fa8d4701571340933b255bf8859ce7",
+    "app/views/api/v1/users/show.json.jbuilder": "bc565c58fb5de93b73bc3f7385b219d9c921cca81cf5d6495e184464f6d9065b",
+    "app/views/api/v1/users/suspend.json.jbuilder": "a989fa9c5520f04f09cc1481c321b078f941fcb6ace30009d9140b68347613e4",
+    "app/views/api/v1/users/unpublish.json.jbuilder": "a989fa9c5520f04f09cc1481c321b078f941fcb6ace30009d9140b68347613e4",
+    "app/views/api/v1/videos/index.json.jbuilder": "d49146328d2d20d9a16552e8a06bbe8e1eefbb8b2f22330fa4e797b4162387c1",
+    "config/routes.rb#namespace:api": "c28164c5a79243bcec7d80d40dc2b4b5df6c99bb1917c968862fb2102b51bbc9",
+    "config/routes/api.rb": "486eea83415da37b55c4e9113fe122f440e1461ca23e948420cf7a980989feaa",
+    "public/openapi.yml": "a954c4b9212d901eaaefd7ec5cd675c9549fd10931af2a032906c3923a974135",
+    "swagger/v1/api_v1.json": "6d07f2072b45dd23fc1316516e3dd3edbcc9ab2b74a484400c3763aca768e080"
+  }
+}

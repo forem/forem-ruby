@@ -55,6 +55,33 @@ module Forem
     OBJECT_NAME = "billboard"
     RESOURCE_PATH = "/api/billboards"
 
+    # Preview rendered HTML for a billboard without persisting it.
+    #
+    # Sends a POST request to +/api/billboards/preview+. Requires admin privileges.
+    #
+    # @param params [Hash] preview attributes (+:body_markdown+,
+    #   +:minimized_body_markdown+, +:placement_area+, +:render_mode+)
+    # @param opts [Hash] per-request options
+    # @return [Forem::ForemObject] object exposing +processed_html+ and
+    #   +minimized_processed_html+
+    def self.preview(params = {}, opts = {})
+      requestor = opts[:requestor]
+      resp = request(:post, "#{resource_path}/preview", params, opts)
+      ForemObject.construct_from(resp.parsed_body, requestor: requestor)
+    end
+
+    # Unpublish a billboard by ID, reverting it to draft/inactive status.
+    #
+    # Sends a PUT request to +/api/billboards/:id/unpublish+.
+    # Requires admin privileges.
+    #
+    # @param id [Integer, String] the billboard ID
+    # @param opts [Hash] per-request options
+    # @return [ForemResponse] raw API response
+    def self.unpublish(id, opts = {})
+      request(:put, "#{resource_path}/#{id}/unpublish", {}, opts)
+    end
+
     # Unpublish this billboard, reverting it to draft/inactive status.
     #
     # Marks the billboard as unpublished. A billboard must be both published

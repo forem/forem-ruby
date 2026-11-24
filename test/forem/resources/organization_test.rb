@@ -66,4 +66,30 @@ class Forem::OrganizationTest < Minitest::Test
     assert_instance_of Forem::Article, result[0]
     assert_equal "Org Article", result[0].title
   end
+
+  def test_class_users_and_articles
+    mock_http, captured = stub_http_request(method: :get, path: "/api/organizations/acme/users", status: 200, body: '[{"id":2,"username":"bob"}]')
+    requestor = make_requestor(mock_http)
+    users = Forem::Organization.users("acme", {}, requestor: requestor)
+    assert_equal "bob", users[0].username
+    assert_equal "/api/organizations/acme/users", captured[:path]
+
+    mock_http2, captured2 = stub_http_request(method: :get, path: "/api/organizations/acme/articles", status: 200, body: '[{"id":9,"title":"Hello"}]')
+    requestor2 = make_requestor(mock_http2)
+    articles = Forem::Organization.articles("acme", {}, requestor: requestor2)
+    assert_equal "Hello", articles[0].title
+    assert_equal "/api/organizations/acme/articles", captured2[:path]
+  end
+
+  def test_article_analytics
+    body = '[{"id":10,"title":"Post","page_views_count":420,"daily":[{"date":"2026-11-01","page_views":42}]}]'
+    mock_http, captured = stub_http_request(method: :get, path: "/api/organizations/7/article_analytics", status: 200, body: body)
+    requestor = make_requestor(mock_http)
+    result = Forem::Organization.article_analytics(7, { start: "2026-11-01", end: "2026-11-07" }, requestor: requestor)
+    assert_instance_of Forem::ListObject, result
+    assert_equal 1, result.length
+    assert_equal 420, result[0].page_views_count
+    assert_includes captured[:path], "/api/organizations/7/article_analytics"
+    assert_includes captured[:path], "start=2026-11-01"
+  end
 end

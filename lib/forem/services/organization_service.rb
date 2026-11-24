@@ -98,6 +98,36 @@ module Forem
       def delete(id, opts = {})
         Organization.delete(id, opts_with_requestor(opts))
       end
+
+      # List members of an organization by ID or slug.
+      #
+      # @param id_or_slug [Integer, String] organization ID or slug
+      # @param params [Hash] query parameters (+:page+, +:per_page+)
+      # @param opts [Hash] per-request options
+      # @return [Array<User>] organization members
+      def users(id_or_slug, params = {}, opts = {})
+        Organization.users(id_or_slug, params, opts_with_requestor(opts))
+      end
+
+      # List articles published under an organization by ID or slug.
+      #
+      # @param id_or_slug [Integer, String] organization ID or slug
+      # @param params [Hash] query parameters (+:page+, +:per_page+)
+      # @param opts [Hash] per-request options
+      # @return [Array<Article>] organization articles
+      def articles(id_or_slug, params = {}, opts = {})
+        Organization.articles(id_or_slug, params, opts_with_requestor(opts))
+      end
+
+      # Retrieve per-article analytics for an organization.
+      #
+      # @param organization_id [Integer, String] numeric organization ID
+      # @param params [Hash] query parameters (+:page+, +:per_page+, +:start+, +:end+)
+      # @param opts [Hash] per-request options
+      # @return [ListObject<ForemObject>] paginated per-article analytics
+      def article_analytics(organization_id, params = {}, opts = {})
+        Organization.article_analytics(organization_id, params, opts_with_requestor(opts))
+      end
     end
   end
 end

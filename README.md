@@ -64,34 +64,40 @@ silent fallbacks to an unauthenticated default.
 
 | Client accessor | Resource class | Available operations |
 |---|---|---|
-| `client.articles` | `Forem::Article` | `list`, `create`, `retrieve`, `update`, `me`, `me_published`, `me_unpublished`, `me_all`, `latest`, `search`, `semantic_search`, `retrieve_by_path` |
+| `client.articles` | `Forem::Article` | `list`, `create`, `retrieve`, `update`, `unpublish`, `preview`, `me`, `me_published`, `me_unpublished`, `me_all`, `latest`, `search`, `semantic_search`, `retrieve_by_path` |
+| `client.related_articles` | `Forem::RelatedArticle` | `list` (requires `organization_id:`) |
 | `client.users` | `Forem::User` | `retrieve`, `me`, `search` (by `email:` exact-match) |
 | `client.badges` | `Forem::Badge` | `list`, `create`, `retrieve`, `update`, `delete` |
 | `client.badge_achievements` | `Forem::BadgeAchievement` | `list`, `create`, `retrieve`, `delete` |
-| `client.comments` | `Forem::Comment` | `list`, `retrieve` |
-| `client.organizations` | `Forem::Organization` | `list`, `create`, `retrieve`, `update`, `delete` |
-| `client.tags` | `Forem::Tag` | `list` |
+| `client.comments` | `Forem::Comment` | `list`, `retrieve`, `preview` |
+| `client.organizations` | `Forem::Organization` | `list`, `create`, `retrieve`, `update`, `delete`, `users`, `articles`, `article_analytics` |
+| `client.tags` | `Forem::Tag` | `list` (with optional exact `name:`), `supported`, `create`, `update`, `add_moderator`, `remove_moderator` |
 | `client.follows` | `Forem::Follow` | `list` (followed tags), `create` (follow users/orgs) |
 | `client.followers` | `Forem::Follower` | `list` |
 | `client.reading_list` | `Forem::ReadingList` | `list` |
 | `client.podcast_episodes` | `Forem::PodcastEpisode` | `list` |
 | `client.videos` | `Forem::Video` | `list` |
 | `client.profile_images` | `Forem::ProfileImage` | `retrieve` |
-| `client.billboards` | `Forem::Billboard` | `list`, `create`, `retrieve`, `update` |
-| `client.pages` | `Forem::Page` | `list`, `create`, `retrieve`, `update`, `delete` |
+| `client.billboards` | `Forem::Billboard` | `list`, `create`, `retrieve`, `update`, `preview`, `unpublish` |
+| `client.billboard_campaigns` | `Forem::BillboardCampaign` | `list`, `create`, `retrieve`, `update` (admin only) |
+| `client.pages` | `Forem::Page` | `list`, `create`, `retrieve`, `update`, `delete`, `preview` |
 | `client.segments` | `Forem::Segment` | `list`, `create`, `retrieve`, `delete` |
 | `client.reactions` | `Forem::Reaction` | `create`, `toggle` (admin only) |
 | `client.recommended_articles_lists` | `Forem::RecommendedArticlesList` | `list`, `create`, `retrieve`, `update` |
 | `client.agent_sessions` | `Forem::AgentSession` | `list`, `create`, `retrieve`, `presign` |
-| `client.surveys` | `Forem::Survey` | `list`, `retrieve` (`#poll_votes`, `#poll_text_responses` on instance) |
-| `client.analytics` | `Forem::Analytics` | `totals`, `historical`, `past_day`, `referrers` |
+| `client.surveys` | `Forem::Survey` | `list`, `retrieve`, `create`, `update`, `delete`, `poll_votes`, `poll_text_responses` |
+| `client.analytics` | `Forem::Analytics` | `totals`, `historical`, `past_day`, `referrers`, `top_contributors`, `follower_engagement`, `dashboard`, `heatmap` |
 | `client.health_checks` | `Forem::HealthCheck` | `app`, `database`, `cache` (production requires `token:`) |
-| `client.admin_users` | `Forem::AdminUser` | `create`, `link_identity`, `bulk_link_identities`, `identities`, `unlink_identity`, `update_notification_settings` |
+| `client.admin_users` | `Forem::AdminUser` | `list`, `retrieve`, `create`, `update`, `update_email`, `update_status`, `merge`, `notes`, `create_note`, `link_identity`, `bulk_link_identities`, `identities`, `unlink_identity`, `update_notification_settings` |
 | `client.trends` | `Forem::Trend` | `list`, `retrieve` (by id or slug), `articles` |
 | `client.concepts` | `Forem::Concept` | `list`, `retrieve`, `update`, `articles`, `search` (semantic) |
 | `client.admin_concepts` | `Forem::AdminConcept` | `list`, `retrieve`, `create`, `update`, `delete`, `trigger_lookback` |
 | `client.request_redirects` | `Forem::RequestRedirect` | `list`, `retrieve`, `create`, `update`, `delete` (admin only) |
 | `client.events` | `Forem::Event` | `list` (with `type_of:` filter), `retrieve`, `create`, `update`, `delete` (admin only) |
+| `client.subforems` | `Forem::Subforem` | `list` |
+| `client.instance` | `Forem::Instance` | `retrieve` |
+| `client.feedback_messages` | `Forem::FeedbackMessage` | `update` (admin only) |
+| `client.images` | `Forem::Image` | `create` (multipart upload), `generate` (AI generation) |
 
 ### Instance methods on retrieved objects
 
@@ -113,6 +119,7 @@ user.unsuspend
 user.add_limited;  user.remove_limited
 user.add_trusted;  user.remove_trusted
 user.add_spam;     user.remove_spam
+user.add_base_subscriber; user.remove_base_subscriber
 user.unpublish
 
 # AgentSession
@@ -293,6 +300,24 @@ client.articles.retrieve(12345, api_key: "other_key")
 
 - Ruby 3.1 or later
 - No runtime dependencies (uses Ruby's built-in `net/http`)
+
+## Automated API Sync with `forem/forem`
+
+This repository tracks full route- and file-level parity with `forem/forem` in
+[`.forem-api-sync.json`](.forem-api-sync.json) and enforces it via
+`script/api_sync/cli.rb` and `.github/workflows/sync_forem_api.yml`:
+
+- **Daily schedule**: Runs daily at `14:00 UTC` (9:00 AM EST / 10:00 AM EDT) and on manual `workflow_dispatch`.
+- **Deterministic audit**: Extracts every route in `forem/forem`'s `namespace :api` (`config/routes.rb` + `config/routes/api.rb`), checks controller & concern action implementations, validates live SDK bindings, and diffs all watched API controllers, concerns, views, and specs since the last synced SHA.
+- **Autonomous PR generation**: When upstream API changes are detected and an AI provider secret (`GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, or `OPENAI_API_KEY`) is configured in repository Actions secrets, the workflow implements the SDK changes + tests, verifies `bundle exec rake test`, `ruby script/api_sync/cli.rb verify`, and `gem build`, and opens/updates a PR. Without an AI key (or with `dry_run: true`), it opens/updates a `forem-api-sync` GitHub Issue containing the exact drift report.
+
+Run the checks locally:
+
+```sh
+ruby script/api_sync/cli.rb verify-manifest
+ruby script/api_sync/cli.rb audit --forem-dir ../forem
+ruby script/api_sync/cli.rb verify --forem-dir ../forem
+```
 
 ## License
 

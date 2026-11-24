@@ -49,4 +49,14 @@ class Forem::PageTest < Minitest::Test
     assert_equal "DELETE", captured[:method]
     assert_equal "/api/pages/1", captured[:path]
   end
+
+  def test_preview
+    mock_http, captured = stub_http_request(method: :post, path: "/api/pages/preview", status: 200, body: '{"processed_html":"<p>Preview</p>"}')
+    requestor = make_requestor(mock_http)
+    result = Forem::Page.preview({ body_markdown: "Preview" }, requestor: requestor)
+    assert_instance_of Forem::ForemObject, result
+    assert_equal "<p>Preview</p>", result.processed_html
+    assert_equal "POST", captured[:method]
+    assert_equal "/api/pages/preview", captured[:path]
+  end
 end

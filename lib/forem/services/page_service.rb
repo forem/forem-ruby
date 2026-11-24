@@ -102,6 +102,15 @@ module Forem
       def delete(id, opts = {})
         Page.delete(id, opts_with_requestor(opts))
       end
+
+      # Preview rendered HTML for a static page without saving it.
+      #
+      # @param params [Hash] preview attributes (+:body_markdown+, +:body_html+, +:organization_id+)
+      # @param opts [Hash] per-request options
+      # @return [ForemObject] object exposing +processed_html+
+      def preview(params = {}, opts = {})
+        Page.preview(params, opts_with_requestor(opts))
+      end
     end
   end
 end

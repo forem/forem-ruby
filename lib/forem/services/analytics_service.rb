@@ -88,6 +88,42 @@ module Forem
       def referrers(params = {}, opts = {})
         Analytics.referrers(params, opts_with_requestor(opts))
       end
+
+      # Retrieve top engaged contributors for the user or organization's content.
+      #
+      # @param params [Hash] query parameters (+:start+, +:end+, +:article_id+, +:organization_id+)
+      # @param opts [Hash] per-request options
+      # @return [Array<ForemObject>] ranked contributor engagement rows
+      def top_contributors(params = {}, opts = {})
+        Analytics.top_contributors(params, opts_with_requestor(opts))
+      end
+
+      # Retrieve follower engagement ratio for the user or organization.
+      #
+      # @param params [Hash] query parameters (+:start+, +:end+, +:organization_id+)
+      # @param opts [Hash] per-request options
+      # @return [ForemObject] follower engagement stats
+      def follower_engagement(params = {}, opts = {})
+        Analytics.follower_engagement(params, opts_with_requestor(opts))
+      end
+
+      # Retrieve the bundled analytics dashboard snapshot.
+      #
+      # @param params [Hash] query parameters (+:start+, +:end+, +:article_id+, +:organization_id+)
+      # @param opts [Hash] per-request options
+      # @return [ForemObject] combined dashboard payload
+      def dashboard(params = {}, opts = {})
+        Analytics.dashboard(params, opts_with_requestor(opts))
+      end
+
+      # Retrieve the rolling 365-day personal activity heatmap.
+      #
+      # @param params [Hash] query parameters (optional +:end+ date)
+      # @param opts [Hash] per-request options
+      # @return [ForemObject] activity heatmap payload
+      def heatmap(params = {}, opts = {})
+        Analytics.heatmap(params, opts_with_requestor(opts))
+      end
     end
   end
 end
