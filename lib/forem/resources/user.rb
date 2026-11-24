@@ -115,14 +115,16 @@ module Forem
     #
     # Sends a PUT request to +/api/users/:id/suspend+. Requires admin privileges.
     #
+    # @param note [String, nil] optional moderation note recorded with the suspension
     # @param opts [Hash] per-request options (e.g., +:api_key+)
     # @return [ForemResponse] the raw API response
     # @example
     #   user = client.users.retrieve(42)
-    #   user.suspend
+    #   user.suspend(note: "Repeated spam")
     # @see https://developers.forem.com/api/v1#/operations/suspendUser
-    def suspend(opts = {})
-      request(:put, "#{resource_url}/suspend", {}, opts)
+    def suspend(note: nil, **opts)
+      body = note ? { note: note } : {}
+      request(:put, "#{resource_url}/suspend", body, opts)
     end
 
     # Remove the suspension from this user, restoring their access.
@@ -224,6 +226,26 @@ module Forem
     # @see https://developers.forem.com/api/v1
     def remove_trusted(opts = {})
       request(:delete, "#{resource_url}/trusted", {}, opts)
+    end
+
+    # Grant the "base_subscriber" role to this user.
+    #
+    # Sends a PUT request to +/api/users/:id/base_subscriber+. Requires admin privileges.
+    #
+    # @param opts [Hash] per-request options (e.g., +:api_key+)
+    # @return [ForemResponse] the raw API response
+    def add_base_subscriber(opts = {})
+      request(:put, "#{resource_url}/base_subscriber", {}, opts)
+    end
+
+    # Remove the "base_subscriber" role from this user.
+    #
+    # Sends a DELETE request to +/api/users/:id/base_subscriber+. Requires admin privileges.
+    #
+    # @param opts [Hash] per-request options (e.g., +:api_key+)
+    # @return [ForemResponse] the raw API response
+    def remove_base_subscriber(opts = {})
+      request(:delete, "#{resource_url}/base_subscriber", {}, opts)
     end
   end
 end

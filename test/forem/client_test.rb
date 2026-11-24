@@ -19,7 +19,8 @@ class Forem::ClientTest < Minitest::Test
        reading_list podcast_episodes videos profile_images billboards
        pages segments reactions recommended_articles_lists agent_sessions
        surveys analytics health_checks admin_users trends concepts
-       admin_concepts request_redirects events].each do |resource|
+       admin_concepts request_redirects events related_articles subforems
+       instance billboard_campaigns feedback_messages images].each do |resource|
       assert_respond_to client, resource, "Client missing #{resource} accessor"
     end
   end

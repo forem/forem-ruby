@@ -46,6 +46,15 @@ module Forem
       def retrieve(id, opts = {})
         Comment.retrieve(id, opts_with_requestor(opts))
       end
+
+      # Preview rendered Markdown for a comment without saving it.
+      #
+      # @param params [Hash] preview attributes (+:body_markdown+)
+      # @param opts [Hash] per-request options
+      # @return [ForemObject] object containing +processed_html+
+      def preview(params = {}, opts = {})
+        Comment.preview(params, opts_with_requestor(opts))
+      end
     end
   end
 end

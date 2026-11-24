@@ -7,37 +7,99 @@ module Forem
     # Access via {Client#admin_users}. All methods inject the client's
     # requestor automatically so no additional configuration is required.
     #
-    # @example
-    #   client = Forem::Client.new("admin-api-key")
-    #   user = client.admin_users.create(
-    #     email: "newuser@example.com",
-    #     name: "New User"
-    #   )
-    #
     # @see AdminUser
     # @see https://developers.forem.com/api/v1#/operations/postAdminUsersCreate
     class AdminUserService < BaseService
+      # List users via the admin API.
+      #
+      # @param params [Hash] query parameters (+:email+, +:username+,
+      #   +:identity_provider+, +:identity_uid+, +:page+, +:per_page+)
+      # @param opts [Hash] per-request options
+      # @return [ListObject<AdminUser>] paginated list of users
+      def list(params = {}, opts = {})
+        AdminUser.list(params, opts_with_requestor(opts))
+      end
+
+      # Retrieve a single user via the admin API.
+      #
+      # @param id [Integer, String] the Forem user ID
+      # @param opts [Hash] per-request options
+      # @return [AdminUser] the user record
+      def retrieve(id, opts = {})
+        AdminUser.retrieve(id, opts_with_requestor(opts))
+      end
+
       # Invite a new user to the Forem instance.
       #
-      # Creates a user account and sends them an invitation email.
-      # Requires admin privileges.
-      #
-      # @param params [Hash] user attributes
-      # @option params [String] :email the new user's email address (required)
-      # @option params [String] :name display name for the new user
-      # @option params [String] :username desired username (generated if omitted)
+      # @param params [Hash] user attributes (+:email+, +:name+,
+      #   +:custom_invite_subject+, +:custom_invite_message+,
+      #   +:custom_invite_footnote+)
       # @param opts [Hash] per-request options
-      # @return [AdminUser] the newly created user record
-      #
-      # @example
-      #   client.admin_users.create(
-      #     email: "jane@example.com",
-      #     name: "Jane Doe"
-      #   )
-      #
-      # @see https://developers.forem.com/api/v1#/operations/postAdminUsersCreate
+      # @return [AdminUser] empty record (API returns 200 with empty body)
       def create(params = {}, opts = {})
         AdminUser.create(params, opts_with_requestor(opts))
+      end
+
+      # Update a user's profile fields via the admin API.
+      #
+      # @param id [Integer, String] the Forem user ID
+      # @param params [Hash] updatable fields (+:name+, +:username+, +:summary+,
+      #   +:location+, +:website_url+)
+      # @param opts [Hash] per-request options
+      # @return [AdminUser] the updated user record
+      def update(id, params = {}, opts = {})
+        AdminUser.update(id, params, opts_with_requestor(opts))
+      end
+
+      # Directly update a user's email address.
+      #
+      # @param user_id [Integer, String] the Forem user ID
+      # @param email [String] new email address
+      # @param opts [Hash] per-request options
+      # @return [ForemObject] +{ id:, email: }+
+      def update_email(user_id, email:, **opts)
+        AdminUser.update_email(user_id, email: email, **opts_with_requestor(opts))
+      end
+
+      # Update a user's moderation status.
+      #
+      # @param user_id [Integer, String] the Forem user ID
+      # @param status [String] new moderation status
+      # @param note [String, nil] optional moderation note
+      # @param opts [Hash] per-request options
+      # @return [ForemObject] +{ id:, status: }+
+      def update_status(user_id, status:, note: nil, **opts)
+        AdminUser.update_status(user_id, status: status, note: note, **opts_with_requestor(opts))
+      end
+
+      # Merge a duplicate user account into a surviving user account.
+      #
+      # @param user_id [Integer, String] surviving user ID
+      # @param merge_user_id [Integer, String] user ID to merge and delete
+      # @param opts [Hash] per-request options
+      # @return [AdminUser] the surviving user record
+      def merge(user_id, merge_user_id:, **opts)
+        AdminUser.merge(user_id, merge_user_id: merge_user_id, **opts_with_requestor(opts))
+      end
+
+      # List admin moderation notes for a user.
+      #
+      # @param user_id [Integer, String] the Forem user ID
+      # @param opts [Hash] per-request options
+      # @return [Array<ForemObject>] admin notes
+      def notes(user_id, **opts)
+        AdminUser.notes(user_id, **opts_with_requestor(opts))
+      end
+
+      # Create an admin moderation note on a user.
+      #
+      # @param user_id [Integer, String] the Forem user ID
+      # @param content [String] note content
+      # @param reason [String, nil] optional note reason
+      # @param opts [Hash] per-request options
+      # @return [ForemObject] the created note
+      def create_note(user_id, content:, reason: nil, **opts)
+        AdminUser.create_note(user_id, content: content, reason: reason, **opts_with_requestor(opts))
       end
 
       # Link an external identity to a user.
@@ -96,6 +158,7 @@ module Forem
         )
       end
 
+      # Update email notification settings for a user.
       #
       # @param user_id [Integer, String] the Forem user ID.
       # @param settings [Hash] notification setting columns to write.

@@ -74,11 +74,12 @@ module Forem
       api_key = opts.delete(:api_key) || @config.api_key
       api_base = opts.delete(:api_base) || @config.api_base
       extra_headers = opts.delete(:headers) || {}
+      multipart = opts.delete(:multipart)
       uri = URI("#{api_base}#{path}")
 
       retries_left = @config.max_network_retries
       begin
-        response = execute_request(method, uri, params, api_key, extra_headers)
+        response = execute_request(method, uri, params, api_key, extra_headers, multipart: multipart)
         handle_error_response(response) if response.http_status >= 400
         response
       rescue Forem::APIConnectionError
@@ -108,11 +109,13 @@ module Forem
     # @param uri [URI] the fully-qualified request URI.
     # @param params [Hash] parameters/body payload.
     # @param api_key [String, nil] the API key to attach.
+    # @param extra_headers [Hash] optional extra HTTP headers.
+    # @param multipart [Boolean] send payload as multipart/form-data.
     # @return [ForemResponse]
     # @raise [APIConnectionError] on any network-level exception.
-    def execute_request(method, uri, params, api_key, extra_headers = {})
+    def execute_request(method, uri, params, api_key, extra_headers = {}, multipart: false)
       http = @connection_manager.connection_for(uri, open_timeout: @config.open_timeout, read_timeout: @config.read_timeout)
-      request = build_request(method, uri, params, api_key, extra_headers)
+      request = build_request(method, uri, params, api_key, extra_headers, multipart: multipart)
 
       begin
         http_response = http.request(request)
@@ -130,33 +133,34 @@ module Forem
     # Build a Net::HTTPRequest object for the given method and parameters.
     #
     # Sets +api-key+, +Accept+, and +User-Agent+ headers on every request.
-    # POST and PUT requests encode +params+ as a JSON body and set
-    # +Content-Type: application/json+. GET requests append +params+ as a
-    # URL query string.
+    # POST, PUT, PATCH, and non-empty DELETE requests encode +params+ as a JSON
+    # body (or +multipart/form-data+ when +multipart: true+) and set the
+    # corresponding +Content-Type+. GET requests append +params+ as a URL query
+    # string.
     #
-    # @param method [Symbol] the HTTP verb (+:get+, +:post+, +:put+, +:delete+).
+    # @param method [Symbol] the HTTP verb (+:get+, +:post+, +:put+, +:patch+, +:delete+).
     # @param uri [URI] the request URI (modified in-place for GET params).
     # @param params [Hash] the parameters or body payload.
     # @param api_key [String, nil] the API key value.
+    # @param extra_headers [Hash] optional additional HTTP headers.
+    # @param multipart [Boolean] whether to encode body as multipart/form-data.
     # @return [Net::HTTPRequest] the fully-configured request object.
     # @raise [ArgumentError] if +method+ is not one of the supported verbs.
-    def build_request(method, uri, params, api_key, extra_headers = {})
+    def build_request(method, uri, params, api_key, extra_headers = {}, multipart: false)
       req = case method
             when :get
               uri.query = URI.encode_www_form(params) unless params.empty?
               Net::HTTP::Get.new(uri)
             when :post
-              r = Net::HTTP::Post.new(uri)
-              r.body = JSON.generate(params) unless params.empty?
-              r["Content-Type"] = "application/json"
-              r
+              apply_body(Net::HTTP::Post.new(uri), params, multipart: multipart)
             when :put
-              r = Net::HTTP::Put.new(uri)
-              r.body = JSON.generate(params) unless params.empty?
-              r["Content-Type"] = "application/json"
-              r
+              apply_body(Net::HTTP::Put.new(uri), params, multipart: multipart)
+            when :patch
+              apply_body(Net::HTTP::Patch.new(uri), params, multipart: multipart)
             when :delete
-              Net::HTTP::Delete.new(uri)
+              r = Net::HTTP::Delete.new(uri)
+              apply_body(r, params, multipart: multipart) unless params.empty?
+              r
             else
               raise ArgumentError, "Unsupported HTTP method: #{method}"
             end
@@ -166,6 +170,44 @@ module Forem
       req["User-Agent"] = "forem-ruby/#{Forem::VERSION} ruby/#{RUBY_VERSION}"
       extra_headers.each { |name, value| req[name.to_s] = value.to_s }
       req
+    end
+
+    def apply_body(request, params, multipart: false)
+      if multipart
+        boundary = "----ForemRubyBoundary#{SecureRandom.hex(16)}"
+        request.body = encode_multipart(params, boundary)
+        request["Content-Type"] = "multipart/form-data; boundary=#{boundary}"
+      else
+        request.body = JSON.generate(params) unless params.empty?
+        request["Content-Type"] = "application/json"
+      end
+      request
+    end
+
+    def encode_multipart(params, boundary)
+      crlf = "\r\n".b
+      body = "".b
+
+      params.each do |key, value|
+        name = key.to_s.gsub('"', '\"')
+        body << "--#{boundary}".b << crlf
+        if value.is_a?(Hash) && value.key?(:io)
+          io = value[:io]
+          filename = (value[:filename] || "upload").to_s.gsub('"', '\"')
+          content_type = (value[:content_type] || "application/octet-stream").to_s
+          content = io.respond_to?(:read) ? io.read : io.to_s
+          io.rewind if io.respond_to?(:rewind)
+          body << "Content-Disposition: form-data; name=\"#{name}\"; filename=\"#{filename}\"".b << crlf
+          body << "Content-Type: #{content_type}".b << crlf << crlf
+          body << content.b << crlf
+        else
+          body << "Content-Disposition: form-data; name=\"#{name}\"".b << crlf << crlf
+          body << value.to_s.b << crlf
+        end
+      end
+
+      body << "--#{boundary}--".b << crlf
+      body
     end
 
     # Raise the appropriate {ForemError} subclass for a non-2xx response.

@@ -50,4 +50,25 @@ class Forem::BillboardTest < Minitest::Test
     assert_equal "PUT", captured[:method]
     assert_equal "/api/billboards/1/unpublish", captured[:path]
   end
+
+  def test_class_unpublish
+    mock_http, captured = stub_http_request(method: :put, path: "/api/billboards/7/unpublish", status: 204, body: "")
+    requestor = make_requestor(mock_http)
+    result = Forem::Billboard.unpublish(7, requestor: requestor)
+    assert_equal 204, result.http_status
+    assert_equal "PUT", captured[:method]
+    assert_equal "/api/billboards/7/unpublish", captured[:path]
+  end
+
+  def test_preview
+    body = '{"processed_html":"<div>Ad</div>","minimized_processed_html":"<div>Mini</div>"}'
+    mock_http, captured = stub_http_request(method: :post, path: "/api/billboards/preview", status: 200, body: body)
+    requestor = make_requestor(mock_http)
+    result = Forem::Billboard.preview({ body_markdown: "Ad", placement_area: "sidebar_left" }, requestor: requestor)
+    assert_instance_of Forem::ForemObject, result
+    assert_equal "<div>Ad</div>", result.processed_html
+    assert_equal "<div>Mini</div>", result.minimized_processed_html
+    assert_equal "POST", captured[:method]
+    assert_equal "/api/billboards/preview", captured[:path]
+  end
 end

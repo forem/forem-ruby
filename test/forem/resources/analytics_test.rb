@@ -88,4 +88,45 @@ class Forem::AnalyticsTest < Minitest::Test
     result = Forem::Analytics.referrers({}, requestor: requestor)
     assert_equal [], result
   end
+
+  def test_top_contributors
+    body = '[{"user_id":12,"username":"alice","reactions_count":5,"comments_count":2,"score":17}]'
+    mock_http, captured = stub_http_request(method: :get, path: "/api/analytics/top_contributors", status: 200, body: body)
+    requestor = make_requestor(mock_http)
+    result = Forem::Analytics.top_contributors({ start: "2026-10-01", end: "2026-10-31" }, requestor: requestor)
+    assert_instance_of Array, result
+    assert_equal 1, result.length
+    assert_equal "alice", result[0].username
+    assert_equal 17, result[0].score
+    assert_equal "/api/analytics/top_contributors", captured[:path].split("?").first
+  end
+
+  def test_follower_engagement
+    body = '{"total_followers":200,"engaged_followers":50,"ratio":25.0}'
+    mock_http, captured = stub_http_request(method: :get, path: "/api/analytics/follower_engagement", status: 200, body: body)
+    requestor = make_requestor(mock_http)
+    result = Forem::Analytics.follower_engagement({ start: "2026-10-01" }, requestor: requestor)
+    assert_equal 200, result.total_followers
+    assert_equal 25.0, result.ratio
+    assert_equal "/api/analytics/follower_engagement", captured[:path].split("?").first
+  end
+
+  def test_dashboard
+    body = '{"start_date_floor":"2024-01-01","totals":{"page_views":{"total":1000}}}'
+    mock_http, captured = stub_http_request(method: :get, path: "/api/analytics/dashboard", status: 200, body: body)
+    requestor = make_requestor(mock_http)
+    result = Forem::Analytics.dashboard({}, requestor: requestor)
+    assert_equal "2024-01-01", result.start_date_floor
+    assert_equal 1000, result.totals.page_views.total
+    assert_equal "/api/analytics/dashboard", captured[:path].split("?").first
+  end
+
+  def test_heatmap
+    body = '{"start_date":"2025-11-25","end_date":"2026-11-24","days":[{"date":"2026-11-24","count":3}]}'
+    mock_http, captured = stub_http_request(method: :get, path: "/api/analytics/heatmap", status: 200, body: body)
+    requestor = make_requestor(mock_http)
+    result = Forem::Analytics.heatmap({ end: "2026-11-24" }, requestor: requestor)
+    assert_equal "2026-11-24", result.end_date
+    assert_equal "/api/analytics/heatmap", captured[:path].split("?").first
+  end
 end

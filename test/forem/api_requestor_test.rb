@@ -176,6 +176,33 @@ class Forem::APIRequestorTest < Minitest::Test
     assert_equal "override-key", captured[:headers]["api-key"]
   end
 
+  def test_patch_request_sends_json_body
+    mock_http, captured = stub_http_request(method: :patch, path: "/api/articles/1", status: 200, body: '{"id":1}')
+    requestor = make_requestor(mock_http)
+    requestor.request(:patch, "/api/articles/1", { title: "Patched" })
+    assert_equal "PATCH", captured[:method]
+    assert_equal "application/json", captured[:headers]["content-type"]
+    assert_equal({ "title" => "Patched" }, JSON.parse(captured[:body]))
+  end
+
+  def test_delete_request_with_params_sends_json_body
+    mock_http, captured = stub_http_request(method: :delete, path: "/api/tags/1/moderators", status: 200, body: '{}')
+    requestor = make_requestor(mock_http)
+    requestor.request(:delete, "/api/tags/1/moderators", { username: "alice" })
+    assert_equal "DELETE", captured[:method]
+    assert_equal "application/json", captured[:headers]["content-type"]
+    assert_equal({ "username" => "alice" }, JSON.parse(captured[:body]))
+  end
+
+  def test_delete_request_without_params_omits_body
+    mock_http, captured = stub_http_request(method: :delete, path: "/api/pages/1", status: 204, body: "")
+    requestor = make_requestor(mock_http)
+    requestor.request(:delete, "/api/pages/1")
+    assert_equal "DELETE", captured[:method]
+    assert_nil captured[:body]
+    assert_nil captured[:headers]["content-type"]
+  end
+
   private
 
   def retrying_requestor(*responses)

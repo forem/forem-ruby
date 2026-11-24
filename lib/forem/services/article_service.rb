@@ -228,6 +228,24 @@ module Forem
       def retrieve_by_path(username, slug, opts = {})
         Article.retrieve_by_path(username, slug, opts_with_requestor(opts))
       end
+
+      # Preview rendered Markdown for an article without saving it.
+      #
+      # @param params [Hash] preview attributes (+:body_markdown+, +:title+, +:description+, etc.)
+      # @param opts [Hash] per-request options
+      # @return [ForemObject] rendered preview attributes
+      def preview(params = {}, opts = {})
+        Article.preview(params, opts_with_requestor(opts))
+      end
+
+      # Unpublish an article by ID, reverting it to draft status.
+      #
+      # @param id [Integer, String] the article ID
+      # @param opts [Hash] per-request options
+      # @return [ForemResponse] raw API response
+      def unpublish(id, opts = {})
+        Article.unpublish(id, opts_with_requestor(opts))
+      end
     end
   end
 end

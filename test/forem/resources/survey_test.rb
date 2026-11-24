@@ -80,6 +80,27 @@ class Forem::SurveyTest < Minitest::Test
     refute page2.has_more?
   end
 
+  def test_create_update_delete
+    mock_http, captured = stub_http_request(method: :post, path: "/api/surveys", status: 201, body: '{"id":9,"title":"Dev Survey"}')
+    requestor = make_requestor(mock_http)
+    survey = Forem::Survey.create({ title: "Dev Survey", active: true }, requestor: requestor)
+    assert_instance_of Forem::Survey, survey
+    assert_equal 9, survey.id
+    assert_equal({ "survey" => { "title" => "Dev Survey", "active" => true } }, JSON.parse(captured[:body]))
+
+    mock_http2, captured2 = stub_http_request(method: :put, path: "/api/surveys/9", status: 200, body: '{"id":9,"title":"Updated Survey"}')
+    requestor2 = make_requestor(mock_http2)
+    updated = Forem::Survey.update(9, { title: "Updated Survey" }, requestor: requestor2)
+    assert_equal "Updated Survey", updated.title
+    assert_equal({ "survey" => { "title" => "Updated Survey" } }, JSON.parse(captured2[:body]))
+
+    mock_http3, captured3 = stub_http_request(method: :delete, path: "/api/surveys/9", status: 204, body: "")
+    requestor3 = make_requestor(mock_http3)
+    assert_nil Forem::Survey.delete(9, requestor: requestor3)
+    assert_equal "DELETE", captured3[:method]
+    assert_equal "/api/surveys/9", captured3[:path]
+  end
+
   private
 
   def mock_conn(mock_http)

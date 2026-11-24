@@ -48,5 +48,19 @@ module Forem
 
     OBJECT_NAME = "page"
     RESOURCE_PATH = "/api/pages"
+
+    # Preview rendered HTML for a page without persisting it.
+    #
+    # Sends a POST request to +/api/pages/preview+. Accepts flat or +page:+-wrapped
+    # params (+:body_markdown+, +:body_html+, optional +:organization_id+).
+    #
+    # @param params [Hash] preview attributes
+    # @param opts [Hash] per-request options
+    # @return [Forem::ForemObject] object exposing +processed_html+
+    def self.preview(params = {}, opts = {})
+      requestor = opts[:requestor]
+      resp = request(:post, "#{resource_path}/preview", params, opts)
+      ForemObject.construct_from(resp.parsed_body, requestor: requestor)
+    end
   end
 end

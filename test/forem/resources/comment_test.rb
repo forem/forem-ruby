@@ -23,4 +23,14 @@ class Forem::CommentTest < Minitest::Test
     assert_instance_of Forem::Comment, result
     assert_equal "abc", result.id_code
   end
+
+  def test_preview
+    mock_http, captured = stub_http_request(method: :post, path: "/api/comments/preview", status: 200, body: '{"processed_html":"<p><strong>Hi</strong></p>"}')
+    requestor = make_requestor(mock_http)
+    result = Forem::Comment.preview({ body_markdown: "**Hi**" }, requestor: requestor)
+    assert_instance_of Forem::ForemObject, result
+    assert_equal "<p><strong>Hi</strong></p>", result.processed_html
+    assert_equal "POST", captured[:method]
+    assert_equal "/api/comments/preview", captured[:path]
+  end
 end
